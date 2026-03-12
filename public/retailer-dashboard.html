@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تاجر التجزئة - TradeLink</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/responsive.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: #0b0f19;
+            color: #e2e8f0;
+            min-height: 100vh
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #111827, #0b0f19);
+            border-left: 1px solid rgba(239, 68, 68, .15);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 270px;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-brand {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            text-align: center
+        }
+
+        .sidebar-brand h4 {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            font-size: 1.2rem
+        }
+
+        .sidebar-brand small {
+            color: #64748b;
+            font-size: .75rem
+        }
+
+        .nav-link {
+            color: #94a3b8 !important;
+            padding: 13px 20px;
+            border-radius: 10px;
+            margin: 3px 12px;
+            transition: all .3s;
+            font-size: .85rem
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(239, 68, 68, .1);
+            color: #fca5a5 !important
+        }
+
+        .nav-link i {
+            width: 22px;
+            text-align: center;
+            margin-left: 10px
+        }
+
+        .nav-section {
+            color: #475569;
+            font-size: .7rem;
+            text-transform: uppercase;
+            padding: 10px 20px 5px;
+            letter-spacing: 1px
+        }
+
+        .main-content {
+            margin-right: 270px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: calc(100% - 270px);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px
+        }
+
+        .page-header h2 {
+            font-weight: 700;
+            color: #f1f5f9
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                margin-right: 0 !important;
+                width: 100% !important;
+                padding: 15px;
+                padding-top: 80px;
+            }
+
+            .sidebar {
+                right: -280px !important;
+                transform: none !important;
+            }
+
+            .sidebar.show {
+                right: 0 !important;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+
+            .mobile-top-bar {
+                display: flex;
+            }
+
+            .cart-float {
+                bottom: 20px;
+                left: 20px;
+                width: 55px;
+                height: 55px;
+            }
+        }
+
+        .mobile-top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #111827;
+            border-bottom: 1px solid rgba(239, 68, 68, .15);
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 101;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Cart Styles */
+        .cart-float {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 5px 25px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s;
+        }
+
+        .cart-float:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: white;
+            color: #ef4444;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ef4444;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background: #0f172a;
+            z-index: 1001;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(239, 68, 68, 0.1);
+        }
+
+        .cart-sidebar.active {
+            left: 0;
+        }
+
+        .cart-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .cart-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .supplier-group {
+            margin-bottom: 20px;
+        }
+
+        .supplier-header {
+            font-size: 0.75rem;
+            color: #ef4444;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-cart-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .add-cart-btn:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .qty-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .btn-purple {
+            background: #a855f7;
+            color: white;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-purple:hover {
+            background: #9333ea;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .text-purple {
+            color: #c084fc;
+        }
+
+        .sc {
+            background: linear-gradient(135deg, rgba(17, 24, 39, .9), rgba(11, 15, 25, .95));
+            border: 1px solid rgba(239, 68, 68, .12);
+            border-radius: 16px;
+            padding: 22px;
+            transition: all .3s
+        }
+
+        .sc:hover {
+            transform: translateY(-3px);
+            border-color: rgba(239, 68, 68, .3)
+        }
+
+        .sc .ic {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 14px
+        }
+
+        .ic.red {
+            background: rgba(239, 68, 68, .15);
+            color: #fca5a5
+        }
+
+        .ic.blue {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .ic.green {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80
+        }
+
+        .ic.amber {
+            background: rgba(245, 158, 11, .15);
+            color: #fbbf24
+        }
+
+        .sc h3 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 2px
+        }
+
+        .sc p {
+            color: #64748b;
+            font-size: .8rem;
+            margin: 0
+        }
+
+        .cd {
+            background: rgba(17, 24, 39, .7);
+            border: 1px solid rgba(239, 68, 68, .1);
+            border-radius: 16px;
+            overflow: hidden
+        }
+
+        .cd .ch {
+            background: rgba(239, 68, 68, .05);
+            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .cd .ch h5 {
+            color: #e2e8f0;
+            margin: 0;
+            font-weight: 600;
+            font-size: 1rem
+        }
+
+        .cd .cb {
+            padding: 20px
+        }
+
+        .tbl {
+            color: #e2e8f0;
+            width: 100%
+        }
+
+        .tbl thead th {
+            background: rgba(239, 68, 68, .06);
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(239, 68, 68, .12);
+            font-size: .75rem;
+            text-transform: uppercase;
+            padding: 12px 14px
+        }
+
+        .tbl tbody td {
+            border-bottom: 1px solid rgba(239, 68, 68, .06);
+            padding: 12px 14px;
+            vertical-align: middle;
+            font-size: .9rem
+        }
+
+        .tbl tbody tr:hover {
+            background: rgba(239, 68, 68, .03)
+        }
+
+        .bs {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: .7rem;
+            font-weight: 600
+        }
+
+        .bs-g {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80
+        }
+
+        .bs-y {
+            background: rgba(245, 158, 11, .15);
+            color: #fbbf24
+        }
+
+        .bs-b {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .bs-r {
+            background: rgba(239, 68, 68, .15);
+            color: #fca5a5
+        }
+
+        .btn-g {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all .3s;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer
+        }
+
+        .btn-g:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, .3);
+            color: #fff
+        }
+
+        .fcd {
+            background: rgba(17, 24, 39, .9);
+            border: 1px solid rgba(239, 68, 68, .15);
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 16px
+        }
+
+        .fcd:focus {
+            background: rgba(17, 24, 39, 1);
+            border-color: #ef4444;
+            color: #f1f5f9;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
+        }
+
+        .fl {
+            color: #94a3b8;
+            font-size: .85rem;
+            font-weight: 600
+        }
+
+        .wc {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            border-radius: 16px;
+            padding: 30px;
+            color: #fff;
+            position: relative;
+            overflow: hidden
+        }
+
+        .wc::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, .1) 0%, transparent 60%)
+        }
+
+        .wc h6 {
+            opacity: .8;
+            font-size: .85rem
+        }
+
+        .wc h2 {
+            font-size: 2.2rem;
+            font-weight: 700
+        }
+
+        .sec {
+            display: none
+        }
+
+        .sec.active {
+            display: block
+        }
+
+        .sf {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap
+        }
+
+        .sf input,
+        .sf select {
+            background: rgba(17, 24, 39, .9);
+            border: 1px solid rgba(239, 68, 68, .15);
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            flex: 1;
+            min-width: 180px
+        }
+
+        .sf input:focus,
+        .sf select:focus {
+            border-color: #ef4444;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
+        }
+
+        .pc {
+            background: rgba(17, 24, 39, .7);
+            border: 1px solid rgba(239, 68, 68, .1);
+            border-radius: 14px;
+            padding: 20px;
+            transition: all .3s;
+            cursor: pointer
+        }
+
+        .pc:hover {
+            border-color: rgba(239, 68, 68, .3);
+            transform: translateY(-3px)
+        }
+
+        .pc .pe {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, .08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px
+        }
+
+        .pc h5 {
+            color: #f1f5f9;
+            font-size: 1rem;
+            margin-bottom: 5px
+        }
+
+        .pc .sn {
+            color: #64748b;
+            font-size: .8rem
+        }
+
+        .pc .pr {
+            color: #fca5a5;
+            font-size: 1.2rem;
+            font-weight: 700
+        }
+
+        .pc .op {
+            color: #64748b;
+            font-size: .85rem;
+            text-decoration: line-through
+        }
+
+        .bw {
+            background: rgba(239, 68, 68, .15);
+            color: #fca5a5;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: .7rem
+        }
+
+        .modal-dark .modal-content {
+            background: #111827;
+            border: 1px solid rgba(239, 68, 68, .2);
+            color: #e2e8f0
+        }
+
+        .modal-dark .modal-header {
+            border-bottom: 1px solid rgba(239, 68, 68, .1)
+        }
+
+        .modal-dark .modal-footer {
+            border-top: 1px solid rgba(239, 68, 68, .1)
+        }
+
+        .modal-dark .btn-close {
+            filter: invert(1)
+        }
+
+        .pm-card {
+            background: rgba(17, 24, 39, .8);
+            border: 2px solid rgba(239, 68, 68, .1);
+            border-radius: 12px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all .3s;
+            text-align: center
+        }
+
+        .pm-card:hover {
+            border-color: rgba(239, 68, 68, .4);
+            transform: translateY(-2px)
+        }
+
+        .pm-card.selected {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, .08)
+        }
+
+        .pm-card i {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+            color: #fca5a5;
+            display: block
+        }
+
+        .pm-card span {
+            display: block;
+            font-size: .8rem;
+            color: #e2e8f0;
+            font-weight: 600
+        }
+
+        .pm-card small {
+            color: #64748b;
+            font-size: .7rem
+        }
+
+        .toast-wrap {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 9999
+        }
+
+        .toast-msg {
+            background: rgba(17, 24, 39, .95);
+            border: 1px solid rgba(239, 68, 68, .2);
+            color: #e2e8f0;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+            font-size: .85rem;
+            animation: slideIn .3s ease
+        }
+
+        .toast-msg.success {
+            border-color: rgba(34, 197, 94, .3)
+        }
+
+        .toast-msg.error {
+            border-color: rgba(239, 68, 68, .5)
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1
+            }
+        }
+
+        .gw-box {
+            background: rgba(34, 197, 94, .08);
+            border: 1px solid rgba(34, 197, 94, .2);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 12px;
+            font-size: .82rem
+        }
+
+        .gw-label {
+            color: #64748b;
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+
+        .gw-val {
+            color: #4ade80;
+            font-weight: 600
+        }
+
+        .locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+            border-radius: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: #f1f5f9;
+        }
+
+        .locked-overlay i {
+            font-size: 2.5rem;
+            color: #ef4444;
+            margin-bottom: 12px;
+        }
+
+        .locked-overlay h5 {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .locked-overlay p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            max-width: 250px;
+        }
+
+        .sub-btn {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .sub-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .sec {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating Cart Button -->
+    <div class="cart-float" onclick="toggleCart()">
+        <i class="fas fa-shopping-basket"></i>
+        <span class="cart-count" id="cart-count">0</span>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h5 class="m-0"><i class="fas fa-shopping-cart me-2"></i>سلة المشتريات</h5>
+            <button class="btn-close btn-close-white" onclick="toggleCart()"></button>
+        </div>
+        <div class="cart-body" id="cart-items-list">
+            <!-- Items grouped by supplier will appear here -->
+            <div class="text-center py-5 text-muted">السلة فارغة حالياً</div>
+        </div>
+        <div class="cart-footer">
+            <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted">الإجمالي الكلي:</span>
+                <span class="fw-bold" id="cart-total">0.00 ج.م</span>
+            </div>
+            <button class="btn-g w-100" onclick="cartCheckout()">
+                <i class="fas fa-check-circle me-2"></i>إتمام الطلب الآن
+            </button>
+        </div>
+    </div>
+
+    <div class="mobile-top-bar">
+        <div class="d-flex align-items-center">
+            <img src="assets/logo.png" style="height:30px; margin-left:10px"
+                onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
+            <span style="font-weight:700; color:#ef4444">TradeLink</span>
+        </div>
+        <button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h4><i class="fas fa-shopping-cart me-2"></i>تاجر التجزئة</h4><small>TradeLink Retailer</small>
+        </div>
+        <nav class="nav flex-column sidebar-nav mt-2">
+            <div class="nav-section">الرئيسية</div>
+            <a class="nav-link active" href="#" onclick="sw('dashboard',this)"><i class="fas fa-home"></i>نظرة عامة</a>
+            <div class="nav-section">التسوق</div>
+            <a class="nav-link" href="#" onclick="sw('browse',this)"><i class="fas fa-search"></i>تصفح منتجات الجملة</a>
+            <a class="nav-link" href="#" onclick="sw('orders',this)"><i class="fas fa-shopping-bag"></i>طلباتي</a>
+            <div class="nav-section">المالية</div>
+            <a class="nav-link" href="#" onclick="sw('payments',this)"><i class="fas fa-credit-card"></i>المحفظة
+                والعمليات</a>
+            <a class="nav-link" href="#" onclick="sw('deposit',this)"><i class="fas fa-plus-circle"></i>إيداع رصيد</a>
+            <a class="nav-link" href="#" onclick="sw('bank-settings',this)"><i class="fas fa-university"></i>إعدادات
+                البنك</a>
+            <div class="nav-section">اللوجستيات</div>
+            <a class="nav-link" href="#" onclick="sw('shipments',this)"><i class="fas fa-shipping-fast"></i>تتبع
+                الشحنات</a>
+            <hr style="border-color:rgba(239,68,68,.1);margin:20px 0">
+            <a class="nav-link" href="/" style="color:#f87171!important"><i class="fas fa-sign-out-alt"></i>تسجيل
+                الخروج</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <!-- Dashboard -->
+        <div id="dashboard-section" class="sec active">
+            <div class="page-header">
+                <h2>نظرة عامة</h2><span style="color:#64748b">مرحباً، تاجر التجزئة</span>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic red"><i class="fas fa-shopping-bag"></i></div>
+                        <h3 id="s-o">0</h3>
+                        <p>طلباتي</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic amber"><i class="fas fa-clock"></i></div>
+                        <h3 id="s-p">0</h3>
+                        <p>قيد الانتظار</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic green"><i class="fas fa-coins"></i></div>
+                        <h3 id="s-s">0</h3>
+                        <p>إجمالي المشتريات</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic blue"><i class="fas fa-wallet"></i></div>
+                        <h3 id="s-b">0</h3>
+                        <p>رصيد المحفظة</p>
+                    </div>
+                </div>
+            </div>
+            <div class="cd">
+                <div class="ch">
+                    <h5>آخر طلباتي</h5><button class="btn-g btn-sm" onclick="sw('browse')"><i
+                            class="fas fa-plus me-1"></i>طلب جديد</button>
+                </div>
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم</th>
+                                    <th>البائع</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ro">
+                                <tr>
+                                    <td colspan="5" class="text-center" style="color:#64748b">جاري التحميل...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mt-5" id="ai-recommendations">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="m-0"><i class="fas fa-magic me-2 text-purple" style="color:#c084fc"></i>ذكاء
+                            TradeLink:
+                            ترشيحات لك</h4>
+                        <small class="text-muted">بناءً على مشترياتك السابقة</small>
+                    </div>
+                    <div id="ai-recs-grid" class="row g-3">
+                        <!-- AI recommendations will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Browse Wholesale Products -->
+        <div id="browse-section" class="sec">
+            <div class="page-header">
+                <h2>تصفح منتجات تجار الجملة</h2>
+            </div>
+            <div class="sf">
+                <input type="text" id="fn" placeholder="🔍 بحث بالاسم..." oninput="fp()">
+                <select id="fc" onchange="fp()">
+                    <option value="">كل الفئات</option>
+                </select>
+                <input type="text" id="fl2" placeholder="📍 بحث بالموقع..." oninput="fp()">
+            </div>
+            <div id="spg" class="row g-4 mt-2"></div>
+
+            <div class="sc mt-5" id="ai-recommendations">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="m-0"><i class="fas fa-magic me-2 text-purple"></i>ترشيحات ذكية لك</h4>
+                    <small class="text-muted">بناءً على نشاطك الأخير</small>
+                </div>
+                <div id="ai-recs-grid" class="row g-3">
+                    <!-- AI Recommended products will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- My Orders -->
+        <div id="orders-section" class="sec">
+            <div class="page-header">
+                <h2>طلباتي</h2>
+            </div>
+            <div class="cd">
+                <div class="ch" style="padding:12px 20px;display:flex;gap:10px">
+                    <input type="text" id="ot-search" class="fcd" style="width:220px;padding:8px 14px;font-size:.85rem"
+                        placeholder="🔍 بحث بالبائع أو المبلغ..." oninput="filterOrders()">
+                    <select id="ot-status" class="fcd" style="width:160px;padding:8px 14px;font-size:.85rem"
+                        onchange="filterOrders()">
+                        <option value="">كل الحالات</option>
+                        <option value="pending">قيد الانتظار</option>
+                        <option value="confirmed">تم التأكيد</option>
+                        <option value="shipped">تم الشحن</option>
+                        <option value="delivered">تم التسليم</option>
+                    </select>
+                </div>
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم</th>
+                                    <th>البائع</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>طريقة الدفع</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ot"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payments & Wallet -->
+        <div id="payments-section" class="sec">
+            <div class="page-header">
+                <h2>المدفوعات والمحفظة</h2>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-5">
+                    <div class="wc">
+                        <h6><i class="fas fa-wallet me-2"></i>رصيد المحفظة</h6>
+                        <h2 id="wb">0.00 ج.م</h2>
+                        <div style="opacity:.7;font-size:.8rem;margin-top:8px">متاح للسحب والشراء</div>
+                    </div>
+                </div>
+                <div class="cd h-100">
+                    <div class="ch">
+                        <h5>ملخص المشتريات</h5>
+                    </div>
+                    <div class="cb">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="sc">
+                                    <div class="ic green"><i class="fas fa-check-circle"></i></div>
+                                    <h3 id="pay-done">0</h3>
+                                    <p>مدفوعات مكتملة</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="sc">
+                                    <div class="ic amber"><i class="fas fa-clock"></i></div>
+                                    <h3 id="pay-pend">0</h3>
+                                    <p>قيد المعالجة</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cd">
+            <div class="ch">
+                <h5>سجل المدفوعات</h5>
+            </div>
+            <div class="cb">
+                <div class="table-responsive">
+                    <table class="tbl">
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>الطريقة</th>
+                                <th>المبلغ</th>
+                                <th>الحالة</th>
+                                <th>المرجع</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pmt"></tbody>
+                    </table>
+                </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Deposit -->
+        <div id="deposit-section" class="sec">
+            <div class="page-header">
+                <h2>إيداع رصيد في المحفظة</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-7">
+                    <div class="cd">
+                        <div class="ch">
+                            <h5>اختر طريقة الإيداع</h5>
+                        </div>
+                        <div class="cb">
+                            <div class="row g-3 mb-4">
+                                <div class="col-4">
+                                    <div class="pm-card selected" onclick="selDep('bank_transfer',this)"><i
+                                            class="fas fa-university"></i><span>تحويل بنكي</span><small>البنك الأهلي -
+                                            CIB</small></div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="pm-card" onclick="selDep('instapay',this)"><i
+                                            class="fas fa-bolt"></i><span>انستاباي</span><small>تحويل فوري</small></div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="pm-card" onclick="selDep('vodafone_cash',this)"><i
+                                            class="fas fa-mobile-alt"></i><span>فودافون
+                                            كاش</span><small>010xxxxxxxx</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="pm-card" onclick="selDep('orange_cash',this)"><i
+                                            class="fas fa-mobile-alt"></i><span>أورنج
+                                            كاش</span><small>012xxxxxxxx</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="pm-card" onclick="selDep('etisalat_cash',this)"><i
+                                            class="fas fa-mobile-alt"></i><span>اتصالات
+                                            كاش</span><small>011xxxxxxxx</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="pm-card" onclick="selDep('fawry',this)"><i
+                                            class="fas fa-barcode"></i><span>فوري</span><small>كود الدفع</small></div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="pm-card" onclick="selDep('credit_card',this)"><i
+                                            class="fas fa-credit-card"></i><span>بطاقة ائتمانية</span><small>Visa /
+                                            Mastercard</small></div>
+                                </div>
+                            </div>
+                            <div id="dep-instr" class="gw-box mb-4"
+                                style="background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.1)">
+                                <div class="gw-label mb-2">تعليمات الإيداع</div>
+                                <div id="dep-instr-text" style="font-size:0.85rem;line-height:1.6;color:#e2e8f0">يرجى
+                                    اختيار طريقة الإيداع لمتابعة التعليمات.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fl">المبلغ (ج.م)</label>
+                                <input type="number" class="form-control fcd mt-2" id="dep-amt" step="0.01" min="1"
+                                    placeholder="أدخل المبلغ...">
+                            </div>
+                            <button class="btn-g w-100" onclick="showDepConfirm()"><i
+                                    class="fas fa-shield-alt me-2"></i>تأكيد ومراجعة الإيداع</button>
+                            <div id="dep-result" class="gw-box mt-3" style="display:none"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="wc mb-3">
+                        <h6><i class="fas fa-wallet me-2"></i>رصيد المحفظة الحالي</h6>
+                        <h2 id="dep-bal">0.00 ج.م</h2>
+                    </div>
+                    <div class="cd">
+                        <div class="ch">
+                            <h5>معلومات الإيداع</h5>
+                        </div>
+                        <div class="cb" style="font-size:.85rem;color:#94a3b8;line-height:1.8">
+                            <p><i class="fas fa-check-circle me-2" style="color:#4ade80"></i>الإيداع فوري وآمن</p>
+                            <p><i class="fas fa-check-circle me-2" style="color:#4ade80"></i>لا توجد رسوم إضافية</p>
+                            <p><i class="fas fa-check-circle me-2" style="color:#4ade80"></i>متاح 24/7</p>
+                            <p><i class="fas fa-shield-alt me-2" style="color:#60a5fa"></i>مشفر وآمن</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipment Tracking -->
+        <div id="shipments-section" class="sec">
+            <div class="page-header">
+                <h2>تتبع الشحنات</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم الشحنة</th>
+                                    <th>رقم الطلب</th>
+                                    <th>الناقل</th>
+                                    <th>رقم التتبع</th>
+                                    <th>الحالة</th>
+                                    <th>تاريخ التوقع</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shpt"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bank & Digital Wallet Settings -->
+        <div id="bank-settings-section" class="sec">
+            <div class="page-header">
+                <h2>إعدادات الدفع والاستلام</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <form id="bank-form">
+                        <div class="row g-4">
+                            <!-- Bank Account -->
+                            <div class="col-12">
+                                <h6 class="mb-3 text-danger"><i class="fas fa-university me-2"></i>الحساب البنكي
+                                    (للتحويلات البنكية)</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6"><label class="fl">اسم البنك</label><input type="text"
+                                            class="form-control fcd" name="bank_name" id="b-name"
+                                            placeholder="مثلاً: البنك الأهلي المصري"></div>
+                                    <div class="col-md-6"><label class="fl">اسم صاحب الحساب</label><input type="text"
+                                            class="form-control fcd" name="account_holder_name" id="b-holder"></div>
+                                    <div class="col-md-6"><label class="fl">رقم الحساب</label><input type="text"
+                                            class="form-control fcd" name="account_number" id="b-number"></div>
+                                    <div class="col-md-6"><label class="fl">IBAN</label><input type="text"
+                                            class="form-control fcd" name="iban" id="b-iban"></div>
+                                </div>
+                            </div>
+
+                            <!-- Digital Wallets -->
+                            <div class="col-12">
+                                <hr class="opacity-10">
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6 class="mb-3" style="color:#00c2ff"><i class="fas fa-bolt me-2"></i>إعدادات انستاباي
+                                    (InstaPay)</h6>
+                                <label class="fl">عنوان InstaPay (IPA)</label>
+                                <input type="text" class="form-control fcd" name="instapay_address" id="b-instapay"
+                                    placeholder="username@instapay">
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6 class="mb-3" style="color:#e60000"><i class="fas fa-mobile-alt me-2"></i>فودافون كاش
+                                    (Vodafone Cash)</h6>
+                                <label class="fl">رقم فودافون كاش</label>
+                                <input type="text" class="form-control fcd" name="vodafone_cash_number" id="b-vodafone"
+                                    placeholder="010XXXXXXXX">
+                            </div>
+
+                            <div class="col-12 mt-4 text-center">
+                                <button type="submit" class="btn-g px-5"><i class="fas fa-save me-2"></i>حفظ جميع
+                                    إعدادات الدفع</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Confirm Modal -->
+    <div class="modal fade modal-dark" id="depConfM" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-shield-alt me-2" style="color:#4ade80"></i>مراجعة وتأكيد
+                        الإيداع</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div
+                        style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:20px;text-align:center">
+                        <div style="color:#64748b;font-size:.85rem">بوابة الدفع</div>
+                        <div style="color:#4ade80;font-weight:700;font-size:1.1rem" id="dc-gw">-</div>
+                        <div style="color:#64748b;font-size:.85rem;margin-top:12px">المبلغ</div>
+                        <div style="color:#f1f5f9;font-weight:700;font-size:2rem" id="dc-amt">0 ج.م</div>
+                        <div style="color:#64748b;font-size:.75rem;margin-top:8px">سيتم إرسال الطلب للمراجعة وإضافة
+                            الرصيد فور تأكيد الأدمن من صورة الإيصال</div>
+                    </div>
+                    <div class="mt-3">
+                        <label class="fl" style="font-size:0.85rem">ارفع سكرين شوت للعملية (مطلوب):</label>
+                        <input type="file" id="dep-proof" class="form-control fcd" accept="image/*">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn-g" onclick="confirmDep()"><i class="fas fa-check me-2"></i>تأكيد
+                        الإيداع الآن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div class="modal fade modal-dark" id="oM" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تأكيد الطلب</h5><button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="opi" class="mb-3"></p>
+                    <div class="mb-3"><label class="fl">الكمية</label><input type="number" class="form-control fcd mt-1"
+                            id="oq" min="1" value="1"></div>
+                    <label class="fl mb-2">طريقة الدفع</label>
+                    <div class="row g-2 mb-3" id="pay-methods-modal">
+                        <div class="col-4">
+                            <div class="pm-card selected" onclick="selPay('wallet',this)"><i
+                                    class="fas fa-wallet"></i><span>محفظة</span><small>خصم فوري</small></div>
+                        </div>
+                        <div class="col-4">
+                            <div class="pm-card" onclick="selPay('bank_transfer',this)"><i
+                                    class="fas fa-university"></i><span>تحويل بنكي</span><small>البنك الأهلي</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="pm-card" onclick="selPay('instapay',this)"><i
+                                    class="fas fa-bolt"></i><span>انستاباي</span><small>فوري</small></div>
+                        </div>
+                        <div class="col-4">
+                            <div class="pm-card" onclick="selPay('vodafone_cash',this)"><i
+                                    class="fas fa-mobile-alt"></i><span>فودافون كاش</span><small>010x</small></div>
+                        </div>
+                        <div class="col-4">
+                            <div class="pm-card" onclick="selPay('fawry',this)"><i
+                                    class="fas fa-barcode"></i><span>فوري</span><small>كود</small></div>
+                        </div>
+                        <div class="col-4">
+                            <div class="pm-card" onclick="selPay('credit_card',this)"><i
+                                    class="fas fa-credit-card"></i><span>بطاقة ائتمان</span><small>Visa</small></div>
+                        </div>
+                        <div class="col-4">
+                            <div class="pm-card" onclick="selPay('orange_cash',this)"><i
+                                    class="fas fa-mobile-alt"></i><span>أورنج كاش</span><small>012x</small></div>
+                        </div>
+                        <div class="col-4">
+                            <div class="pm-card" onclick="selPay('etisalat_cash',this)"><i
+                                    class="fas fa-mobile-alt"></i><span>اتصالات كاش</span><small>011x</small></div>
+                        </div>
+                        <div class="col-4">
+                            <div class="pm-card" onclick="selPay('cash',this)"><i
+                                    class="fas fa-money-bill-wave"></i><span>عند الاستلام</span><small>نقدي</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#fca5a5;padding:12px;border-radius:10px"
+                        class="mt-3">
+                        <strong>الإجمالي: </strong><span id="otl">0</span> ج.م
+                    </div>
+                    <div id="o-instr" class="gw-box mt-3"
+                        style="background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.1);display:none">
+                        <div class="gw-label mb-1">تعليمات الدفع</div>
+                        <div id="o-instr-text" style="font-size:0.8rem;line-height:1.4;color:#e2e8f0"></div>
+                    </div>
+                    <div id="gw-resp" class="gw-box mt-2" style="display:none"></div>
+
+                    <!-- Similar Products -->
+                    <div class="mt-4 border-top pt-3">
+                        <h6 class="text-muted small mb-3"><i class="fas fa-layer-group me-2"></i>منتجات مشابهة قد تهمك
+                        </h6>
+                        <div id="sim-prods" class="row g-2 overflow-auto flex-nowrap pb-2"
+                            style="scrollbar-width: thin; -ms-overflow-style: none;">
+                            <!-- Similar products injected here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn-g" onclick="so()" id="order-btn">تأكيد الطلب والدفع</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription Modal -->
+    <div class="modal fade modal-dark" id="subM" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-5">
+                    <div
+                        style="width:80px;height:80px;background:rgba(239,68,68,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px">
+                        <i class="fas fa-lock" style="font-size:2rem;color:#ef4444"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">الخدمة مقفولة</h4>
+                    <p style="color:#94a3b8;font-size:.95rem;line-height:1.6">عذراً، يجب عليك دفع الاشتراك الشهري (250
+                        ج.م) لتتمكن من الوصول لجميع خدمات TradeLink المتقدمة.</p>
+                    <div
+                        style="background:rgba(17,24,39,.8);border:1px solid rgba(239,68,68,.1);border-radius:10px;padding:14px;margin:16px 0">
+                        <label style="color:#94a3b8;font-size:.8rem;display:block;margin-bottom:8px">اختر طريقة
+                            الدفع:</label>
+                        <div class="row g-2" id="sub-methods">
+                            <div class="col-4">
+                                <div class="pm-card selected" onclick="selSubMethod('wallet',this)">
+                                    <i class="fas fa-wallet"></i><span>المحفظة</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="pm-card" onclick="selSubMethod('instapay',this)"><i
+                                        class="fas fa-bolt"></i><span>انستاباي</span></div>
+                            </div>
+                            <div class="col-4">
+                                <div class="pm-card" onclick="selSubMethod('fawry',this)"><i
+                                        class="fas fa-barcode"></i><span>فوري</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="border-color:rgba(255,255,255,.1);margin:24px 0">
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary flex-grow-1"
+                            data-bs-dismiss="modal">إغلاق</button>
+                        <button type="button" class="btn-g flex-grow-1" onclick="paySubNow()"><i
+                                class="fas fa-credit-card me-2"></i>اشترك الآن (250 ج.م)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-wrap" id="tw"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        if (!user || !token || user.role?.name !== 'Retailer') {
+            window.location.href = '/auth.html';
+        }
+        const RID = user.id;
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (!sidebar || !overlay) return;
+            const isShowing = sidebar.classList.toggle('show');
+            if (isShowing) {
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            } else {
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+        let AP = [], SP = null, selPayMethod = 'wallet', selDepMethod = 'bank_transfer';
+
+        function selPay(m, el) {
+            document.querySelectorAll('#pay-methods-modal .pm-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selPayMethod = m;
+            const inst = {
+                wallet: 'سيتم خصم المبلغ مباشرة من رصيدك الحالي في المحفظة.',
+                bank_transfer: 'يرجى تحويل المبلغ لحساب تاجر الجملة البنكي الموضح في تفاصيل الطلب أو حساب الشركة:<br>NBE: <b>12345678901234</b>',
+                instapay: 'قم بالتحويل عبر انستاباي إلى العنوان التالي:<br>IPA: <b>tradelink@instapay</b>',
+                vodafone_cash: 'قم بالتحويل لرقم المحفظة التالي:<br>الرقم: <b>01012345678</b>',
+                fawry: 'استخدم كود الدفع الذي سيظهر بعد تأكيد الطلب للسداد عبر فوري.',
+                credit_card: 'سيتم تحويلك لبوابة الدفع الآمنة لإدخال بيانات البطاقة.',
+                cash: 'يتم سداد المبلغ نقداً عند استلام البضائع.'
+            };
+            document.getElementById('o-instr').style.display = 'block';
+            document.getElementById('o-instr-text').innerHTML = inst[m] || '';
+        }
+
+        function selDep(m, el) {
+            document.querySelectorAll('#deposit-section .pm-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selDepMethod = m;
+            const inst = {
+                bank_transfer: 'قم بالتحويل إلى حسابنا في البنك التجاري الدولي (CIB):<br>IBAN: <b>EG890044500700005007861381409</b>',
+                instapay: 'قم بالتحويل عبر تطبيق انستاباي إلى العنوان التالي:<br>IPA: <b>wtsra201006513814</b>',
+                vodafone_cash: 'قم بالتحويل إلى رقم فودافون كاش التالي:<br>الرقم: <b>01006513814</b>',
+                orange_cash: 'قم بالتحويل إلى رقم أورنج كاش التالي:<br>الرقم: <b>01206613977</b>',
+                etisalat_cash: 'قم بالتحويل إلى رقم اتصالات كاش التالي:<br>الرقم: <b>01117651342</b>',
+                fawry: 'استخدم كود الخدمة التالي في أي ماكينة فوري:<br>كود الخدمة: <b>7890</b><br>رقم المرجع سيظهر بعد طلب الإيداع.',
+                credit_card: 'سيتم تحويلك لبوابة الدفع الآمنة لإدخال بيانات البطاقة.'
+            };
+            document.getElementById('dep-instr-text').innerHTML = inst[m] || 'يرجى اختيار طريقة الدفع.';
+        }
+        let isSubscribed = false, subPayMethod = 'wallet';
+
+        async function loadSubscription() {
+            try {
+                const r = await fwa(`/api/subscription/${RID}`);
+                const j = await r.json();
+                if (j.success) isSubscribed = j.data.is_active;
+            } catch (e) { console.error('Sub check failed', e); }
+        }
+
+        function selSubMethod(m, el) {
+            document.querySelectorAll('#sub-methods .pm-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            subPayMethod = m;
+        }
+
+        function checkSubGating(id) {
+            const sec = document.getElementById(id);
+            if (!sec) return;
+            if (!isSubscribed) {
+                if (!sec.querySelector('.locked-overlay')) {
+                    const over = document.createElement('div');
+                    over.className = 'locked-overlay';
+                    over.innerHTML = `<i class="fas fa-lock"></i><h5>الخدمة مقفولة</h5><p>يجب دفع الاشتراك الشهري للوصول لهذه الخدمة</p><button class="sub-btn" onclick="subModal()">اشترك الآن</button>`;
+                    sec.appendChild(over);
+                }
+            } else {
+                sec.querySelector('.locked-overlay')?.remove();
+            }
+        }
+
+        function subModal() {
+            new bootstrap.Modal(document.getElementById('subM')).show();
+        }
+
+        async function paySubNow() {
+            toast('جاري معالجة الاشتراك...', 'info');
+            try {
+                const r = await fwa('/api/subscription/pay', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: RID, method: subPayMethod })
+                });
+                const j = await r.json();
+                if (j.success) {
+                    isSubscribed = true;
+                    const m = bootstrap.Modal.getInstance(document.getElementById('subM'));
+                    if (m) m.hide();
+                    toast('تم تفعيل الاشتراك بنجاح! جميع الخدمات متاحة الآن. ✨');
+                    document.querySelectorAll('.locked-overlay').forEach(o => o.remove());
+                } else {
+                    toast(j.error || 'فشل الاشتراك', 'error');
+                }
+            } catch (e) {
+                toast('خطأ في الاتصال', 'error');
+            }
+        }
+        async function fwa(u, o = {}) {
+            const headers = { ...o.headers, 'Authorization': `Bearer ${token}` };
+            if (!(o.body instanceof FormData)) {
+                headers['Content-Type'] = 'application/json';
+            }
+            o.headers = headers;
+            return fetch(u, o);
+        }
+
+        function sw(n, el) {
+            document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+            document.getElementById(n + '-section').classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            if (window.innerWidth <= 992) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('show')) toggleSidebar();
+            }
+
+            // Gating Logic for browse and deposit
+            if (['browse', 'deposit'].includes(n)) {
+                checkSubGating(n + '-section');
+            }
+
+            const map = { dashboard: ld, browse: lb, orders: lo, payments: lpm, deposit: ldep, shipments: lsh, 'bank-settings': lbk };
+            if (map[n]) map[n]();
+        }
+
+        function toast(msg, type = 'success') {
+            const tw = document.getElementById('tw');
+            const d = document.createElement('div');
+            d.className = `toast-msg ${type}`;
+            d.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2" style="color:${type === 'success' ? '#4ade80' : '#fca5a5'}"></i>${msg}`;
+            tw.appendChild(d);
+            setTimeout(() => d.remove(), 4000);
+        }
+
+        function sa(s) { return { pending: 'قيد الانتظار', confirmed: 'تم التأكيد', processing: 'قيد المعالجة', shipped: 'تم الشحن', delivered: 'تم التسليم', cancelled: 'ملغي', rejected: 'مرفوض', in_transit: 'جاري الشحن' }[s] || s }
+        function ma(m) { return { cash: 'نقدي', bank_transfer: 'تحويل بنكي', instapay: 'انستاباي', vodafone_cash: 'فودافون كاش', fawry: 'فوري', credit_card: 'بطاقة ائتمان', wallet: 'محفظة', orange_cash: 'أورنج كاش', etisalat_cash: 'اتصالات كاش' }[m] || m }
+        function sb(s) { return s === 'pending' ? 'bs-y' : (s === 'delivered' || s === 'confirmed') ? 'bs-g' : (s === 'cancelled' || s === 'rejected') ? 'bs-r' : 'bs-b' }
+
+        async function ld() {
+            try {
+                const r = await fwa(`/api/stats/retailer/${RID}`);
+                const j = await r.json();
+                if (j.success) {
+                    const d = j.data;
+                    document.getElementById('s-o').textContent = d.orders?.total || 0;
+                    document.getElementById('s-p').textContent = d.orders?.pending || 0;
+                    document.getElementById('s-s').textContent = parseFloat(d.spending?.total || 0).toFixed(2);
+                    document.getElementById('s-b').textContent = parseFloat(d.balance || 0).toFixed(2);
+                }
+            } catch (e) { console.error(e) }
+            lro(); lai();
+        }
+
+        async function lai() {
+            try {
+                const r = await fwa(`/api/recommendations?user_id=${RID}`);
+                const j = await r.json();
+                const d = j.data || [];
+                const grid = document.getElementById('ai-recs-grid');
+                if (grid) grid.innerHTML = d.map(x => `
+                    <div class="col-md-2" onclick="opm(${x.id})" style="cursor:pointer">
+                        <div class="cd p-2 text-center h-100" style="background:rgba(192, 132, 252, 0.05); border:1px solid rgba(192, 132, 252, 0.1)">
+                            <img src="${x.image || 'assets/placeholder.png'}" style="width:100%; height:80px; object-fit:cover; border-radius:8px; margin-bottom:8px">
+                            <div class="small fw-bold text-truncate">${x.name}</div>
+                            <div class="small text-danger">${parseFloat(x.price).toFixed(0)} ج.م</div>
+                            <div style="font-size:0.6rem; color:#c084fc"><i class="fas fa-brain"></i> ذكاء: ${Math.round((x.ai_confidence || 0.8) * 100)}%</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { }
+        }
+
+        async function lro() {
+            try {
+                const r = await fwa('/api/orders');
+                const j = await r.json();
+                const data = j.data || (Array.isArray(j) ? j : []);
+                const o = data.filter(x => x.buyer_id === RID);
+                const b = document.getElementById('ro');
+                if (!o.length) { b.innerHTML = '<tr><td colspan="5" class="text-center" style="color:#64748b">لا توجد طلبات</td></tr>'; return; }
+                b.innerHTML = o.slice(0, 5).map(x => `<tr><td>#${x.id}</td><td>${x.seller?.name || '#' + x.seller_id}</td><td>${parseFloat(x.total_amount).toFixed(2)} ج.م</td><td><span class="bs ${sb(x.status)}">${sa(x.status)}</span></td><td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td></tr>`).join('');
+            } catch (e) { console.error(e) }
+        }
+
+        async function lb() {
+            try {
+                const r = await fwa('/api/products?role=Retailer');
+                const j = await r.json();
+                AP = j.data || j;
+                rp(AP);
+                lcf();
+            } catch (e) { console.error(e) }
+        }
+
+        function rp(p) {
+            const catMap = {
+                'Food & Grains': 'مواد غذائية وحبوب',
+                'Oils & Fats': 'زيوت ودهون',
+                'Beverages': 'مشروبات',
+                'Personal Care': 'عناية شخصية',
+                'Cleaning Supplies': 'منظفات',
+                'Electronics': 'إلكترونيات',
+                'Clothing & Fashion': 'ملابس وأزياء',
+                'Construction Materials': 'بناء وإنشاءات',
+                'Home & Furniture': 'أثاث وأدوات منزلية',
+                'Auto Parts': 'قطع غيار سيارات',
+                'Medical Supplies': 'مستلزمات طبية',
+                'Industrial Equipment': 'معدات صناعية',
+                'Plastics & Packaging': 'بلاستيك وتغليف'
+            };
+            const h = document.getElementById('spg');
+            if (h) h.innerHTML = p.length ? p.map(x => `
+                <div class="col-md-4 col-lg-3">
+                    <div class="pc">
+                        <div class="pe" style="background: url('${x.image || 'assets/placeholder.png'}') center/cover no-repeat; height:150px; border-radius:12px; margin-bottom:12px">
+                            ${!x.image ? '<i class="fas fa-box" style="font-size:2rem; opacity:0.3"></i>' : ''}
+                            ${x.ai_confidence ? `<div class="ai-badge" style="position:absolute; top:10px; right:10px; background:rgba(192, 132, 252, 0.9); color:white; padding:2px 8px; border-radius:12px; font-size:0.65rem; border:1px solid rgba(255,255,255,0.2)"><i class="fas fa-brain me-1"></i>ترشيح ذكي: ${Math.round(x.ai_confidence * 100)}%</div>` : ''}
+                        </div>
+                        <h5>${x.name}</h5>
+                        <div class="sn"><i class="fas fa-industry me-1"></i>${x.supplier?.company_name || 'تاجر جملة'}</div>
+                        <div class="mt-2">
+                            <span class="pr">${parseFloat(x.price).toFixed(2)} ج.م</span>
+                        </div>
+                        <div style="color:#64748b;font-size:0.75rem;margin-top:8px">${catMap[x.category?.name] || x.category?.name || 'عام'}</div>
+                        <p class="mt-2 small text-muted">متاح: ${x.quantity}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <button class="btn-g btn-sm py-1 px-3" onclick="opm(${x.id})">طلب</button>
+                            <button class="add-cart-btn" onclick="addToCartSync(${x.id}, '${x.name.replace(/'/g, "\\'")}', ${x.price}, ${x.supplier_id})">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') : '<div class="col-12 text-center" style="color:#64748b;padding:40px">لا توجد منتجات متاحة</div>';
+        }
+
+        async function lcf() {
+            try {
+                const r = await fwa('/api/categories');
+                const j = await r.json();
+                const c = j.data || j;
+                const catMap = {
+                    'Food & Grains': 'مواد غذائية وحبوب',
+                    'Oils & Fats': 'زيوت ودهون',
+                    'Beverages': 'مشروبات',
+                    'Personal Care': 'عناية شخصية',
+                    'Cleaning Supplies': 'منظفات',
+                    'Electronics': 'إلكترونيات',
+                    'Clothing & Fashion': 'ملابس وأزياء',
+                    'Construction Materials': 'بناء وإنشاءات',
+                    'Home & Furniture': 'أثاث وأدوات منزلية',
+                    'Auto Parts': 'قطع غيار سيارات',
+                    'Medical Supplies': 'مستلزمات طبية',
+                    'Industrial Equipment': 'معدات صناعية',
+                    'Plastics & Packaging': 'بلاستيك وتغليف'
+                };
+                document.getElementById('fc').innerHTML = '<option value="">كل الفئات</option>' + c.map(x => `<option value="${x.id}">${catMap[x.name] || x.name}</option>`).join('');
+            } catch (e) { }
+        }
+
+        function fp() {
+            const n = document.getElementById('fn').value.toLowerCase(), c = document.getElementById('fc').value, l = document.getElementById('fl2').value.toLowerCase();
+            let f = AP;
+            if (n) f = f.filter(p => p.name.toLowerCase().includes(n));
+            if (c) f = f.filter(p => String(p.category_id) === c);
+            if (l) f = f.filter(p => (p.supplier?.location || '').toLowerCase().includes(l));
+            rp(f);
+        }
+
+        async function opm(id) {
+            SP = AP.find(p => p.id === id);
+            if (!SP) return;
+            document.getElementById('opi').innerHTML = `
+                <div style="display:flex; gap:15px; align-items:flex-start">
+                    <img src="${SP.image || 'assets/placeholder.png'}" style="width:100px; height:100px; border-radius:12px; object-fit:cover; border:1px solid rgba(255,255,255,0.1)">
+                    <div>
+                        <h4 style="margin:0">${SP.name}</h4>
+                        <div style="color:#ef4444; font-weight:700; font-size:1.2rem; margin:5px 0">${parseFloat(SP.price).toFixed(2)} ج.م</div>
+                        <div style="color:#64748b; font-size:0.85rem">${SP.supplier?.company_name || 'تاجر جملة'}</div>
+                    </div>
+                </div>
+                ${SP.ai_description ? `
+                <div style="margin-top:15px; padding:12px; background:rgba(192, 132, 252, 0.05); border:1px dashed rgba(192, 132, 252, 0.3); border-radius:12px">
+                    <div style="color:#c084fc; font-size:0.75rem; font-weight:700; margin-bottom:5px"><i class="fas fa-brain me-1"></i>رؤية الذكاء الاصطناعي (AI Insight)</div>
+                    <p style="margin:0; font-size:0.85rem; color:#94a3b8; line-height:1.5">${SP.ai_description}</p>
+                </div>` : ''}
+            `;
+            document.getElementById('oq').value = 1;
+            document.getElementById('o-instr').style.display = 'none';
+            ut();
+            document.getElementById('oq').oninput = ut;
+
+            // Load Similar Products
+            const sim = AP.filter(p => p.category_id === SP.category_id && p.id !== SP.id).slice(0, 4);
+            document.getElementById('sim_prods' in window ? 'sim-prods' : 'sim-prods').innerHTML = sim.length ? sim.map(p => `
+                <div class="col-4" style="min-width: 120px; cursor: pointer;" onclick="opm(${p.id})">
+                    <div class="p-2 border border-secondary rounded text-center h-100 bg-dark">
+                        <div class="small fw-bold text-truncate">${p.name}</div>
+                        <div class="small text-danger">${parseFloat(p.price).toFixed(0)} ج.م</div>
+                    </div>
+                </div>
+            `).join('') : '<div class="small text-muted w-100 text-center">لا توجد منتجات مشابهة حالياً</div>';
+
+            new bootstrap.Modal(document.getElementById('oM')).show();
+        }
+
+        function ut() { const q = parseInt(document.getElementById('oq').value) || 0; document.getElementById('otl').textContent = (q * parseFloat(SP.price)).toFixed(2); }
+
+        function selPay(m, el) {
+            selPayMethod = m;
+            document.querySelectorAll('#pay-methods-modal .pm-card').forEach(x => x.classList.remove('selected'));
+            el.classList.add('selected');
+            const gw = document.getElementById('so-gw');
+            gw.style.display = 'block';
+            const inst = {
+                wallet: 'سيتم خصم المبلغ مباشرة من رصيدك الحالي في المحفظة.',
+                bank_transfer: 'يرجى تحويل المبلغ لحساب تاجر الجملة البنكي الموضح في تفاصيل الطلب.',
+                instapay: 'قم بالتحويل عبر انستاباي إلى المورد مباشرة (عنوان IPA الخاص به).',
+                vodafone_cash: 'قم بالتحويل لرقم محفظة فودافون كاش الخاص بالمورد.',
+                fawry: 'استخدم كود الدفع الذي سيظهر بعد تأكيد الطلب للسداد عبر فوري.',
+                cash: 'يتم سداد المبلغ نقداً عند استلام البضائع من المورد.'
+            };
+            gw.innerHTML = `<div class="gw-label mb-1">تعليمات الدفع</div><div style="font-size:0.8rem;line-height:1.4">${inst[m] || ''}</div>`;
+        }
+
+        function selDep(m, el) {
+            document.querySelectorAll('.dep-pm .pm-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selDepMethod = m;
+            const inst = {
+                bank_transfer: 'قم بالتحويل إلى حسابنا في البنك التجاري الدولي (CIB):<br>IBAN: <b>EG890044500700005007861381409</b>',
+                instapay: 'قم بالتحويل عبر تطبيق انستاباي إلى العنوان التالي:<br>IPA: <b>wtsra201006513814</b>',
+                vodafone_cash: 'قم بالتحويل إلى رقم فودافون كاش التالي:<br>الرقم: <b>01006513814</b>',
+                orange_cash: 'قم بالتحويل إلى رقم أورنج كاش التالي:<br>الرقم: <b>01206613977</b>',
+                etisalat_cash: 'قم بالتحويل إلى رقم اتصالات كاش التالي:<br>الرقم: <b>01117651342</b>',
+                fawry: 'استخدم كود الخدمة التالي في أي ماكينة فوري:<br>كود الخدمة: <b>7890</b><br>رقم المرجع سيظهر بعد طلب الإيداع.',
+                credit_card: 'سيتم تحويلك لبوابة الدفع الآمنة لإدخال بيانات البطاقة.'
+            };
+            document.getElementById('dep-instr-text').innerHTML = inst[m] || 'يرجى اختيار طريقة الدفع.';
+        }
+
+        async function so() {
+            if (!SP) return;
+            const q = parseInt(document.getElementById('oq').value);
+            const up = parseFloat(SP.price);
+            const t = q * up;
+            const btn = document.getElementById('order-btn');
+            btn.disabled = true; btn.textContent = 'جاري المعالجة...';
+            try {
+                const or = await fwa('/api/orders', {
+                    method: 'POST',
+                    body: JSON.stringify({ buyer_id: RID, seller_id: SP.supplier_id, items: [{ product_id: SP.id, quantity: q, unit_price: up }] })
+                });
+                const oj = await or.json();
+                if (!oj.success) { toast(oj.error || 'خطأ في الطلب', 'error'); btn.disabled = false; btn.textContent = 'تأكيد الطلب والدفع'; return; }
+                const pr = await fwa('/api/payments', {
+                    method: 'POST',
+                    body: JSON.stringify({ order_id: oj.data.id, method: selPayMethod, amount: t, buyer_id: RID })
+                });
+                const pj = await pr.json();
+                if (pj.success) {
+                    const gw = pj.gateway_response;
+                    const gwBox = document.getElementById('gw-resp');
+                    gwBox.style.display = 'block';
+                    gwBox.innerHTML = `<div class="gw-label">بوابة الدفع</div><div class="gw-val"><i class="fas fa-check-circle me-1"></i>${gw?.gateway || ma(selPayMethod)}</div><div class="gw-label mt-2">رقم المرجع</div><div class="gw-val">${gw?.reference || '-'}</div><div class="gw-label mt-2">الرسالة</div><div class="gw-val">${gw?.message || 'تم الدفع'}</div>`;
+                    toast(`تم الطلب بنجاح! رقم #${oj.data.id} — ${t.toFixed(2)} ج.م`);
+                    setTimeout(() => { bootstrap.Modal.getInstance(document.getElementById('oM'))?.hide(); ld(); }, 2500);
+                } else { toast('تم الطلب لكن فشل الدفع: ' + (pj.error || ''), 'error'); }
+            } catch (e) { toast('خطأ في الاتصال', 'error'); console.error(e); }
+            btn.disabled = false; btn.textContent = 'تأكيد الطلب والدفع';
+        }
+
+        async function lo() {
+            try {
+                const r = await fwa('/api/orders');
+                const j = await r.json();
+                const data = j.data || (Array.isArray(j) ? j : []);
+                const o = data.filter(x => x.buyer_id === RID);
+                document.getElementById('ot').innerHTML = o.length ? o.map(x => `<tr><td>#${x.id}</td><td>${x.seller?.name || '#' + x.seller_id}</td><td>${parseFloat(x.total_amount).toFixed(2)} ج.م</td><td><span class="bs ${sb(x.status)}">${sa(x.status)}</span></td><td>${ma(x.payment_method || '-')}</td><td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td><td>${x.status === 'pending' ? `<button class="btn btn-sm btn-outline-danger" onclick="doDelOrder(${x.id})"><i class="fas fa-trash"></i></button>` : ''}</td></tr>`).join('') : '<tr><td colspan="7" class="text-center" style="color:#64748b">لا توجد طلبات</td></tr>';
+            } catch (e) { console.error(e) }
+        }
+
+        async function lpm() {
+            try {
+                const br = await fwa(`/api/payments/balance/${RID}`);
+                const bj = await br.json();
+                document.getElementById('wb').textContent = parseFloat(bj.balance || 0).toFixed(2) + ' ج.م';
+                const r = await fwa('/api/payments');
+                const j = await r.json();
+                const p = j.data || (Array.isArray(j) ? j : []);
+                let done = 0, pend = 0;
+                if (Array.isArray(p)) {
+                    p.forEach(x => { if (x.status === 'completed') done++; else pend++; });
+                }
+                document.getElementById('pay-done').textContent = done;
+                document.getElementById('pay-pend').textContent = pend;
+                document.getElementById('pmt').innerHTML = (Array.isArray(p) && p.length) ? p.map(x => `<tr><td>#${x.order_id}</td><td>${ma(x.method)}</td><td>${parseFloat(x.amount).toFixed(2)} ج.م</td><td><span class="bs ${x.status === 'completed' ? 'bs-g' : 'bs-y'}">${x.status === 'completed' ? 'مكتمل' : 'معلق'}</span></td><td><code style="color:#fca5a5">${x.transaction_ref || '-'}</code></td><td>${x.created_at ? new Date(x.created_at).toLocaleDateString('ar-EG') : '-'}</td></tr>`).join('') : '<tr><td colspan="6" class="text-center" style="color:#64748b">لا توجد مدفوعات</td></tr>';
+            } catch (e) { console.error(e) }
+        }
+
+        async function ldep() {
+            try {
+                const br = await fwa(`/api/payments/balance/${RID}`);
+                const bj = await br.json();
+                document.getElementById('dep-bal').textContent = parseFloat(bj.balance || 0).toFixed(2) + ' ج.م';
+            } catch (e) { }
+        }
+
+        async function doDep() {
+            const amt = parseFloat(document.getElementById('dep-amt').value);
+            const fileInput = document.getElementById('dep-proof');
+            if (!amt || amt <= 0) { toast('يرجى إدخال مبلغ صحيح', 'error'); return; }
+            if (!fileInput.files[0]) { toast('يرجى رفع صورة الإيصال أو السكرين شوت أولاً', 'error'); return; }
+
+            const fd = new FormData();
+            fd.append('user_id', RID);
+            fd.append('amount', amt);
+            fd.append('method', selDepMethod);
+            fd.append('proof', fileInput.files[0]);
+
+            try {
+                const r = await fwa('/api/payments/deposit', {
+                    method: 'POST',
+                    body: fd
+                });
+                const j = await r.json();
+                if (j.success) {
+                    toast('تم إرسال طلب الإيداع بنجاح. سنقوم بمراجعته قريباً.');
+                    document.getElementById('dep-amt').value = '';
+                    fileInput.value = '';
+                    ld();
+                } else toast(j.error || 'فشل الإيداع', 'error');
+            } catch (e) { toast('خطأ في الاتصال', 'error'); }
+        }
+
+        function showDepConfirm() {
+            const amt = parseFloat(document.getElementById('dep-amt').value);
+            if (!amt || amt <= 1) { toast('يرجى إدخال مبلغ صحيح (أكبر من 1 ج.م)', 'error'); return; }
+            const gwNames = { bank_transfer: 'تحويل بنكي', instapay: 'انستاباي', vodafone_cash: 'فودافون كاش', orange_cash: 'أورنج كاش', etisalat_cash: 'اتصالات كاش', fawry: 'فوري', credit_card: 'بطاقة ائتمانية' };
+            document.getElementById('dc-gw').textContent = gwNames[selDepMethod] || selDepMethod;
+            document.getElementById('dc-amt').textContent = amt.toFixed(2) + ' ج.م';
+            new bootstrap.Modal(document.getElementById('depConfM')).show();
+        }
+
+        async function confirmDep() {
+            const m = bootstrap.Modal.getInstance(document.getElementById('depConfM'));
+            if (m) m.hide();
+            await doDep();
+        }
+
+        function filterOrders() {
+            const q = document.getElementById('ot-search')?.value.toLowerCase() || '';
+            const s = document.getElementById('ot-status')?.value || '';
+            document.querySelectorAll('#ot tr').forEach(tr => {
+                const text = tr.textContent.toLowerCase();
+                const statusText = tr.querySelector('.bs')?.textContent || '';
+                const matchQ = !q || text.includes(q);
+                const matchS = !s || statusText.includes(sa(s));
+                tr.style.display = (matchQ && matchS) ? '' : 'none';
+            });
+        }
+
+        async function lsh() {
+            try {
+                const r = await fwa('/api/shipments');
+                const j = await r.json();
+                const s = j.data || j;
+                document.getElementById('shpt').innerHTML = s.length ? s.map(x => `<tr><td>#${x.id}</td><td>#${x.order_id}</td><td>${x.carrier || '-'}</td><td><code style="color:#fca5a5">${x.tracking_number || '-'}</code></td><td><span class="bs ${x.status === 'delivered' ? 'bs-g' : 'bs-b'}">${x.status}</span></td><td>${x.estimated_delivery ? new Date(x.estimated_delivery).toLocaleDateString('ar-EG') : '-'}</td></tr>`).join('') : '<tr><td colspan="6" class="text-center" style="color:#64748b">لا توجد شحنات</td></tr>';
+            } catch (e) { console.error(e) }
+        }
+
+        async function lbk() {
+            try {
+                const r = await fwa(`/api/users/${RID}`);
+                const j = await r.json();
+                if (j.success) {
+                    const u = j.data;
+                    document.getElementById('b-name').value = u.bank_name || '';
+                    document.getElementById('b-holder').value = u.account_holder_name || '';
+                    document.getElementById('b-number').value = u.account_number || '';
+                    document.getElementById('b-iban').value = u.iban || '';
+                    document.getElementById('b-swift').value = u.swift_code || '';
+                    document.getElementById('b-instapay').value = u.instapay_address || '';
+                    document.getElementById('b-vodafone').value = u.vodafone_cash_number || '';
+                }
+            } catch (e) { }
+        }
+
+        document.getElementById('bank-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const d = Object.fromEntries(fd);
+            try {
+                const r = await fwa(`/api/users/${RID}/bank`, {
+                    method: 'PUT',
+                    body: JSON.stringify(d)
+                });
+                const j = await r.json();
+                if (j.success) toast('تم حفظ بيانات البنك بنجاح');
+                else toast(j.error || 'خطأ', 'error');
+            } catch (err) { toast('خطأ في الاتصال', 'error'); }
+        });
+
+        async function doDelOrder(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
+            try {
+                const r = await fwa(`/api/orders/${id}`, { method: 'DELETE' });
+                const j = await r.json();
+                if (j.success) { toast('تم حذف الطلب بنجاح'); lo(); loadCart(); }
+                else toast(j.error || 'فشل الحذف', 'error');
+            } catch (e) { toast('خطأ في الاتصال', 'error'); }
+        }
+
+        // ── Shopping Cart Logic ──────────────────────────────────
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('active');
+            if (document.getElementById('cart-sidebar').classList.contains('active')) loadCart();
+        }
+
+        async function loadCart() {
+            try {
+                const r = await fwa(`/api/cart/${RID}`);
+                const j = await r.json();
+                const cart = j.data;
+                const itemsList = document.getElementById('cart-items-list');
+                const cartCount = document.getElementById('cart-count');
+                const cartTotal = document.getElementById('cart-total');
+
+                if (!cart.items || cart.items.length === 0) {
+                    itemsList.innerHTML = '<div class="text-center py-5 text-muted">السلة فارغة حالياً</div>';
+                    cartCount.textContent = '0';
+                    cartTotal.textContent = '0.00 ج.م';
+                    return;
+                }
+
+                cartCount.textContent = cart.items.length;
+
+                const groups = {};
+                cart.items.forEach(it => {
+                    const s = it.product?.supplier?.company_name || 'تاجر جملة';
+                    if (!groups[s]) groups[s] = [];
+                    groups[s].push(it);
+                });
+
+                let html = '';
+                let total = 0;
+                for (const sName in groups) {
+                    html += `
+                        <div class="supplier-group">
+                            <div class="supplier-header"><i class="fas fa-store"></i> ${sName}</div>
+                            ${groups[sName].map(it => {
+                        const p = it.product;
+                        total += it.quantity * p.price;
+                        return `
+                                    <div class="cart-item">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="fw-bold" style="font-size:0.85rem">${p.name}</div>
+                                            <button class="btn btn-sm text-danger p-0" onclick="removeFromCartSync(${it.id})"><i class="fas fa-times"></i></button>
+                                        </div>
+                                        <div class="text-muted small">${parseFloat(p.price).toFixed(2)} ج.م</div>
+                                        <div class="qty-controls">
+                                            <button class="qty-btn" onclick="updateCartQty(${it.id}, ${it.quantity - 1})">-</button>
+                                            <span style="font-size:0.85rem">${it.quantity}</span>
+                                            <button class="qty-btn" onclick="updateCartQty(${it.id}, ${it.quantity + 1})">+</button>
+                                        </div>
+                                    </div>
+                                `;
+                    }).join('')}
+                        </div>
+                    `;
+                }
+                itemsList.innerHTML = html;
+                cartTotal.textContent = total.toFixed(2) + ' ج.م';
+            } catch (e) { console.error(e); }
+        }
+
+        async function addToCartSync(product_id, name, price, supplier_id) {
+            try {
+                const r = await fwa('/api/cart/add', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: RID, product_id, quantity: 1 })
+                });
+                const j = await r.json();
+                if (j.success) {
+                    toast(`تم إضافة ${name} إلى السلة`);
+                    loadCart();
+                } else {
+                    toast(j.error || 'فشل الإضافة للسلة', 'error');
+                }
+            } catch (e) { toast('خطأ في الاتصال بالسلة', 'error'); }
+        }
+
+        async function updateCartQty(id, qty) {
+            try {
+                const r = await fwa(`/api/cart/update/${id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ quantity: qty })
+                });
+                const j = await r.json();
+                if (j.success) loadCart();
+            } catch (e) { }
+        }
+
+        async function removeFromCartSync(id) {
+            try {
+                const r = await fwa(`/api/cart/remove/${id}`, { method: 'DELETE' });
+                const j = await r.json();
+                if (j.success) {
+                    toast('تم الحذف من السلة');
+                    loadCart();
+                }
+            } catch (e) { }
+        }
+
+        async function cartCheckout() {
+            if (!confirm('هل تريد إتمام الطلب لجميع المنتجات في السلة؟')) return;
+            try {
+                const r = await fwa('/api/cart/checkout', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: RID })
+                });
+                const j = await r.json();
+                if (j.success) {
+                    toast('تم إتمام الطلبات بنجاح! تم تقسيم الطلبات حسب الموردين.');
+                    toggleCart();
+                    ld();
+                } else {
+                    toast(j.error || 'فشل إتمام الشراء', 'error');
+                }
+            } catch (e) { toast('خطأ فيCheckout', 'error'); }
+        }
+
+        // ── AI Recommendations Logic ─────────────────────────────
+        async function loadRecs() {
+            try {
+                const r = await fwa(`/api/recommendations?user_id=${RID}`);
+                const j = await r.json();
+                const recs = j.data;
+                const grid = document.getElementById('ai-recs-grid');
+                if (!grid) return;
+
+                if (!recs || recs.length === 0) {
+                    grid.innerHTML = '<div class="col-12 text-center text-muted">لا توجد ترشيحات حالياً</div>';
+                    return;
+                }
+
+                grid.innerHTML = recs.map(p => `
+                    <div class="col-md-3 mb-3">
+                        <div class="prod-card" style="padding:15px; border-radius:12px; border: 1px solid rgba(168, 85, 247, 0.2); background: rgba(168, 85, 247, 0.05);">
+                            <div style="font-size:0.65rem; color:#c084fc; margin-bottom:5px;"><i class="fas fa-magic me-1"></i>مرشح لك</div>
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=200&q=80" style="height:100px; width:100%; object-fit:cover; border-radius:8px">
+                            <h6 style="font-size:0.85rem; margin-top:10px; margin-bottom:5px; height:34px; overflow:hidden">${p.name}</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span style="font-size:0.85rem; font-weight:700; color:#4ade80">${parseFloat(p.price).toFixed(2)} ج.م</span>
+                                <button class="btn btn-sm btn-purple p-1 px-2" style="font-size:0.7rem; background:#a855f7; color:white; border-radius:6px" onclick="addToCartSync(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, ${p.supplier_id})">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        loadSubscription().then(() => { ld(); loadCart(); loadRecs(); });
+    </script>
+</body>
+
+</html>

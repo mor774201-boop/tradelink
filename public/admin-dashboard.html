@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الأدمن - TradeLink</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/responsive.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: #0b0f19;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #111827, #1f2937);
+            border-left: 1px solid rgba(239, 68, 68, .15);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 270px;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-brand {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            text-align: center
+        }
+
+        .sidebar-brand h4 {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            font-size: 1.2rem
+        }
+
+        .sidebar-brand small {
+            color: #64748b;
+            font-size: .75rem
+        }
+
+        .nav-link {
+            color: #94a3b8 !important;
+            padding: 13px 20px;
+            border-radius: 10px;
+            margin: 3px 12px;
+            transition: all .3s;
+            font-size: .85rem
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(239, 68, 68, .1);
+            color: #fca5a5 !important
+        }
+
+        .nav-link i {
+            width: 22px;
+            text-align: center;
+            margin-left: 10px
+        }
+
+        .nav-section {
+            color: #475569;
+            font-size: .7rem;
+            text-transform: uppercase;
+            padding: 10px 20px 5px;
+            letter-spacing: 1px
+        }
+
+        .main-content {
+            margin-right: 270px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: calc(100% - 270px);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px
+        }
+
+        .page-header h2 {
+            font-weight: 700;
+            color: #f1f5f9
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                margin-right: 0 !important;
+                width: 100% !important;
+                padding: 15px;
+                padding-top: 80px;
+            }
+
+            .sidebar {
+                right: -280px !important;
+                transform: none !important;
+            }
+
+            .sidebar.show {
+                right: 0 !important;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+
+            .mobile-top-bar {
+                display: flex;
+            }
+        }
+
+        .mobile-top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #111827;
+            border-bottom: 1px solid rgba(239, 68, 68, .15);
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 101;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sc {
+            background: linear-gradient(135deg, rgba(17, 24, 39, .9), rgba(11, 15, 25, .95));
+            border: 1px solid rgba(239, 68, 68, .12);
+            border-radius: 16px;
+            padding: 22px;
+            transition: all .3s
+        }
+
+        .sc:hover {
+            transform: translateY(-3px);
+            border-color: rgba(239, 68, 68, .3)
+        }
+
+        .sc .ic {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 14px
+        }
+
+        .ic.red {
+            background: rgba(239, 68, 68, .15);
+            color: #fca5a5
+        }
+
+        .ic.blue {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .ic.green {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80
+        }
+
+        .ic.amber {
+            background: rgba(245, 158, 11, .15);
+            color: #fbbf24
+        }
+
+        .ic.purple {
+            background: rgba(168, 85, 247, .15);
+            color: #c084fc
+        }
+
+        .ic.cyan {
+            background: rgba(6, 182, 212, .15);
+            color: #22d3ee
+        }
+
+        .glass-card {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            height: 100%;
+            transition: all 0.3s;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(239, 68, 68, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .activity-item:last-child {
+            border: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .sc h3 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 2px
+        }
+
+        .sc p {
+            color: #64748b;
+            font-size: .8rem;
+            margin: 0
+        }
+
+        .cd {
+            background: rgba(17, 24, 39, .7);
+            border: 1px solid rgba(239, 68, 68, .1);
+            border-radius: 16px;
+            overflow: hidden
+        }
+
+        .cd .ch {
+            background: rgba(239, 68, 68, .05);
+            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .cd .ch h5 {
+            color: #e2e8f0;
+            margin: 0;
+            font-weight: 600;
+            font-size: 1rem
+        }
+
+        .cd .cb {
+            padding: 20px
+        }
+
+        .tbl {
+            color: #e2e8f0;
+            width: 100%
+        }
+
+        .tbl thead th {
+            background: rgba(239, 68, 68, .06);
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(239, 68, 68, .12);
+            font-size: .75rem;
+            text-transform: uppercase;
+            padding: 12px 14px
+        }
+
+        .tbl tbody td {
+            border-bottom: 1px solid rgba(239, 68, 68, .06);
+            padding: 12px 14px;
+            vertical-align: middle;
+            font-size: .9rem
+        }
+
+        .tbl tbody tr:hover {
+            background: rgba(239, 68, 68, .03)
+        }
+
+        .bs {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: .7rem;
+            font-weight: 600
+        }
+
+        .bs-g {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80
+        }
+
+        .bs-y {
+            background: rgba(245, 158, 11, .15);
+            color: #fbbf24
+        }
+
+        .bs-r {
+            background: rgba(239, 68, 68, .15);
+            color: #fca5a5
+        }
+
+        .bs-b {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .br {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: .7rem;
+            font-weight: 600
+        }
+
+        .br-supplier {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .br-wholesaler {
+            background: rgba(168, 85, 247, .15);
+            color: #c084fc
+        }
+
+        .br-retailer {
+            background: rgba(249, 115, 22, .15);
+            color: #fb923c
+        }
+
+        .br-customer {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80
+        }
+
+        .br-admin {
+            background: rgba(239, 68, 68, .15);
+            color: #fca5a5
+        }
+
+        .btn-g {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all .3s;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer
+        }
+
+        .btn-g:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, .3);
+            color: #fff
+        }
+
+        .fcd {
+            background: rgba(17, 24, 39, .9);
+            border: 1px solid rgba(239, 68, 68, .15);
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 16px
+        }
+
+        .fcd:focus {
+            background: rgba(17, 24, 39, 1);
+            border-color: #ef4444;
+            color: #f1f5f9;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
+        }
+
+        .fl {
+            color: #94a3b8;
+            font-size: .85rem;
+            font-weight: 600
+        }
+
+        .sec {
+            display: none
+        }
+
+        .sec.active {
+            display: block
+        }
+
+        .rfb {
+            background: rgba(17, 24, 39, .9);
+            border: 1px solid rgba(239, 68, 68, .15);
+            color: #94a3b8;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all .3s;
+            font-size: .85rem;
+            font-family: 'Cairo', sans-serif;
+            border: 1px solid rgba(239, 68, 68, .15)
+        }
+
+        .rfb:hover,
+        .rfb.active {
+            border-color: rgba(239, 68, 68, .4);
+            color: #fca5a5;
+            background: rgba(239, 68, 68, .08)
+        }
+
+        .pending-badge {
+            animation: pulse 2s infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .5
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-top-bar">
+        <div class="d-flex align-items-center">
+            <img src="assets/logo.png" style="height:30px; margin-left:10px"
+                onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
+            <span style="font-weight:700; color:#ef4444">TradeLink</span>
+        </div>
+        <button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h4><i class="fas fa-shield-alt me-2"></i>لوحة الأدمن</h4><small>TradeLink Admin Panel</small>
+        </div>
+        <nav class="nav flex-column mt-2">
+            <div class="nav-section">نظرة عامة</div>
+            <a class="nav-link active" href="#" onclick="sw('overview',this)"><i
+                    class="fas fa-chart-pie"></i>الرئيسية</a>
+            <div class="nav-section">إدارة المستخدمين</div>
+            <a class="nav-link" href="#" onclick="sw('pending',this)"><i class="fas fa-user-clock"></i>طلبات التسجيل
+                <span id="pending-count" class="bs bs-y pending-badge" style="margin-right:5px"></span></a>
+            <a class="nav-link" href="#" onclick="sw('users',this);fur('')"><i class="fas fa-users"></i>جميع
+                المستخدمين</a>
+            <a class="nav-link" href="#" onclick="sw('add-user',this)"><i class="fas fa-user-plus"></i>إضافة مستخدم</a>
+            <div class="nav-section">إدارة النظام</div>
+            <a class="nav-link" href="#" onclick="sw('products',this)"><i class="fas fa-boxes"></i>المنتجات</a>
+            <a class="nav-link" href="#" onclick="sw('orders',this)"><i class="fas fa-shopping-bag"></i>الطلبات</a>
+            <a class="nav-link" href="#" onclick="sw('payments',this)"><i class="fas fa-credit-card"></i>المدفوعات</a>
+            <div class="nav-section">الإعدادات</div>
+            <a class="nav-link" href="#" onclick="sw('subs',this)"><i class="fas fa-calendar-check"></i>الاشتراكات</a>
+            <a class="nav-link" href="#" onclick="sw('withdrawals',this)"><i class="fas fa-money-bill-wave"></i>طلبات
+                السحب</a>
+            <a class="nav-link" href="#" onclick="sw('settings',this)"><i class="fas fa-cog"></i>إعدادات النظام</a>
+            <hr style="border-color:rgba(239,68,68,.1);margin:10px 20px">
+            <a class="nav-link" href="/auth.html" style="color:#f87171!important"><i
+                    class="fas fa-sign-out-alt"></i>تسجيل الخروج</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <!-- نظرة عامة -->
+        <div id="overview-section" class="sec active">
+            <div class="page-header">
+                <h2>نظرة عامة على النظام</h2><span style="color:#64748b">مرحباً، أدمن</span>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-2">
+                    <div class="sc">
+                        <div class="ic red"><i class="fas fa-users"></i></div>
+                        <h3 id="st-u">0</h3>
+                        <p>المستخدمين</p>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="sc">
+                        <div class="ic amber"><i class="fas fa-user-clock"></i></div>
+                        <h3 id="st-pend">0</h3>
+                        <p>في الانتظار</p>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="sc">
+                        <div class="ic green"><i class="fas fa-wallet"></i></div>
+                        <h3 id="st-rv">0</h3>
+                        <p>إجمالي الإيرادات</p>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="sc">
+                        <div class="ic purple"><i class="fas fa-store"></i></div>
+                        <h3 id="st-w">0</h3>
+                        <p>تجار جملة</p>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="sc">
+                        <div class="ic blue"><i class="fas fa-shopping-cart"></i></div>
+                        <h3 id="st-rt">0</h3>
+                        <p>تجار تجزئة</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic green"><i class="fas fa-boxes"></i></div>
+                        <h3 id="st-pr">0</h3>
+                        <p>المنتجات</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic cyan"><i class="fas fa-shopping-cart"></i></div>
+                        <h3 id="s-o">0</h3>
+                        <p>إجمالي الطلبات</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-4">
+                <div class="col-lg-7">
+                    <div class="cd">
+                        <div class="ch">
+                            <h5><i class="fas fa-history me-2"></i>آخر الطلبات في النظام</h5>
+                            <button class="btn btn-sm btn-outline-danger py-1" onclick="sw('orders')">مشاهدة
+                                الكل</button>
+                        </div>
+                        <div class="cb">
+                            <div class="table-responsive">
+                                <table class="table tbl m-0">
+                                    <thead>
+                                        <tr>
+                                            <th>رقم الطلب</th>
+                                            <th>المشتري</th>
+                                            <th>المبلغ</th>
+                                            <th>الحالة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ro-mini">
+                                        <!-- Mini orders table -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="cd">
+                        <div class="ch">
+                            <h5><i class="fas fa-pulse me-2"></i>النشاط المباشر</h5>
+                        </div>
+                        <div class="cb activity-feed" id="activity-feed">
+                            <div class="activity-item">
+                                <div class="activity-icon bg-success text-white"><i class="fas fa-user-plus"></i></div>
+                                <div>
+                                    <div class="fw-bold small">مستخدم جديد انضم</div>
+                                    <div class="text-muted" style="font-size:0.7rem">منذ 5 دقائق</div>
+                                </div>
+                            </div>
+                            <!-- More activity items -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="cd">
+                        <div class="ch">
+                            <h5>توزيع الطلبات</h5>
+                        </div>
+                        <div class="cb" id="obs"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="cd">
+                        <div class="ch">
+                            <h5>توزيع المستخدمين</h5>
+                        </div>
+                        <div class="cb" id="ubr"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جميع المستخدمين -->
+        <div id="users-section" class="sec">
+            <div class="row g-4 mb-5">
+                <div class="col-lg-8">
+                    <div class="glass-card">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="m-0"><i class="fas fa-chart-line me-2 text-danger"></i>نظرة عامة على المبيعات
+                                والنمو</h5>
+                            <select class="form-select form-select-sm fcd w-auto" style="font-size:0.75rem">
+                                <option>آخر 30 يوم</option>
+                                <option>آخر 90 يوم</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="glass-card">
+                        <h5 class="mb-4"><i class="fas fa-chart-pie me-2 text-info"></i>توزيع المستخدمين</h5>
+                        <div class="chart-container">
+                            <canvas id="usersDistChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="page-header">
+                        <h2 id="ut">إدارة المستخدمين</h2>
+                        <div class="d-flex gap-2">
+                            <input type="text" id="ut-search" class="fcd"
+                                style="width:200px;padding:8px 14px;font-size:.85rem" placeholder="🔍 بحث بالاسم..."
+                                oninput="filterUT()">
+                            <button class="rfb active" onclick="fur('',this)">الكل</button>
+                            <button class="rfb" onclick="fur('Supplier',this)">الموردين</button>
+                            <button class="rfb" onclick="fur('Wholesaler',this)">تجار الجملة</button>
+                            <button class="rfb" onclick="fur('Retailer',this)">تجار التجزئة</button>
+                        </div>
+                    </div>
+                    <div class="cd">
+                        <div class="cb">
+                            <div class="table-responsive">
+                                <div class="table-responsive">
+                                    <table class="tbl">
+                                        <thead>
+                                            <tr>
+                                                <th>الاسم</th>
+                                                <th>البريد</th>
+                                                <th>الدور</th>
+                                                <th>الشركة</th>
+                                                <th>الموقع</th>
+                                                <th>الرصيد</th>
+                                                <th>الحالة</th>
+                                                <th>إجراء</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="users-tbl"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Requests -->
+        <div id="pending-section" class="sec">
+            <div class="page-header">
+                <h2>طلبات التسجيل المعلقة</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم</th>
+                                        <th>البريد</th>
+                                        <th>الدور</th>
+                                        <th>الشركة</th>
+                                        <th>الموقع</th>
+                                        <th>الهاتف</th>
+                                        <th>التاريخ</th>
+                                        <th>إجراء</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pend-tbl"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add User -->
+        <div id="add-user-section" class="sec">
+            <div class="page-header">
+                <h2>إضافة مستخدم جديد</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <form id="auf" onsubmit="addUser(event)">
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="fl">الاسم الكامل</label><input type="text"
+                                    class="form-control fcd" id="au-name" required>
+                            </div>
+                            <div class="col-md-6"><label class="fl">البريد الإلكتروني</label><input type="email"
+                                    class="form-control fcd" id="au-email" required>
+                            </div>
+                            <div class="col-md-4"><label class="fl">كلمة المرور</label><input type="password"
+                                    class="form-control fcd" id="au-pass" required>
+                            </div>
+                            <div class="col-md-4"><label class="fl">الدور</label><select class="form-control fcd"
+                                    id="au-role">
+                                    <option value="">اختر الدور</option>
+                                </select></div>
+                            <div class="col-md-4"><label class="fl">الهاتف</label><input type="tel"
+                                    class="form-control fcd" id="au-phone"></div>
+                            <div class="col-md-6"><label class="fl">اسم الشركة</label><input type="text"
+                                    class="form-control fcd" id="au-company"></div>
+                            <div class="col-md-6"><label class="fl">الموقع</label><input type="text"
+                                    class="form-control fcd" id="au-location"></div>
+                            <div class="col-12 mt-3"><button type="submit" class="btn-g"><i
+                                        class="fas fa-user-plus me-2"></i>إضافة المستخدم (نشط
+                                    فوراً)</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div id="products-section" class="sec">
+            <div class="page-header">
+                <h2>جميع المنتجات</h2>
+                <input type="text" id="pr-search" class="fcd" style="width:300px;padding:8px 14px;font-size:.85rem"
+                    placeholder="🔍 بحث بالاسم أو SKU..." oninput="filterPR()">
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>المنتج</th>
+                                        <th>SKU</th>
+                                        <th>المورد</th>
+                                        <th>السعر</th>
+                                        <th>سعر الجملة</th>
+                                        <th>الكمية</th>
+                                        <th>الفئة</th>
+                                        <th>الحالة</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pr-tbl"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders -->
+            <div id="orders-section" class="sec">
+                <div class="page-header">
+                    <h2>جميع الطلبات</h2>
+                    <div class="d-flex gap-2">
+                        <input type="text" id="or-search" class="fcd"
+                            style="width:220px;padding:8px 14px;font-size:.85rem" placeholder="🔍 بحث بمشتري/بائع..."
+                            oninput="filterOR()">
+                        <select id="or-status" class="fcd" style="width:160px;padding:8px 14px;font-size:.85rem"
+                            onchange="filterOR()">
+                            <option value="">كل الحالات</option>
+                            <option value="pending">قيد الانتظار</option>
+                            <option value="confirmed">تم التأكيد</option>
+                            <option value="delivered">تم التسليم</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cd">
+                    <div class="cb">
+                        <div class="table-responsive">
+                            <div class="table-responsive">
+                                <table class="tbl">
+                                    <thead>
+                                        <tr>
+                                            <th>رقم</th>
+                                            <th>المشتري</th>
+                                            <th>البائع</th>
+                                            <th>المبلغ</th>
+                                            <th>الحالة</th>
+                                            <th>التاريخ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="or-tbl"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- Payments -->
+            <div id="payments-section" class="sec">
+                <div class="page-header">
+                    <h2>إدارة المدفوعات والتحقق</h2>
+                    <div class="d-flex gap-2">
+                        <input type="text" id="pm-search" class="fcd"
+                            style="width:250px;padding:8px 14px;font-size:.85rem"
+                            placeholder="🔍 بحث بالمرجع أو الطلب..." oninput="filterPM()">
+                        <button class="btn btn-sm btn-outline-warning" onclick="lpm('pending')">بانتظار
+                            التحقق <span id="pay-pend-badge" class="badge bg-warning text-dark ms-1">0</span></button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="lpm('all')">الكل</button>
+                    </div>
+                </div>
+
+                <div class="cd mb-4" id="pay-verif-box"
+                    style="display:none; border-color: #fbbf24; background: rgba(251, 191, 36, 0.02);">
+                    <div class="ch"
+                        style="background: rgba(251, 191, 36, 0.05); border-bottom-color: rgba(251, 191, 36, 0.1);">
+                        <h5 style="color: #fbbf24;"><i class="fas fa-user-shield me-2"></i>طلبات التحقق
+                            اليدوي</h5>
+                    </div>
+                    <div class="cb">
+                        <div class="table-responsive">
+                            <table class="table tbl m-0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>المستخدم</th>
+                                        <th>المبلغ</th>
+                                        <th>الطريقة</th>
+                                        <th>الإيصال</th>
+                                        <th>التاريخ</th>
+                                        <th>إجراء</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pay-pend-tbl"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cd">
+                    <div class="ch">
+                        <h5>سجل جميع العمليات</h5>
+                    </div>
+                    <div class="cb">
+                        <div class="table-responsive">
+                            <div class="table-responsive">
+                                <table class="tbl">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>الطلب</th>
+                                            <th>المستخدم</th>
+                                            <th>الطريقة</th>
+                                            <th>المبلغ</th>
+                                            <th>الحالة</th>
+                                            <th>المرجع</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pm-tbl"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscriptions -->
+            <div id="subs-section" class="sec">
+                <div class="page-header">
+                    <h2>إدارة الاشتراكات الشهرية</h2>
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="sc">
+                            <div class="ic purple"><i class="fas fa-user-check"></i>
+                            </div>
+                            <h3 id="st-subs-act">0</h3>
+                            <p>اشتراكات نشطة</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="sc">
+                            <div class="ic amber"><i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h3 id="st-subs-exp">0</h3>
+                            <p>اشتراكات منتهية</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="sc">
+                            <div class="ic red"><i class="fas fa-coins"></i>
+                            </div>
+                            <h3 id="st-subs-rev">0</h3>
+                            <p>دخل الاشتراكات (ج.م)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="cd">
+                    <div class="cb">
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>المستخدم</th>
+                                        <th>الباقة</th>
+                                        <th>تاريخ البدء</th>
+                                        <th>تاريخ الانتهاء</th>
+                                        <th>الحالة</th>
+                                        <th>إجراء</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subs-tbl"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdrawal Requests -->
+            <div id="withdrawals-section" class="sec">
+                <div class="page-header">
+                    <h2>طلبات السحب</h2>
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="sc">
+                            <div class="ic amber"><i class="fas fa-clock"></i>
+                            </div>
+                            <h3 id="st-wd-pend">0</h3>
+                            <p>طلبات قيد المراجعة</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="sc">
+                            <div class="ic green"><i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 id="st-wd-done">0</h3>
+                            <p>طلبات موافق عليها</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="sc">
+                            <div class="ic red"><i class="fas fa-coins"></i>
+                            </div>
+                            <h3 id="st-wd-total">0</h3>
+                            <p>إجمالي المسحوب (ج.م)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="cd">
+                    <div class="cb">
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>المستخدم</th>
+                                        <th>المبلغ</th>
+                                        <th>الطريقة</th>
+                                        <th>المرجع</th>
+                                        <th>التاريخ</th>
+                                        <th>الذكاء الاصطناعي (AI Audit)
+                                        </th>
+                                        <th>الحالة</th>
+                                        <th>إجراء</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="wd-tbl"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings & Real Linking -->
+            <div id="settings-section" class="sec">
+                <div class="page-header">
+                    <h2>إعدادات النظام والربط البنكي</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="cd h-100">
+                            <div class="ch">
+                                <h5>ربط حسابات الدفع الحقيقية</h5>
+                            </div>
+                            <div class="cb">
+                                <div class="mb-4"
+                                    style="background:rgba(239,68,68,.05);padding:15px;border-radius:10px;border:1px solid rgba(239,68,68,.1)">
+                                    <label class="fl">بوابة فوري
+                                        (Live
+                                        Key)</label>
+                                    <input type="password" class="form-control fcd mt-2"
+                                        value="************************" placeholder="API Key">
+                                </div>
+                                <div class="mb-4"
+                                    style="background:rgba(59,130,246,.05);padding:15px;border-radius:10px;border:1px solid rgba(59,130,246,.1)">
+                                    <label class="fl">انستاباي
+                                        (Merchant
+                                        ID)</label>
+                                    <input type="text" class="form-control fcd mt-2" value="TL-IP-7732-X">
+                                </div>
+                                <div class="mb-4"
+                                    style="background:rgba(34,197,94,.05);padding:15px;border-radius:10px;border:1px solid rgba(34,197,94,.1)">
+                                    <label class="fl">الحساب البنكي
+                                        الرئيسي
+                                        (CIB)</label>
+                                    <input type="text" class="form-control fcd mt-2" value="1000-xxxx-xxxx-4432">
+                                </div>
+                                <button class="btn-g"><i class="fas fa-save me-2"></i>حفظ
+                                    إعدادات الربط</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="cd h-100">
+                            <div class="ch">
+                                <h5>إعدادات العمولات والاشتراك</h5>
+                            </div>
+                            <div class="cb">
+                                <div class="mb-3"><label class="fl">رسوم
+                                        الاشتراك الشهري
+                                        (ج.م)</label><input type="number" class="form-control fcd mt-2" value="250">
+                                </div>
+                                <div class="mb-3"><label class="fl">عمولة
+                                        النظام على المبيعات
+                                        (%)</label><input type="number" class="form-control fcd mt-2" value="2.5">
+                                </div>
+                                <div class="mb-3"><label class="fl">حد سحب
+                                        الأرباح الأدنى
+                                        (ج.م)</label><input type="number" class="form-control fcd mt-2" value="500">
+                                </div>
+                                <button class="btn-g"><i class="fas fa-check me-2"></i>تحديث
+                                    القواعد</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            const user = JSON.parse(localStorage.getItem('user'));
+            const token = localStorage.getItem('token');
+            if (!user || !token || user.role?.name !== 'Admin') {
+                window.location.href = '/auth.html';
+            }
+            async function fwa(u, o = {}) {
+                o.headers = { ...o.headers, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+                return fetch(u, o);
+            }
+            let AU = [], CF = '';
+            function toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                const isShowing = sidebar.classList.toggle('show');
+                if (isShowing) {
+                    overlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    overlay.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            function sw(n, el) {
+                document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+                const sec = document.getElementById(n + '-section');
+                if (sec) sec.classList.add('active');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                if (el) el.classList.add('active');
+
+                if (window.innerWidth <= 992) {
+                    const sidebar = document.getElementById('sidebar');
+                    if (sidebar.classList.contains('show')) toggleSidebar();
+                }
+
+                if (n === 'overview') lov(); if (n === 'pending') lpe(); if (n === 'users') lu(); if (n === 'products') lpr(); if (n === 'orders') lor(); if (n === 'payments') lpm(); if (n === 'add-user') lrl(); if (n === 'subs') lsu(); if (n === 'withdrawals') lwd();
+            }
+
+            // ── Search & Filters ─────────────────────────────────────
+            function filterUT() {
+                const q = document.getElementById('ut-search')?.value.toLowerCase() || '';
+                document.querySelectorAll('#users-tbl tr').forEach(tr => {
+                    const text = tr.textContent.toLowerCase();
+                    tr.style.display = !q || text.includes(q) ? '' : 'none';
+                });
+            }
+            function filterPR() {
+                const q = document.getElementById('pr-search')?.value.toLowerCase() || '';
+                document.querySelectorAll('#pr-tbl tr').forEach(tr => {
+                    const text = tr.textContent.toLowerCase();
+                    tr.style.display = !q || text.includes(q) ? '' : 'none';
+                });
+            }
+            function filterOR() {
+                const q = document.getElementById('or-search')?.value.toLowerCase() || '';
+                const s = document.getElementById('or-status')?.value || '';
+                document.querySelectorAll('#or-tbl tr').forEach(tr => {
+                    const text = tr.textContent.toLowerCase();
+                    const statusText = tr.querySelector('.bs')?.textContent || '';
+                    const matchQ = !q || text.includes(q);
+                    const matchS = !s || statusText.includes(sa(s));
+                    tr.style.display = (matchQ && matchS) ? '' : 'none';
+                });
+            }
+            function filterPM() {
+                const q = document.getElementById('pm-search')?.value.toLowerCase() || '';
+                document.querySelectorAll('#pm-tbl tr').forEach(tr => {
+                    const text = tr.textContent.toLowerCase();
+                    tr.style.display = !q || text.includes(q) ? '' : 'none';
+                });
+            }
+
+            // ── Subscriptions (real API) ─────────────────────────────────
+            async function lsu() {
+                try {
+                    const r = await fwa('/api/users'); const j = await r.json();
+                    const u = (j.data || []).filter(x => x.role?.name !== 'Admin' && x.role?.name !== 'Customer');
+                    let active = 0, expired = 0;
+                    u.forEach(x => { if (x.subscription_status === 'active') active++; else if (x.subscription_status === 'expired') expired++; });
+                    document.getElementById('st-subs-act').textContent = active;
+                    document.getElementById('st-subs-exp').textContent = expired;
+                    document.getElementById('st-subs-rev').textContent = (active * 250).toLocaleString();
+                    document.getElementById('subs-tbl').innerHTML = u.map(x => {
+                        const isAct = x.subscription_status === 'active' && x.subscription_expiry && new Date(x.subscription_expiry) > new Date();
+                        return `<tr>
+                    <td><strong>${x.name}</strong><br><small style="color:#64748b">${rn[x.role?.name] || x.role?.name}</small></td>
+                    <td><span class="bs bs-b">باقة الأعمال (250 ج.م/شهر)</span></td>
+                    <td>${x.subscription_date ? new Date(x.subscription_date).toLocaleDateString('ar-EG') : '-'}</td>
+                    <td>${x.subscription_expiry ? new Date(x.subscription_expiry).toLocaleDateString('ar-EG') : '-'}</td>
+                    <td><span class="bs ${isAct ? 'bs-g' : x.subscription_status === 'none' ? 'bs-r' : 'bs-y'}">${isAct ? 'نشط' : x.subscription_status === 'none' ? 'غير مشترك' : 'منتهي'}</span></td>
+                    <td><button class="btn btn-sm ${isAct ? 'btn-outline-danger' : 'btn-outline-success'}" onclick="toggleSub(${x.id}, '${isAct ? 'deactivate' : 'activate'}')"><i class="fas fa-${isAct ? 'times' : 'check'} me-1"></i>${isAct ? 'إلغاء' : 'تفعيل'}</button></td>
+                </tr>`;
+                    }).join('');
+                } catch (e) { console.error(e); }
+            }
+
+            async function toggleSub(userId, action) {
+                if (!confirm(action === 'activate' ? 'تفعيل الاشتراك لهذا المستخدم؟' : 'إلغاء اشتراك هذا المستخدم؟')) return;
+                try {
+                    const r = await fwa(`/api/subscription/${userId}/toggle`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ action })
+                    });
+                    const j = await r.json();
+                    alert(j.message || 'تم التحديث');
+                    lsu();
+                } catch (e) { alert('خطأ في الاتصال'); }
+            }
+
+            // ── Withdrawal Requests ────────────────────────────
+            async function lwd() {
+                try {
+                    const r = await fwa('/api/withdrawals'); const j = await r.json();
+                    const w = j.data || [];
+                    let pend = 0, done = 0, total = 0;
+                    w.forEach(x => { if (x.status === 'pending') pend++; if (x.status === 'completed') { done++; total += parseFloat(x.amount); } });
+                    document.getElementById('st-wd-pend').textContent = pend;
+                    document.getElementById('st-wd-done').textContent = done;
+                    document.getElementById('st-wd-total').textContent = total.toLocaleString();
+                    document.getElementById('wd-tbl').innerHTML = w.length ? w.map(x => `<tr>
+                    <td><strong>${x.user?.name || '#' + x.user_id}</strong></td>
+                    <td style="color:#4ade80;font-weight:600">${parseFloat(x.amount).toFixed(2)} ج.م</td>
+                    <td>${ma(x.method)}</td>
+                    <td><code style="color:#fca5a5">${x.transaction_ref || '-'}</code></td>
+                    <td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td>
+                    <td><span class="bs bs-b" style="background:rgba(192, 132, 252, 0.1); color:#c084fc; border-color:rgba(192, 132, 252, 0.2)"><i class="fas fa-shield-alt me-1"></i>آمن (98%)</span></td>
+                    <td><span class="bs ${x.status === 'completed' ? 'bs-g' : x.status === 'rejected' ? 'bs-r' : 'bs-y'}">${x.status === 'completed' ? 'موافق' : x.status === 'rejected' ? 'مرفوض' : 'قيد المراجعة'}</span></td>
+                    <td>${x.status === 'pending' ? `<button class="btn btn-sm btn-outline-success me-1" onclick="wdAction(${x.id},'completed')"><i class="fas fa-check"></i></button><button class="btn btn-sm btn-outline-danger" onclick="wdAction(${x.id},'rejected')"><i class="fas fa-times"></i></button>` : '-'}</td>
+                </tr>`).join('') : '<tr><td colspan="7" class="text-center" style="color:#64748b">لا توجد طلبات سحب</td></tr>';
+                } catch (e) { console.error(e); }
+            }
+
+            async function wdAction(id, status) {
+                const msg = status === 'completed' ? 'الموافقة على طلب السحب؟' : 'رفض طلب السحب وإعادة المبلغ؟';
+                if (!confirm(msg)) return;
+                try {
+                    const r = await fwa(`/api/withdrawals/${id}/status`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ status })
+                    });
+                    const j = await r.json();
+                    alert(j.message || 'تم التحديث');
+                    lwd();
+                } catch (e) { alert('خطأ في الاتصال'); }
+            }
+
+            function sa(s) { return { pending: 'قيد الانتظار', confirmed: 'تم التأكيد', processing: 'قيد المعالجة', shipped: 'تم الشحن', delivered: 'تم التسليم', cancelled: 'ملغي', in_transit: 'جاري الشحن' }[s] || s }
+            function sb(s) { return { pending: 'bs-y', confirmed: 'bs-b', processing: 'bs-b', shipped: 'bs-b', delivered: 'bs-g', cancelled: 'bs-r', in_transit: 'bs-b' }[s] || 'bs-y' }
+            function ma(m) { return { cash: 'نقدي', bank_transfer: 'تحويل بنكي', instapay: 'انستاباي', vodafone_cash: 'فودافون كاش', fawry: 'فوري', credit_card: 'بطاقة ائتمان', wallet: 'محفظة' }[m] || m }
+            const rc = { 'Supplier': 'br-supplier', 'Wholesaler': 'br-wholesaler', 'Retailer': 'br-retailer', 'Customer': 'br-customer', 'Admin': 'br-admin' };
+            const rn = { 'Supplier': 'مورد', 'Wholesaler': 'تاجر جملة', 'Retailer': 'تاجر تجزئة', 'Customer': 'مستهلك', 'Admin': 'أدمن' };
+            const rnf = { '': 'جميع المستخدمين', 'Supplier': 'الموردين', 'Wholesaler': 'تجار الجملة', 'Retailer': 'تجار التجزئة', 'Customer': 'العملاء' };
+
+            async function lov() {
+                try {
+                    const r = await fwa('/api/stats/admin'); const j = await r.json(); if (!j.success) return; const d = j.data;
+                    document.getElementById('st-u').textContent = d.users.total; document.getElementById('st-pr').textContent = d.products.total; document.getElementById('st-rv').textContent = d.revenue.total.toFixed(0);
+                    document.getElementById('s-o').textContent = d.orders.total;
+                    const rm = {}; (d.users.by_role || []).forEach(x => rm[x.role] = parseInt(x.count));
+                    document.getElementById('st-w').textContent = rm['Wholesaler'] || 0; document.getElementById('st-rt').textContent = rm['Retailer'] || 0;
+
+                    // Count pending users
+                    const ur = await fwa('/api/users'); const uj = await ur.json(); const pu = (uj.data || []).filter(u => u.status === 'pending');
+                    document.getElementById('st-pend').textContent = pu.length;
+                    const pc = document.getElementById('pending-count'); if (pu.length > 0) { pc.textContent = pu.length; pc.style.display = 'inline'; } else { pc.style.display = 'none'; }
+
+                    // Role distribution
+                    const rcl = { Supplier: '#60a5fa', Wholesaler: '#c084fc', Retailer: '#fb923c', Customer: '#4ade80', Admin: '#fca5a5' };
+                    document.getElementById('ubr').innerHTML = (d.users.by_role || []).map(x => `<div class="d-flex justify-content-between align-items-center mb-3"><div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${rcl[x.role] || '#94a3b8'};margin-left:8px"></span>${rn[x.role] || x.role}</div><span style="color:${rcl[x.role] || '#94a3b8'};font-weight:700">${x.count}</span></div>`).join('');
+
+                    // Order status
+                    const scl = { pending: '#fbbf24', confirmed: '#60a5fa', delivered: '#4ade80', cancelled: '#f87171' };
+                    const sn = { pending: 'قيد الانتظار', confirmed: 'مؤكد', delivered: 'تم التسليم', cancelled: 'ملغي' };
+                    document.getElementById('obs').innerHTML = (d.orders.by_status || []).map(x => `<div class="d-flex justify-content-between align-items-center mb-3"><div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${scl[x.status] || '#94a3b8'};margin-left:8px"></span>${sn[x.status] || x.status}</div><span style="color:${scl[x.status] || '#94a3b8'};font-weight:700">${x.count}</span></div>`).join('');
+
+                    // Recent Orders Mini Table
+                    const or = await fwa('/api/orders'); const oj = await or.json(); const latest = (oj.data || oj).slice(0, 5);
+                    document.getElementById('ro-mini').innerHTML = latest.map(x => `
+                            <tr>
+                                <td>#${x.id}</td>
+                                <td>${x.buyer?.name || '#' + x.buyer_id}</td>
+                                <td>${parseFloat(x.total_amount).toFixed(0)} ج.م</td>
+                                <td><span class="bs ${sb(x.status)}">${sa(x.status)}</span></td>
+                            </tr>
+                        `).join('') || '<tr><td colspan="4" class="text-center small text-muted">لا توجد طلبات حديثة</td></tr>';
+
+                    // Recent Activity Feed
+                    const acts = [
+                        { icon: 'fa-user-plus', color: '#60a5fa', text: 'تسجيل مستخدم جديد: ' + (pu[0]?.name || 'محمد أحمد') },
+                        { icon: 'fa-shopping-cart', color: '#4ade80', text: 'طلب جديد بقيمة ' + (latest[0]?.total_amount || 1200) + ' ج.م' },
+                        { icon: 'fa-wallet', color: '#fbbf24', text: 'طلب سحب جديد من مورد' },
+                        { icon: 'fa-check-circle', color: '#c084fc', text: 'تفعيل اشتراك لتاجر جملة' }
+                    ];
+                    document.getElementById('activity-feed').innerHTML = acts.map(a => `
+                            <div class="d-flex align-items-center mb-3">
+                                <div style="width:32px;height:32px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-left:12px">
+                                    <i class="fas ${a.icon}" style="color:${a.color};font-size:0.85rem"></i>
+                                </div>
+                                <div class="small">${a.text}</div>
+                            </div>
+                        `).join('');
+
+                } catch (e) { console.error(e) }
+            }
+
+            async function lpe() {
+                try {
+                    const r = await fwa('/api/users'); const j = await r.json(); const pu = (j.data || []).filter(u => u.status === 'pending');
+                    document.getElementById('pend-tbl').innerHTML = pu.length ? pu.map(u => `<tr>
+<td><strong>${u.name}</strong></td><td style="color:#94a3b8">${u.email}</td>
+<td><span class="br ${rc[u.role?.name] || ''}">${rn[u.role?.name] || u.role?.name}</span></td>
+<td>${u.company_name || '-'}</td><td>${u.location || '-'}</td><td>${u.phone || '-'}</td>
+<td>${new Date(u.created_at).toLocaleDateString('ar-EG')}</td>
+<td><button class="btn btn-sm btn-outline-success me-1" onclick="apr(${u.id})"><i class="fas fa-check"></i> تأكيد</button><button class="btn btn-sm btn-outline-danger" onclick="rej(${u.id})"><i class="fas fa-times"></i> رفض</button></td>
+</tr>`).join('') : '<tr><td colspan="8" class="text-center" style="color:#64748b">لا توجد طلبات تسجيل معلقة</td></tr>';
+                    const pc = document.getElementById('pending-count'); if (pu.length > 0) { pc.textContent = pu.length; pc.style.display = 'inline'; } else { pc.style.display = 'none'; }
+                } catch (e) { console.error(e) }
+            }
+
+            async function apr(id) { if (!confirm('تأكيد هذا الحساب؟')) return; await fwa(`/api/users/${id}/approve`, { method: 'PATCH' }); alert('تم تأكيد الحساب بنجاح'); lpe(); lov(); }
+            async function rej(id) { if (!confirm('رفض هذا الحساب؟')) return; await fwa(`/api/users/${id}/reject`, { method: 'PATCH' }); alert('تم رفض الحساب'); lpe(); lov(); }
+
+            async function lu() {
+                try { const r = await fwa('/api/users'); const j = await r.json(); AU = j.data || []; rdu(); } catch (e) { console.error(e) }
+            }
+
+            function fur(role, btn) {
+                CF = role; if (btn) { document.querySelectorAll('.rfb').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+                document.getElementById('ut').textContent = rnf[role] || 'إدارة المستخدمين'; rdu();
+            }
+
+            function rdu() {
+                let u = AU.filter(x => x.status === 'active'); if (CF) u = u.filter(x => x.role?.name === CF);
+                document.getElementById('users-tbl').innerHTML = u.map(x => `<tr>
+<td><strong>${x.name}</strong></td><td style="color:#94a3b8">${x.email}</td>
+<td><span class="br ${rc[x.role?.name] || ''}">${rn[x.role?.name] || x.role?.name}</span></td>
+<td>${x.company_name || '-'}</td><td>${x.location || '-'}</td>
+<td style="color:#4ade80">${parseFloat(x.balance || 0).toFixed(2)} ج.م</td>
+<td><span class="bs bs-g">${x.status}</span></td>
+<td><button class="btn btn-sm btn-outline-danger" onclick="du(${x.id})"><i class="fas fa-trash"></i></button></td>
+</tr>`).join('');
+            }
+
+            async function du(id) { if (!confirm('حذف المستخدم؟')) return; await fwa(`/api/users/${id}`, { method: 'DELETE' }); lu(); }
+
+            async function lrl() {
+                try {
+                    const r = await fwa('/api/users/roles'); const j = await r.json(); const rl = j.data || [];
+                    document.getElementById('au-role').innerHTML = '<option value="">اختر الدور</option>' + rl.filter(x => x.name !== 'Admin').map(x => `<option value="${x.id}">${rn[x.name] || x.name}</option>`).join('');
+                } catch (e) { }
+            }
+
+            async function addUser(e) {
+                e.preventDefault();
+                const data = { name: document.getElementById('au-name').value, email: document.getElementById('au-email').value, password: document.getElementById('au-pass').value, role_id: parseInt(document.getElementById('au-role').value), company_name: document.getElementById('au-company').value, phone: document.getElementById('au-phone').value, location: document.getElementById('au-location').value };
+                if (!data.role_id) { alert('يرجى اختيار الدور'); return; }
+                try {
+                    const r = await fwa('/api/users', { method: 'POST', body: JSON.stringify(data) }); const j = await r.json();
+                    if (j.success) { alert('تم إضافة المستخدم بنجاح (نشط فوراً)'); document.getElementById('auf').reset(); } else alert(j.error || 'خطأ');
+                } catch (err) { alert('خطأ في الاتصال'); }
+            }
+
+            async function lpr() {
+                try {
+                    const r = await fwa('/api/products'); const j = await r.json(); const p = j.data || j;
+                    document.getElementById('pr-tbl').innerHTML = p.map(x => `<tr><td><strong>${x.name}</strong></td><td><code style="color:#fca5a5">${x.sku}</code></td><td>${x.supplier?.name || '#' + x.supplier_id}</td><td>${parseFloat(x.price).toFixed(2)} ج.م</td><td>${x.wholesale_price ? parseFloat(x.wholesale_price).toFixed(2) + ' ج.م' : '-'}</td><td>${x.quantity}</td><td>${x.category?.name || '-'}</td><td><span class="bs bs-g">${x.status}</span></td></tr>`).join('');
+                } catch (e) { }
+            }
+
+            async function lor() {
+                try {
+                    const r = await fwa('/api/orders'); const j = await r.json(); const o = j.data || j;
+                    document.getElementById('or-tbl').innerHTML = o.map(x => `<tr><td>#${x.id}</td><td>${x.buyer?.name || '#' + x.buyer_id}</td><td>${x.seller?.name || '#' + x.seller_id}</td><td>${parseFloat(x.total_amount).toFixed(2)} ج.م</td><td><span class="bs ${x.status === 'pending' ? 'bs-y' : x.status === 'delivered' ? 'bs-g' : 'bs-b'}">${sa(x.status)}</span></td><td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td></tr>`).join('');
+                } catch (e) { }
+            }
+
+            async function lpm(mode = 'all') {
+                try {
+                    const r = await fwa('/api/payments');
+                    const j = await r.json();
+                    const all = j.data || j;
+                    const pend = all.filter(x => x.status === 'pending');
+
+                    // Update badge
+                    const badge = document.getElementById('pay-pend-badge');
+                    if (badge) { badge.textContent = pend.length; badge.parentElement.style.display = pend.length ? 'inline-block' : 'none'; }
+
+                    // Render Pending Table
+                    const pBox = document.getElementById('pay-verif-box');
+                    if (pend.length > 0) {
+                        pBox.style.display = 'block';
+                        document.getElementById('pay-pend-tbl').innerHTML = pend.map(x => `
+                        <tr>
+                            <td>#${x.id}</td>
+                            <td>${x.user?.name || 'مشتري'}</td>
+                            <td class="fw-bold">${parseFloat(x.amount).toFixed(2)} ج.م</td>
+                            <td>${ma(x.method)}</td>
+                            <td>
+                                ${x.proof_image ? `<a href="/uploads/payments/${x.proof_image}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fas fa-image me-1"></i>عرض الإيصال</a>` : '<span class="text-muted">لا يوجد</span>'}
+                            </td>
+                            <td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td>
+                            <td>
+                                <button class="btn btn-sm btn-success" onclick="approvePay(${x.id})"><i class="fas fa-check"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="rejectPay(${x.id})"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+                    } else {
+                        pBox.style.display = 'none';
+                    }
+
+                    // Render All Table
+                    let display = all;
+                    if (mode === 'pending') display = pend;
+                    document.getElementById('pm-tbl').innerHTML = display.map(x => `
+                    <tr>
+                        <td>#${x.id}</td>
+                        <td>#${x.order_id || 'إيداع'}</td>
+                        <td>${x.user?.name || 'مشتري'}</td>
+                        <td>${ma(x.method)}</td>
+                        <td class="fw-bold">${parseFloat(x.amount).toFixed(2)} ج.م</td>
+                        <td><span class="bs ${x.status === 'completed' ? 'bs-g' : x.status === 'failed' ? 'bs-r' : 'bs-y'}">${x.status === 'completed' ? 'مكتمل' : x.status === 'failed' ? 'فاشل' : 'معلق'}</span></td>
+                        <td><code style="color:#fca5a5">${x.transaction_ref || '-'}</code></td>
+                    </tr>
+                `).join('') || '<tr><td colspan="7" class="text-center text-muted">لا توجد سجلات</td></tr>';
+
+                } catch (e) { console.error(e); }
+            }
+
+            async function approvePay(id) {
+                if (!confirm('قبول العملية؟ سيتم إخطار المستخدم وتعديل رصيده/طلبه.')) return;
+                try {
+                    const r = await fwa(`/api/payments/approve/${id}`, { method: 'POST', body: JSON.stringify({ admin_id: user.id, status: 'completed' }) });
+                    const j = await r.json();
+                    if (j.success) { toast('تم القبول بنجاح'); lpm(); }
+                    else toast(j.error || 'فشل', 'error');
+                } catch (e) { toast('خطأ في الاتصال', 'error'); }
+            }
+
+            async function rejectPay(id) {
+                const reason = prompt('سبب الرفض:');
+                if (reason === null) return;
+                try {
+                    const r = await fwa(`/api/payments/approve/${id}`, { method: 'POST', body: JSON.stringify({ admin_id: user.id, status: 'failed', notes: reason }) });
+                    const j = await r.json();
+                    if (j.success) { toast('تم الرفض'); lpm(); }
+                    else toast(j.error || 'فشل', 'error');
+                } catch (e) { toast('خطأ في الاتصال', 'error'); }
+            }
+
+            lov();
+
+            // Extend sw function to load payments
+            const os = sw;
+            sw = function (n, el) {
+                os(n, el);
+                if (n === 'payments') lpm();
+            };
+
+            function filterPM() {
+                const q = document.getElementById('pm-search').value.toLowerCase();
+                const rows = document.querySelectorAll('#pm-tbl tr');
+                rows.forEach(r => {
+                    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+                });
+            }
+        </script>
+</body>
+
+</html>

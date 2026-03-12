@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الموردين - TradeLink</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/responsive.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: #0b0f19;
+            color: #e2e8f0;
+            min-height: 100vh
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #111827, #0b0f19);
+            border-left: 1px solid rgba(239, 68, 68, .15);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 270px;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-brand {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            text-align: center
+        }
+
+        .sidebar-brand h4 {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            font-size: 1.2rem
+        }
+
+        .sidebar-brand small {
+            color: #64748b;
+            font-size: .75rem
+        }
+
+        .nav-link {
+            color: #94a3b8 !important;
+            padding: 13px 20px;
+            border-radius: 10px;
+            margin: 3px 12px;
+            transition: all .3s;
+            font-size: .85rem
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(239, 68, 68, .1);
+            color: #fca5a5 !important
+        }
+
+        .nav-link i {
+            width: 22px;
+            text-align: center;
+            margin-left: 10px
+        }
+
+        .nav-section {
+            color: #475569;
+            font-size: .7rem;
+            text-transform: uppercase;
+            padding: 10px 20px 5px;
+            letter-spacing: 1px
+        }
+
+        .main-content {
+            margin-right: 270px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: calc(100% - 270px);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                margin-right: 0 !important;
+                width: 100% !important;
+                padding: 15px;
+                padding-top: 80px;
+            }
+
+            .sidebar {
+                right: -280px !important;
+                transform: none !important;
+            }
+
+            .sidebar.show {
+                right: 0 !important;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+
+            .mobile-top-bar {
+                display: flex;
+            }
+        }
+
+        .mobile-top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #111827;
+            border-bottom: 1px solid rgba(239, 68, 68, .15);
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 101;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px
+        }
+
+        .page-header h2 {
+            font-weight: 700;
+            color: #f1f5f9;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .sc {
+            background: linear-gradient(135deg, rgba(17, 24, 39, .9), rgba(11, 15, 25, .95));
+            border: 1px solid rgba(239, 68, 68, .12);
+            border-radius: 16px;
+            padding: 22px;
+            transition: all .3s
+        }
+
+        .sc:hover {
+            transform: translateY(-3px);
+            border-color: rgba(239, 68, 68, .3)
+        }
+
+        .sc .ic {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 14px
+        }
+
+        .ic.red {
+            background: rgba(239, 68, 68, .15);
+            color: #fca5a5
+        }
+
+        .ic.blue {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .ic.green {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80
+        }
+
+        .ic.amber {
+            background: rgba(245, 158, 11, .15);
+            color: #fbbf24
+        }
+
+        .ic.purple {
+            background: rgba(168, 85, 247, .15);
+            color: #c084fc
+        }
+
+        .sc h3 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 2px
+        }
+
+        .sc p {
+            color: #64748b;
+            font-size: .8rem;
+            margin: 0
+        }
+
+        .cd {
+            background: rgba(17, 24, 39, .7);
+            border: 1px solid rgba(239, 68, 68, .1);
+            border-radius: 16px;
+            overflow: hidden
+        }
+
+        .cd .ch {
+            background: rgba(239, 68, 68, .05);
+            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .cd .ch h5 {
+            color: #e2e8f0;
+            margin: 0;
+            font-weight: 600;
+            font-size: 1rem
+        }
+
+        .cd .cb {
+            padding: 20px
+        }
+
+        .tbl {
+            color: #e2e8f0;
+            width: 100%
+        }
+
+        .tbl thead th {
+            background: rgba(239, 68, 68, .06);
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(239, 68, 68, .12);
+            font-size: .75rem;
+            text-transform: uppercase;
+            padding: 12px 14px
+        }
+
+        .tbl tbody td {
+            border-bottom: 1px solid rgba(239, 68, 68, .06);
+            padding: 12px 14px;
+            vertical-align: middle;
+            font-size: .9rem
+        }
+
+        .tbl tbody tr:hover {
+            background: rgba(239, 68, 68, .03)
+        }
+
+        .bs {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: .7rem;
+            font-weight: 600
+        }
+
+        .bs-g {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80
+        }
+
+        .bs-y {
+            background: rgba(245, 158, 11, .15);
+            color: #fbbf24
+        }
+
+        .bs-b {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .bs-r {
+            background: rgba(239, 68, 68, .15);
+            color: #fca5a5
+        }
+
+        .btn-g {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all .3s;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer
+        }
+
+        .btn-g:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, .3);
+            color: #fff
+        }
+
+        .fcd {
+            background: rgba(17, 24, 39, .9);
+            border: 1px solid rgba(239, 68, 68, .15);
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 16px
+        }
+
+        .fcd:focus {
+            background: rgba(17, 24, 39, 1);
+            border-color: #ef4444;
+            color: #f1f5f9;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
+        }
+
+        .fl {
+            color: #94a3b8;
+            font-size: .85rem;
+            font-weight: 600
+        }
+
+        .wc {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            border-radius: 16px;
+            padding: 30px;
+            color: #fff;
+            position: relative;
+            overflow: hidden
+        }
+
+        .wc::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, .1) 0%, transparent 60%)
+        }
+
+        .wc h6 {
+            opacity: .8;
+            font-size: .85rem
+        }
+
+        .wc h2 {
+            font-size: 2.2rem;
+            font-weight: 700
+        }
+
+        .sec {
+            display: none
+        }
+
+        .sec.active {
+            display: block
+        }
+
+        .pm-card {
+            background: rgba(17, 24, 39, .8);
+            border: 2px solid rgba(239, 68, 68, .1);
+            border-radius: 12px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all .3s;
+            text-align: center
+        }
+
+        .pm-card:hover {
+            border-color: rgba(239, 68, 68, .4);
+            transform: translateY(-2px)
+        }
+
+        .pm-card.selected {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, .08)
+        }
+
+        .pm-card i {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+            color: #fca5a5;
+            display: block
+        }
+
+        .pm-card span {
+            display: block;
+            font-size: .8rem;
+            color: #e2e8f0;
+            font-weight: 600
+        }
+
+        .pm-card small {
+            color: #64748b;
+            font-size: .7rem
+        }
+
+        .toast-wrap {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 9999
+        }
+
+        .toast-msg {
+            background: rgba(17, 24, 39, .95);
+            border: 1px solid rgba(239, 68, 68, .2);
+            color: #e2e8f0;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+            font-size: .85rem;
+            animation: slideIn .3s ease
+        }
+
+        .toast-msg.success {
+            border-color: rgba(34, 197, 94, .3)
+        }
+
+        .toast-msg.error {
+            border-color: rgba(239, 68, 68, .5)
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1
+            }
+        }
+
+        .gw-box {
+            background: rgba(34, 197, 94, .08);
+            border: 1px solid rgba(34, 197, 94, .2);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 12px;
+            font-size: .82rem
+        }
+
+        .gw-label {
+            color: #64748b;
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+
+        .gw-val {
+            color: #4ade80;
+            font-weight: 600
+        }
+
+        .earn-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, .1), rgba(16, 185, 129, .05));
+            border: 1px solid rgba(34, 197, 94, .2);
+            border-radius: 14px;
+            padding: 20px
+        }
+
+        .locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+            border-radius: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: #f1f5f9;
+        }
+
+        .locked-overlay i {
+            font-size: 2.5rem;
+            color: #ef4444;
+            margin-bottom: 12px;
+        }
+
+        .locked-overlay h5 {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .locked-overlay p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            max-width: 250px;
+        }
+
+        .sub-btn {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .sub-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .sec {
+            position: relative;
+        }
+
+        /* Dark Modal Styles */
+        .modal-dark .modal-content {
+            background: #111827;
+            border: 1px solid rgba(239, 68, 68, .2);
+            border-radius: 16px;
+            color: #e2e8f0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-dark .modal-header {
+            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            padding: 20px 24px;
+        }
+
+        .modal-dark .modal-title {
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .modal-dark .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+            opacity: 0.8;
+        }
+
+        .modal-dark .btn-close:hover {
+            opacity: 1;
+        }
+
+        .modal-dark .modal-body {
+            padding: 24px;
+        }
+
+        .modal-dark .confirm-box {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .modal-dark .modal-footer {
+            border-top: 1px solid rgba(239, 68, 68, 0.1);
+            padding: 16px 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-top-bar">
+        <div class="d-flex align-items-center">
+            <img src="assets/logo.png" style="height:30px; margin-left:10px"
+                onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
+            <span style="font-weight:700; color:#ef4444">TradeLink</span>
+        </div>
+        <button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h4><i class="fas fa-industry me-2"></i>لوحة الموردين</h4><small>TradeLink Supplier</small>
+        </div>
+        <nav class="nav flex-column sidebar-nav mt-2">
+            <div class="nav-section">الرئيسية</div>
+            <a class="nav-link active" href="#" onclick="sw('dashboard',this)"><i class="fas fa-home"></i>نظرة عامة</a>
+            <div class="nav-section">المنتجات والطلبات</div>
+            <a class="nav-link" href="#" onclick="sw('products',this)"><i class="fas fa-boxes"></i>إدارة المنتجات</a>
+            <a class="nav-link" href="#" onclick="sw('add-product',this)"><i class="fas fa-plus"></i>إضافة منتج</a>
+            <a class="nav-link" href="#" onclick="sw('orders',this)"><i class="fas fa-shopping-cart"></i>الطلبات</a>
+            <div class="nav-section">المالية</div>
+            <a class="nav-link" href="#" onclick="sw('earnings',this)"><i class="fas fa-chart-line"></i>الأرباح
+                والإيرادات</a>
+            <a class="nav-link" href="#" onclick="sw('payments',this)"><i class="fas fa-credit-card"></i>المدفوعات
+                المستلمة</a>
+            <a class="nav-link" href="#" onclick="sw('deposit',this)"><i class="fas fa-plus-circle"></i>إيداع رصيد</a>
+            <a class="nav-link" href="#" onclick="sw('withdraw',this)"><i class="fas fa-wallet"></i>سحب الأرباح</a>
+            <a class="nav-link" href="#" onclick="sw('bank-settings',this)"><i class="fas fa-university"></i>إعدادات
+                البنك</a>
+            <div class="nav-section">اللوجستيات</div>
+            <a class="nav-link" href="#" onclick="sw('inventory',this)"><i class="fas fa-warehouse"></i>المخزون</a>
+            <a class="nav-link" href="#" onclick="sw('shipments',this)"><i class="fas fa-shipping-fast"></i>الشحنات</a>
+            <a class="nav-link" href="#" onclick="sw('invoices',this)"><i class="fas fa-file-invoice"></i>الفواتير</a>
+            <hr style="border-color:rgba(239,68,68,.1);margin:20px 0">
+            <a class="nav-link" href="/" style="color:#f87171!important"><i class="fas fa-sign-out-alt"></i>تسجيل
+                الخروج</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <!-- Dashboard -->
+        <div id="dashboard-section" class="sec active">
+            <div class="page-header">
+                <h2>نظرة عامة</h2><span style="color:#64748b">مرحباً، المورد</span>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic red"><i class="fas fa-boxes"></i></div>
+                        <h3 id="s-tp">0</h3>
+                        <p>إجمالي المنتجات</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic blue"><i class="fas fa-shopping-bag"></i></div>
+                        <h3 id="s-to">0</h3>
+                        <p>إجمالي الطلبات</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic amber"><i class="fas fa-clock"></i></div>
+                        <h3 id="s-po">0</h3>
+                        <p>طلبات معلقة</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sc">
+                        <div class="ic green"><i class="fas fa-cubes"></i></div>
+                        <h3 id="s-tq">0</h3>
+                        <p>إجمالي الكمية</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="wc">
+                        <h6><i class="fas fa-wallet me-2"></i>رصيد المحفظة</h6>
+                        <h2 id="d-bal">0.00 ج.م</h2>
+                        <div style="opacity:.7;font-size:.8rem;margin-top:8px">صافي الأرباح المتاحة</div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="earn-card">
+                        <h6 style="color:#4ade80;margin-bottom:16px"><i class="fas fa-chart-line me-2"></i>ملخص
+                            الإيرادات</h6>
+                        <div class="row g-3">
+                            <div class="col-4">
+                                <div style="text-align:center">
+                                    <div style="color:#64748b;font-size:.75rem">هذا الشهر</div>
+                                    <div style="color:#4ade80;font-size:1.4rem;font-weight:700" id="rev-month">0</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div style="text-align:center">
+                                    <div style="color:#64748b;font-size:.75rem">أمس</div>
+                                    <div style="color:#60a5fa;font-size:1.4rem;font-weight:700" id="rev-day">0</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div style="text-align:center">
+                                    <div style="color:#64748b;font-size:.75rem">الإجمالي</div>
+                                    <div style="color:#fbbf24;font-size:1.4rem;font-weight:700" id="rev-total">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Last Orders Card -->
+            <div class="cd">
+                <div class="ch">
+                    <h5>آخر الطلبات</h5>
+                </div>
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم</th>
+                                    <th>المشتري</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ro">
+                                <tr>
+                                    <td colspan="5" class="text-center" style="color:#64748b">جاري التحميل...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End dashboard-section -->
+
+        <!-- Products -->
+        <div id="products-section" class="sec">
+            <div class="page-header">
+                <h2>إدارة المنتجات</h2><button class="btn-g" onclick="sw('add-product')"><i
+                        class="fas fa-plus me-2"></i>إضافة منتج</button>
+            </div>
+            <div class="cd">
+                <div class="ch" style="padding:12px 20px"><input type="text" id="pt-search" class="fcd"
+                        style="width:300px;padding:8px 14px;font-size:.85rem" placeholder="🔍 بحث بالاسم أو SKU..."
+                        oninput="filterPT()"></div>
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>SKU</th>
+                                    <th>السعر</th>
+                                    <th>الكمية</th>
+                                    <th>الفئة</th>
+                                    <th>الحالة</th>
+                                    <th>إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pt"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Product -->
+        <div id="add-product-section" class="sec">
+            <div class="page-header">
+                <h2>إضافة منتج جديد</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <form id="apf">
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="fl">اسم المنتج</label><input type="text"
+                                    class="form-control fcd" name="name" required oninput="autoSKU(this)"></div>
+                            <div class="col-md-6"><label class="fl">SKU <small style="color:#64748b">(تلقائي أو
+                                        يدوي)</small></label>
+                                <div style="display:flex;gap:8px"><input type="text" class="form-control fcd" name="sku"
+                                        id="sku-inp" required><button type="button" class="btn-g"
+                                        style="padding:8px 14px;white-space:nowrap" onclick="genSKU()"><i
+                                            class="fas fa-magic"></i></button></div>
+                            </div>
+                            <div class="col-md-4"><label class="fl">السعر (ج.م)</label><input type="number"
+                                    class="form-control fcd" name="price" step="0.01" required></div>
+                            <div class="col-md-4"><label class="fl">الكمية</label><input type="number"
+                                    class="form-control fcd" name="quantity" required></div>
+                            <div class="col-md-4"><label class="fl">الفئة</label><select class="form-control fcd"
+                                    name="category_id" id="cs"></select></div>
+                            <div class="col-md-6"><label class="fl d-flex justify-content-between"><span>رابط صورة
+                                        المنتج (URL)</span><button type="button" class="btn btn-sm"
+                                        style="color:#60a5fa; font-size:0.7rem; padding:0" onclick="genAIImg()"><i
+                                            class="fas fa-image me-1"></i>توليد صورة بالذكاء
+                                        الاصطناعي</button></label><input type="text" class="form-control fcd"
+                                    name="image" id="p-img" placeholder="assets/product_rice.png أو رابط خارجي"></div>
+                            <div class="col-12"><label class="fl d-flex justify-content-between"><span>وصف
+                                        المنتج</span><button type="button" class="btn btn-sm"
+                                        style="color:#c084fc; font-size:0.7rem; padding:0" onclick="genAIDesc()"><i
+                                            class="fas fa-magic me-1"></i>توليد وصف بالذكاء
+                                        الاصطناعي</button></label><textarea class="form-control fcd" name="description"
+                                    id="p-desc" rows="2"></textarea></div>
+                            <div class="col-12"><label class="fl" style="color:#c084fc"><i
+                                        class="fas fa-brain me-1"></i>رؤية الذكاء الاصطناعي للمشترين (AI
+                                    Insight)</label><textarea class="form-control fcd" name="ai_description"
+                                    id="p-ai-desc" rows="2"
+                                    placeholder="هذا الوصف سيظهر للمشترين كنصيحة ذكية..."></textarea></div>
+                            <div class="col-12 mt-3"><button type="submit" class="btn-g"><i
+                                        class="fas fa-plus me-2"></i>إضافة المنتج</button></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders -->
+        <div id="orders-section" class="sec">
+            <div class="page-header">
+                <h2>إدارة الطلبات</h2>
+            </div>
+            <div class="cd">
+                <div class="ch" style="padding:12px 20px;display:flex;gap:10px">
+                    <input type="text" id="ot-search" class="fcd" style="width:220px;padding:8px 14px;font-size:.85rem"
+                        placeholder="🔍 بحث بالمشتري..." oninput="filterOT()">
+                    <select id="ot-status" class="fcd" style="width:160px;padding:8px 14px;font-size:.85rem"
+                        onchange="filterOT()">
+                        <option value="">كل الحالات</option>
+                        <option value="pending">قيد الانتظار</option>
+                        <option value="confirmed">تم التأكيد</option>
+                        <option value="shipped">تم الشحن</option>
+                        <option value="delivered">تم التسليم</option>
+                    </select>
+                </div>
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم</th>
+                                    <th>المشتري</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                    <th>إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ot"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings -->
+        <div id="earnings-section" class="sec">
+            <div class="page-header">
+                <h2>الأرباح والإيرادات</h2>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="wc">
+                        <h6><i class="fas fa-wallet me-2"></i>الرصيد المتاح</h6>
+                        <h2 id="earn-bal">0.00 ج.م</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="sc">
+                        <div class="ic green"><i class="fas fa-arrow-down"></i></div>
+                        <h3 id="earn-total">0</h3>
+                        <p>إجمالي الإيرادات (ج.م)</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="sc">
+                        <div class="ic blue"><i class="fas fa-receipt"></i></div>
+                        <h3 id="earn-count">0</h3>
+                        <p>عدد الطلبات المكتملة</p>
+                    </div>
+                </div>
+            </div>
+            <div class="cd">
+                <div class="ch">
+                    <h5>سجل الإيرادات</h5>
+                </div>
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>المبلغ</th>
+                                    <th>طريقة الدفع</th>
+                                    <th>الحالة</th>
+                                    <th>المرجع</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="earn-tbl"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payments Received -->
+        <div id="payments-section" class="sec">
+            <div class="page-header">
+                <h2>المدفوعات المستلمة</h2>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-5">
+                    <div class="wc">
+                        <h6><i class="fas fa-wallet me-2"></i>رصيد المحفظة</h6>
+                        <h2 id="wb">0.00 ج.م</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="cd">
+                <div class="ch">
+                    <h5>سجل المدفوعات</h5>
+                </div>
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>الطريقة</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>المرجع</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pmt"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Withdraw -->
+        <div id="withdraw-section" class="sec">
+            <div class="page-header">
+                <h2>سحب الأرباح</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-5">
+                    <div class="cd h-100">
+                        <div class="ch">
+                            <h5>طلب سحب جديد</h5>
+                        </div>
+                        <div class="cb">
+                            <div class="mb-4" id="w-method-list">
+                                <div class="pm-card" onclick="selW('bank_transfer', this)">
+                                    <div class="d-flex align-items-center">
+                                        <div class="pm-icon"><i class="fas fa-university"></i></div>
+                                        <div>
+                                            <div class="pm-name">تحويل بنكي</div><small>فوري خلال 48 ساعة</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pm-card" onclick="selW('instapay', this)">
+                                    <div class="d-flex align-items-center">
+                                        <div class="pm-icon"><i class="fas fa-bolt"></i></div>
+                                        <div>
+                                            <div class="pm-name">انستاباي (InstaPay)</div><small>تحويل فوري</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pm-card" onclick="selW('vodafone_cash', this)">
+                                    <div class="d-flex align-items-center">
+                                        <div class="pm-icon"><i class="fas fa-mobile-alt"></i></div>
+                                        <div>
+                                            <div class="pm-name">فودافون كاش</div><small>تحويل فوري</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pm-card" onclick="selW('fawry', this)">
+                                    <div class="d-flex align-items-center">
+                                        <div class="pm-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                        <div>
+                                            <div class="pm-name">فوري (Fawry)</div><small>استلام من أي فرع</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3"><label class="fl">المبلغ المراد سحبه (ج.م)</label><input type="number"
+                                    class="form-control fcd mt-2" id="w-amt" step="0.01" min="1"
+                                    placeholder="أدخل المبلغ..."></div>
+                            <button class="btn-g w-100" onclick="showDrawConfirm()"><i
+                                    class="fas fa-wallet me-2"></i>سحب الآن</button>
+                            <div id="draw-result" class="gw-box mt-3" style="display:none"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="cd h-100">
+                        <div class="ch">
+                            <h5>تاريخ السحب</h5>
+                        </div>
+                        <div class="cb">
+                            <div class="table-responsive">
+                                <table class="tbl">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>المبلغ</th>
+                                            <th>الطريقة</th>
+                                            <th>الحالة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="draw-history">
+                                        <tr>
+                                            <td colspan="4" class="text-center" style="color:#64748b">لا توجد عمليات سحب
+                                                سابقة</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory -->
+        <div id="inventory-section" class="sec">
+            <div class="page-header">
+                <h2>إدارة المخزون</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <table class="tbl">
+                        <thead>
+                            <tr>
+                                <th>المنتج</th>
+                                <th>SKU</th>
+                                <th>الكمية المتاحة</th>
+                                <th>الحد الأدنى</th>
+                                <th>آخر تحديث</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invt"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipments -->
+        <div id="shipments-section" class="sec">
+            <div class="page-header">
+                <h2>إدارة الشحنات</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <table class="tbl">
+                        <thead>
+                            <tr>
+                                <th>رقم الشحنة</th>
+                                <th>رقم الطلب</th>
+                                <th>الناقل</th>
+                                <th>رقم التتبع</th>
+                                <th>الحالة</th>
+                                <th>تاريخ التوقع</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shpt"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoices -->
+        <div id="invoices-section" class="sec">
+            <div class="page-header">
+                <h2>الفواتير</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <table class="tbl">
+                        <thead>
+                            <tr>
+                                <th>رقم الفاتورة</th>
+                                <th>رقم الطلب</th>
+                                <th>المبلغ</th>
+                                <th>الضريبة</th>
+                                <th>الإجمالي</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fv-tbl"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bank Settings -->
+        <div id="bank-settings-section" class="sec">
+            <div class="page-header">
+                <h2>إعدادات استلام المستحقات</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <form id="bank-form">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <h6 class="mb-3 text-danger"><i class="fas fa-university me-2"></i>الحساب البنكي
+                                    (التحويلات المباشرة)</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6"><label class="fl">اسم البنك</label><input type="text"
+                                            class="form-control fcd" name="bank_name" id="b-name"></div>
+                                    <div class="col-md-6"><label class="fl">اسم صاحب الحساب</label><input type="text"
+                                            class="form-control fcd" name="account_holder_name" id="b-holder"></div>
+                                    <div class="col-md-6"><label class="fl">رقم الحساب</label><input type="text"
+                                            class="form-control fcd" name="account_number" id="b-number"></div>
+                                    <div class="col-md-6"><label class="fl">IBAN</label><input type="text"
+                                            class="form-control fcd" name="iban" id="b-iban"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <hr class="opacity-10">
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3" style="color:#00c2ff"><i class="fas fa-bolt me-2"></i>عنوان انستاباي
+                                    (InstaPay)</h6><label class="fl">عنوان InstaPay (IPA)</label><input type="text"
+                                    class="form-control fcd" name="instapay_address" id="b-instapay">
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3" style="color:#e60000"><i class="fas fa-mobile-alt me-2"></i>فودافون كاش
+                                    (Vodafone Cash)</h6><label class="fl">رقم محفظة فودافون كاش</label><input
+                                    type="text" class="form-control fcd" name="vodafone_cash_number" id="b-vodafone">
+                            </div>
+                            <div class="col-12 mt-4 text-center"><button type="submit" class="btn-g px-5"><i
+                                        class="fas fa-save me-2"></i>حفظ تفاصيل الدفع</button></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deposit -->
+        <div id="deposit-section" class="sec">
+            <div class="page-header">
+                <h2>إيداع رصيد</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-7">
+                    <div class="cd">
+                        <div class="ch">
+                            <h5>اختر طريقة الإيداع</h5>
+                        </div>
+                        <div class="cb">
+                            <div class="row g-3 mb-4 dep-pm">
+                                <div class="col-6 col-sm-4">
+                                    <div class="pm-card selected" onclick="selDep('bank_transfer',this)"><i
+                                            class="fas fa-university"></i><span>تحويل بنكي</span><small>الأهلي /
+                                            مصر</small></div>
+                                </div>
+                                <div class="col-6 col-sm-4">
+                                    <div class="pm-card" onclick="selDep('instapay',this)"><i
+                                            class="fas fa-bolt"></i><span>انستاباي</span><small>فوري</small></div>
+                                </div>
+                                <div class="col-6 col-sm-4">
+                                    <div class="pm-card" onclick="selDep('vodafone_cash',this)"><i
+                                            class="fas fa-mobile-alt"></i><span>فودافون كاش</span><small>010xxxx</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3"><label class="fl">المبلغ (ج.م)</label><input type="number"
+                                    class="form-control fcd mt-2" id="dep-amt" step="0.01" min="1"></div>
+                            <button class="btn-g w-100" onclick="showDepConfirm()"><i
+                                    class="fas fa-shield-alt me-2"></i>تأكيد الإيداع</button>
+                            <div id="dep-result" class="gw-box mt-3" style="display:none"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="wc mb-3">
+                        <h6><i class="fas fa-wallet me-2"></i>رصيد المحفظة الحالي</h6>
+                        <h2 id="dep-bal">0.00 ج.م</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deposit Confirm Modal -->
+        <div class="modal fade modal-dark" id="depConfM" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-shield-alt me-2"></i>تأكيد الإيداع</h5><button
+                            type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="confirm-box">
+                            <div style="color:#94a3b8;font-size:0.85rem;margin-bottom:8px">بوابة
+                                الدفع المختارة</div>
+                            <div style="color:#4ade80;font-weight:700;font-size:1.25rem;margin-bottom:20px"
+                                id="dc-gw-dep">
+                                -</div>
+
+                            <div style="color:#94a3b8;font-size:0.85rem;margin-bottom:8px">
+                                المبلغ المطلوب إيداعه</div>
+                            <div style="color:#f1f5f9;font-weight:700;font-size:2.5rem;margin-bottom:10px"
+                                id="dc-amt-dep">
+                                0.00 ج.م</div>
+
+                            <div
+                                style="background:rgba(59,130,246,0.1);color:#60a5fa;font-size:0.8rem;padding:12px;border-radius:10px;margin-top:20px;display:flex;align-items:center;justify-content:center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span>سيتم إرسال الطلب للمراجعة وإضافة الرصيد فور تأكيد الأدمن
+                                    من صورة الإيصال</span>
+                            </div>
+                            <div class="mt-3">
+                                <label class="form-label" style="color:#94a3b8;font-size:0.85rem">ارفع سكرين
+                                    شوت
+                                    للعملية
+                                    (مطلوب):</label>
+                                <input type="file" id="dep-proof" class="form-control form-control-dark"
+                                    accept="image/*"
+                                    style="background:#0f172a;border-color:rgba(255,255,255,0.1);color:#fff">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal"
+                            style="border-radius:10px;background:#334155;border:none">إلغاء</button>
+                        <button type="button" class="btn-g px-4" onclick="confirmDep()"><i
+                                class="fas fa-check me-2"></i>تأكيد الإيداع الآن</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscription Modal -->
+        <div class="modal fade modal-dark" id="subM" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center p-5">
+                        <div
+                            style="width:80px;height:80px;background:rgba(239,68,68,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px">
+                            <i class="fas fa-lock" style="font-size:2rem;color:#ef4444"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">الخدمة مقفولة</h4>
+                        <p style="color:#94a3b8;font-size:.95rem;line-height:1.6">عذراً، يجب
+                            عليك دفع الاشتراك الشهري
+                            (250
+                            ج.م) لتتمكن من الوصول لجميع خدمات TradeLink المتقدمة.</p>
+                        <div
+                            style="background:rgba(17,24,39,.8);border:1px solid rgba(239,68,68,.1);border-radius:10px;padding:14px;margin:16px 0">
+                            <label style="color:#94a3b8;font-size:.8rem;display:block;margin-bottom:8px">اختر
+                                طريقة
+                                الدفع:</label>
+                            <div class="row g-2" id="sub-methods">
+                                <div class="col-4">
+                                    <div class="pm-card selected" onclick="selSubMethod('wallet',this)"><i
+                                            class="fas fa-wallet"></i><span>المحفظة</span></div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="pm-card" onclick="selSubMethod('instapay',this)"><i
+                                            class="fas fa-bolt"></i><span>انستاباي</span></div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="pm-card" onclick="selSubMethod('fawry',this)"><i
+                                            class="fas fa-barcode"></i><span>فوري</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="border-color:rgba(255,255,255,.1);margin:24px 0">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-secondary flex-grow-1"
+                                data-bs-dismiss="modal">إغلاق</button>
+                            <button type="button" class="btn-g flex-grow-1" onclick="paySubNow()"><i
+                                    class="fas fa-credit-card me-2"></i>اشترك الآن (250
+                                ج.م)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast-wrap" id="tw"></div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            const user = JSON.parse(localStorage.getItem('user'));
+            const token = localStorage.getItem('token');
+            if (!user || !token || user.role?.name !== 'Supplier') {
+                window.location.href = '/auth.html';
+            }
+            const SID = user.id;
+            let isSubscribed = false, selWMethod = 'bank_transfer', selDepMethod = 'bank_transfer';
+            let subPayMethod = 'wallet';
+            async function fwa(u, o = {}) {
+                const headers = { ...o.headers, 'Authorization': `Bearer ${token}` };
+                if (!(o.body instanceof FormData)) {
+                    headers['Content-Type'] = 'application/json';
+                }
+                o.headers = headers;
+                return fetch(u, o);
+            }
+
+            // Load subscription status from backend
+            async function loadSubscription() {
+                try {
+                    const r = await fwa(`/api/subscription/${SID}`);
+                    const j = await r.json();
+                    if (j.success) {
+                        isSubscribed = j.data.is_active;
+                    }
+                } catch (e) { console.error('Sub check failed', e); }
+            }
+
+            function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isShowing = sidebar.classList.toggle('show');
+            if (isShowing) {
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            } else {
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+
+            function sw(n, el) {
+                document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+                const sec = document.getElementById(n + '-section');
+                if (sec) sec.classList.add('active');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                if (el) el.classList.add('active');
+
+                if (window.innerWidth <= 992) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('show')) toggleSidebar();
+            }
+
+                // Gating Logic
+                if (['add-product', 'withdraw', 'shipments', 'inventory'].includes(n)) {
+                    checkSubGating(n + '-section');
+                }
+
+                const map = { dashboard: ld, products: lp, orders: lo, 'add-product': lc, earnings: learn, payments: lpm, withdraw: lwith, inventory: linv, shipments: lsh, invoices: lfv, 'bank-settings': lbk, deposit: ldep };
+                if (map[n]) map[n]();
+            }
+
+            function checkSubGating(id) {
+                const sec = document.getElementById(id);
+                if (!sec) return;
+                if (!isSubscribed) {
+                    if (!sec.querySelector('.locked-overlay')) {
+                        const over = document.createElement('div');
+                        over.className = 'locked-overlay';
+                        over.innerHTML = `<i class="fas fa-lock"></i><h5>الخدمة مقفولة</h5><p>يجب دفع الاشتراك الشهري للوصول لهذه الخدمة</p><button class="sub-btn" onclick="subModal()">اشترك الآن</button>`;
+                        sec.appendChild(over);
+                    }
+                } else {
+                    sec.querySelector('.locked-overlay')?.remove();
+                }
+            }
+
+            function subModal() {
+                new bootstrap.Modal(document.getElementById('subM')).show();
+            }
+
+            function selSubMethod(m, el) {
+                document.querySelectorAll('#sub-methods .pm-card').forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+                subPayMethod = m;
+            }
+
+            async function paySubNow() {
+                toast('جاري معالجة الاشتراك...', 'info');
+                try {
+                    const r = await fwa('/api/subscription/pay', {
+                        method: 'POST',
+                        body: JSON.stringify({ user_id: SID, method: subPayMethod })
+                    });
+                    const j = await r.json();
+                    if (j.success) {
+                        isSubscribed = true;
+                        const m = bootstrap.Modal.getInstance(document.getElementById('subM'));
+                        if (m) m.hide();
+                        toast('تم تفعيل الاشتراك بنجاح! جميع الخدمات متاحة الآن. ✨');
+                        // Remove all overlays
+                        document.querySelectorAll('.locked-overlay').forEach(o => o.remove());
+                    } else {
+                        toast(j.error || 'فشل الاشتراك', 'error');
+                    }
+                } catch (e) {
+                    toast('خطأ في الاتصال', 'error');
+                }
+            }
+
+            function toast(msg, type = 'success') {
+                const tw = document.getElementById('tw');
+                const d = document.createElement('div');
+                d.className = `toast-msg ${type}`;
+                d.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2" style="color:${type === 'success' ? '#4ade80' : '#fca5a5'}"></i>${msg}`;
+                tw.appendChild(d);
+                setTimeout(() => d.remove(), 4000);
+            }
+
+            function sa(s) { return { pending: 'قيد الانتظار', confirmed: 'تم التأكيد', processing: 'قيد المعالجة', shipped: 'تم الشحن', delivered: 'تم التسليم', cancelled: 'ملغي', in_transit: 'جاري الشحن' }[s] || s }
+            function ma(m) { return { cash: 'نقدي', bank_transfer: 'تحويل بنكي', instapay: 'انستاباي', vodafone_cash: 'فودافون كاش', fawry: 'فوري', credit_card: 'بطاقة ائتمان', wallet: 'محفظة', orange_cash: 'أورنج كاش', etisalat_cash: 'اتصالات كاش' }[m] || m }
+            function sb(s) { return s === 'pending' ? 'bs-y' : (s === 'delivered' || s === 'confirmed') ? 'bs-g' : s === 'cancelled' ? 'bs-r' : 'bs-b' }
+
+            async function ld() {
+                try {
+                    const r = await fwa(`/api/stats/supplier`);
+                    const j = await r.json();
+                    const d = j.data || j;
+                    document.getElementById('s-tp').textContent = d.products?.total_products || 0;
+                    document.getElementById('s-to').textContent = d.orders?.total_orders || 0;
+                    document.getElementById('s-po').textContent = d.orders?.pending_orders || 0;
+                    document.getElementById('s-tq').textContent = d.products?.total_quantity || 0;
+                    document.getElementById('rev-total').textContent = parseFloat(d.revenue?.total || 0).toFixed(2);
+                    document.getElementById('rev-month').textContent = parseFloat(d.revenue?.month || 0).toFixed(2);
+                    document.getElementById('rev-day').textContent = parseFloat(d.revenue?.today || 0).toFixed(2);
+                } catch (e) { console.error(e) }
+                try {
+                    const rb = await fwa(`/api/payments/balance/${SID}`);
+                    const jb = await rb.json();
+                    document.getElementById('d-bal').textContent = parseFloat(jb.balance || 0).toFixed(2) + ' ج.م';
+                } catch (e) { }
+                lro();
+            }
+
+            async function lro() {
+                try {
+                    const r = await fwa('/api/orders');
+                    const j = await r.json();
+                    const o = j.data || j;
+                    const b = document.getElementById('ro');
+                    if (!o.length) { b.innerHTML = '<tr><td colspan="5" class="text-center" style="color:#64748b">لا توجد طلبات</td></tr>'; return; }
+                    b.innerHTML = o.slice(0, 5).map(x => `<tr><td>#${x.id}</td><td>${x.buyer?.name || 'مشتري #' + x.buyer_id}</td><td>${parseFloat(x.total_amount).toFixed(2)} ج.م</td><td><span class="bs ${sb(x.status)}">${sa(x.status)}</span></td><td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td></tr>`).join('');
+                } catch (e) { console.error(e) }
+            }
+
+            async function lp() {
+                try {
+                    const r = await fwa('/api/supplier/products');
+                    const j = await r.json();
+                    const p = j.data || j;
+                    document.getElementById('pt').innerHTML = (Array.isArray(p) ? p : []).map(x => `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="${x.image || 'assets/placeholder.png'}" style="width:40px; height:40px; border-radius:8px; object-fit:cover; border:1px solid rgba(255,255,255,0.1)">
+                                <strong>${x.name}</strong>
+                            </div>
+                        </td>
+                        <td><code style="color:#fca5a5">${x.sku}</code></td>
+                        <td>${parseFloat(x.price).toFixed(2)} ج.م</td>
+                        <td>${x.quantity}</td>
+                        <td>${x.category?.name || '-'}</td>
+                        <td><span class="bs bs-g">${x.status}</span></td>
+                        <td><button class="btn btn-sm btn-outline-danger" onclick="dp(${x.id})"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                `).join('') || '<tr><td colspan="7" class="text-center" style="color:#64748b">لا توجد منتجات</td></tr>';
+                } catch (e) { console.error(e) }
+            }
+
+            async function lo() {
+                try {
+                    const r = await fwa('/api/orders');
+                    const j = await r.json();
+                    const o = (j.data || j).filter(x => x.seller_id === SID);
+                    document.getElementById('ot').innerHTML = o.length ? o.map(x => `<tr><td>#${x.id}</td><td>${x.buyer?.name || '#' + x.buyer_id}</td><td>${parseFloat(x.total_amount).toFixed(2)} ج.م</td><td><span class="bs ${sb(x.status)}">${sa(x.status)}</span></td><td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td><td>${x.status === 'pending' ? `<button class="btn btn-sm btn-outline-success" onclick="co(${x.id},'confirmed')"><i class="fas fa-check" title="تأكيد"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="co(${x.id},'rejected')"><i class="fas fa-times" title="رفض"></i></button> <button class="btn btn-sm btn-outline-danger" onclick="doDelOrder(${x.id})"><i class="fas fa-trash" title="حذف"></i></button>` : ''}${x.status === 'confirmed' ? `<button class="btn btn-sm btn-outline-info" onclick="co(${x.id},'shipped')"><i class="fas fa-truck"></i></button>` : ''}</td></tr>`).join('') : '<tr><td colspan="6" class="text-center" style="color:#64748b">لا توجد طلبات</td></tr>';
+                } catch (e) { console.error(e) }
+            }
+
+            async function lc() {
+                try {
+                    const r = await fwa('/api/categories');
+                    const j = await r.json();
+                    const c = j.data || j;
+                    const catMap = {
+                        'Food & Grains': 'مواد غذائية وحبوب',
+                        'Oils & Fats': 'زيوت ودهون',
+                        'Beverages': 'مشروبات',
+                        'Personal Care': 'عناية شخصية',
+                        'Cleaning Supplies': 'منظفات',
+                        'Electronics': 'إلكترونيات',
+                        'Clothing & Fashion': 'ملابس وأزياء',
+                        'Construction Materials': 'بناء وإنشاءات',
+                        'Home & Furniture': 'أثاث وأدوات منزلية',
+                        'Auto Parts': 'قطع غيار سيارات',
+                        'Medical Supplies': 'مستلزمات طبية',
+                        'Industrial Equipment': 'معدات صناعية',
+                        'Plastics & Packaging': 'بلاستيك وتغليف'
+                    };
+                    document.getElementById('cs').innerHTML = '<option value="">اختر الفئة</option>' + c.map(x => `<option value="${x.id}">${catMap[x.name] || x.name}</option>`).join('');
+                } catch (e) { console.error(e) }
+            }
+
+            async function learn() {
+                try {
+                    const br = await fwa(`/api/payments/balance/${SID}`);
+                    const bj = await br.json();
+                    document.getElementById('earn-bal').textContent = parseFloat(bj.balance || 0).toFixed(2) + ' ج.م';
+                    const r = await fwa('/api/payments');
+                    const j = await r.json();
+                    const p = j.data || j;
+                    const done = p.filter(x => x.status === 'completed');
+                    document.getElementById('earn-total').textContent = done.reduce((s, x) => s + parseFloat(x.amount), 0).toFixed(2);
+                    document.getElementById('earn-count').textContent = done.length;
+                    document.getElementById('earn-tbl').innerHTML = p.length ? p.map(x => `<tr><td>#${x.order_id}</td><td>${parseFloat(x.amount).toFixed(2)} ج.م</td><td>${ma(x.method)}</td><td><span class="bs ${x.status === 'completed' ? 'bs-g' : 'bs-y'}">${x.status === 'completed' ? 'مكتمل' : 'معلق'}</span></td><td><code style="color:#fca5a5">${x.transaction_ref || '-'}</code></td><td>${x.created_at ? new Date(x.created_at).toLocaleDateString('ar-EG') : '-'}</td></tr>`).join('') : '<tr><td colspan="6" class="text-center" style="color:#64748b">لا توجد إيرادات</td></tr>';
+                } catch (e) { console.error(e) }
+            }
+
+            async function lpm() {
+                try {
+                    const br = await fwa(`/api/payments/balance/${SID}`);
+                    const bj = await br.json();
+                    document.getElementById('wb').textContent = parseFloat(bj.balance || 0).toFixed(2) + ' ج.م';
+                    const r = await fwa('/api/payments');
+                    const j = await r.json();
+                    const p = j.data || j;
+                    document.getElementById('pmt').innerHTML = p.length ? p.map(x => `<tr><td>#${x.order_id}</td><td>${ma(x.method)}</td><td>${parseFloat(x.amount).toFixed(2)} ج.م</td><td><span class="bs ${x.status === 'completed' ? 'bs-g' : 'bs-y'}">${x.status === 'completed' ? 'مكتمل' : 'معلق'}</span></td><td><code style="color:#fca5a5">${x.transaction_ref || '-'}</code></td><td>${x.created_at ? new Date(x.created_at).toLocaleDateString('ar-EG') : '-'}</td></tr>`).join('') : '<tr><td colspan="6" class="text-center" style="color:#64748b">لا توجد مدفوعات</td></tr>';
+                } catch (e) { console.error(e) }
+            }
+
+            async function lwith() {
+                try {
+                    const br = await fwa(`/api/payments/balance/${SID}`);
+                    const bj = await br.json();
+                    document.getElementById('w-bal').textContent = parseFloat(bj.balance || 0).toFixed(2) + ' ج.م';
+
+                    // Fetch real withdrawal history
+                    const r = await fwa(`/api/withdrawals/${SID}`);
+                    const j = await r.json();
+                    const p = j.data || [];
+                    document.getElementById('draw-history').innerHTML = p.length ? p.map(x => `<tr><td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td><td>${parseFloat(x.amount).toFixed(2)} ج.م</td><td>${ma(x.method)}</td><td><span class="bs ${x.status === 'completed' ? 'bs-g' : x.status === 'rejected' ? 'bs-r' : 'bs-y'}">${x.status === 'completed' ? 'مكتمل' : x.status === 'rejected' ? 'مرفوض' : 'قيد المراجعة'}</span></td></tr>`).join('') : '<tr><td colspan="4" class="text-center" style="color:#64748b">لا توجد عمليات سحب سابقة</td></tr>';
+                } catch (e) { console.error(e) }
+            }
+
+            // ── Search & Filters ─────────────────────────────────────
+            function filterPT() {
+                const q = (document.getElementById('pt-search')?.value || '').toLowerCase();
+                document.querySelectorAll('#pt tr').forEach(tr => {
+                    const text = tr.textContent.toLowerCase();
+                    tr.style.display = !q || text.includes(q) ? '' : 'none';
+                });
+            }
+
+            function filterOT() {
+                const q = (document.getElementById('ot-search')?.value || '').toLowerCase();
+                const s = document.getElementById('ot-status')?.value || '';
+                document.querySelectorAll('#ot tr').forEach(tr => {
+                    const text = tr.textContent.toLowerCase();
+                    const statusText = tr.querySelector('.bs')?.textContent || '';
+                    const matchQ = !q || text.includes(q);
+                    const matchS = !s || statusText.includes(sa(s));
+                    tr.style.display = (matchQ && matchS) ? '' : 'none';
+                });
+            }
+
+            // ── Auto-SKU ─────────────────────────────────────────────
+            function autoSKU(nameInput) {
+                const inp = document.getElementById('sku-inp');
+                if (!inp) return;
+                const prefix = nameInput.value.trim().toUpperCase().replace(/[^A-Z\u0600-\u06FF0-9]/g, '').slice(0, 4);
+                const ts = Date.now().toString().slice(-4);
+                inp.value = `SP-${prefix || 'PRD'}-${ts}`;
+            }
+            function genSKU() {
+                const inp = document.getElementById('sku-inp');
+                if (!inp) return;
+                inp.value = `SP-${Math.random().toString(36).slice(2, 6).toUpperCase()}-${Date.now().toString().slice(-4)}`;
+            }
+
+            async function genAIDesc() {
+                const name = document.querySelector('input[name="name"]').value;
+                if (!name) { toast('يرجى إدخل اسم المنتج أولاً لتوليد وصف مناسب', 'error'); return; }
+                const btn = event.target.closest('button');
+                const oldText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>جاري التوليد...';
+                btn.disabled = true;
+
+                try {
+                    const r = await fwa('/api/ai/generate-description', {
+                        method: 'POST',
+                        body: JSON.stringify({ name })
+                    });
+                    const j = await r.json();
+                    if (j.success) {
+                        document.getElementById('p-desc').value = j.description;
+                        document.getElementById('p-ai-desc').value = j.aiTip;
+                        toast('تم توليد الأوصاف ذكياً ✨');
+                    } else {
+                        toast(j.error || 'فشل توليد الوصف', 'error');
+                    }
+                } catch (e) {
+                    toast('خطأ في الاتصال بالخادم', 'error');
+                } finally {
+                    btn.innerHTML = oldText;
+                    btn.disabled = false;
+                }
+            }
+
+            async function genAIImg() {
+                const name = document.querySelector('input[name="name"]').value;
+                if (!name) { toast('يرجى إدخال اسم المنتج أولاً لتوليد صورة مناسبة', 'error'); return; }
+                const btn = event.target.closest('button');
+                const oldText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>جاري التوليد...';
+                btn.disabled = true;
+
+                try {
+                    const r = await fwa('/api/ai/generate-image', {
+                        method: 'POST',
+                        body: JSON.stringify({ prompt: `high quality realistic photo of ${name}, product photography, white background`, name: name })
+                    });
+                    const j = await r.json();
+                    if (j.success) {
+                        document.getElementById('p-img').value = j.url;
+                        toast('تم توليد الصورة بنجاح! ✨');
+                    } else {
+                        toast(j.error || 'فشل توليد الصورة', 'error');
+                        console.error('AI Error:', j.details);
+                    }
+                } catch (e) {
+                    toast('خطأ في الاتصال بخادم الذكاء الاصطناعي', 'error');
+                } finally {
+                    btn.innerHTML = oldText;
+                    btn.disabled = false;
+                }
+            }
+
+            // ── Withdrawal Confirmation ──────────────────────────────
+            function showDrawConfirm() {
+                if (!isSubscribed) return subModal();
+                const amt = parseFloat(document.getElementById('w-amt').value);
+                if (!amt || amt <= 1) { toast('يرجى إدخال مبلغ صحيح (أكبر من 1 ج.م)', 'error'); return; }
+                const bal = parseFloat(document.getElementById('w-bal').textContent);
+                if (amt > bal) { toast('عذراً، الرصيد غير كافٍ للسحب', 'error'); return; }
+
+                document.getElementById('dc-gw').textContent = ma(selWMethod);
+                document.getElementById('dc-amt').textContent = amt.toFixed(2) + ' ج.م';
+                new bootstrap.Modal(document.getElementById('drawConfM')).show();
+            }
+
+            async function confirmDraw() {
+                const m = bootstrap.Modal.getInstance(document.getElementById('drawConfM'));
+                if (m) m.hide();
+                await doWithdraw();
+            }
+
+            function selW(m, el) {
+                document.querySelectorAll('.pm-card').forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+                selWMethod = m;
+            }
+
+            async function doWithdraw() {
+                const amt = parseFloat(document.getElementById('w-amt').value);
+                try {
+                    const r = await fwa('/api/withdrawals', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            user_id: SID,
+                            amount: amt,
+                            method: selWMethod
+                        })
+                    });
+                    const j = await r.json();
+                    if (j.success) {
+                        toast('تم تأكيد طلب السحب بنجاح. سنراجع طلبك خلال 24 ساعة. ✅');
+                        document.getElementById('w-amt').value = '';
+                        lwith();
+                    } else toast(j.error || 'فشلت العملية', 'error');
+                } catch (e) { toast('خطأ في الاتصال', 'error'); }
+            }
+
+            async function linv() {
+                try {
+                    const r = await fwa('/api/inventory');
+                    const j = await r.json();
+                    const items = j.data || j;
+                    document.getElementById('invt').innerHTML = Array.isArray(items) && items.length ? items.map(x => `<tr><td>${x.product?.name || '#' + x.product_id}</td><td><code style="color:#fca5a5">${x.product?.sku || '-'}</code></td><td>${x.quantity}</td><td>${x.reorder_level || 10}</td><td>${x.updated_at ? new Date(x.updated_at).toLocaleDateString('ar-EG') : '-'}</td><td><span class="bs ${x.quantity > 10 ? 'bs-g' : 'bs-y'}">${x.quantity > 10 ? 'متاح' : 'منخفض'}</span></td></tr>`).join('') : '<tr><td colspan="6" class="text-center" style="color:#64748b">لا توجد بيانات مخزون</td></tr>';
+                } catch (e) { console.error(e) }
+            }
+
+            async function lsh() {
+                try {
+                    const r = await fwa('/api/shipments');
+                    const j = await r.json();
+                    const s = j.data || j;
+                    document.getElementById('shpt').innerHTML = Array.isArray(s) && s.length ? s.map(x => `<tr><td>#${x.id}</td><td>#${x.order_id}</td><td>${x.carrier || '-'}</td><td><code style="color:#fca5a5">${x.tracking_number || '-'}</code></td><td><span class="bs ${x.status === 'delivered' ? 'bs-g' : 'bs-b'}">${sa(x.status)}</span></td><td>${x.estimated_delivery ? new Date(x.estimated_delivery).toLocaleDateString('ar-EG') : '-'}</td></tr>`).join('') : '<tr><td colspan="6" class="text-center" style="color:#64748b">لا توجد شحنات</td></tr>';
+                } catch (e) { console.error(e) }
+            }
+
+            async function lfv() {
+                try {
+                    const r = await fwa('/api/invoices');
+                    const j = await r.json();
+                    const v = j.data || j;
+                    document.getElementById('fv-tbl').innerHTML = Array.isArray(v) && v.length ? v.map(x => `<tr><td>#${x.id}</td><td>#${x.order_id}</td><td>${parseFloat(x.amount || 0).toFixed(2)} ج.م</td><td>${parseFloat(x.tax || 0).toFixed(2)} ج.م</td><td>${parseFloat((x.amount || 0) + (x.tax || 0)).toFixed(2)} ج.م</td><td><span class="bs ${x.status === 'paid' ? 'bs-g' : 'bs-y'}">${x.status === 'paid' ? 'مدفوعة' : 'معلقة'}</span></td></tr>`).join('') : '<tr><td colspan="6" class="text-center" style="color:#64748b">لا توجد فواتير</td></tr>';
+                } catch (e) { console.error(e) }
+            }
+
+            document.getElementById('apf').addEventListener('submit', async e => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const d = Object.fromEntries(fd);
+                d.supplier_id = SID;
+                try {
+                    const r = await fwa('/api/supplier/products', { method: 'POST', body: JSON.stringify(d) });
+                    const j = await r.json();
+                    if (j.success) { toast('تم إضافة المنتج بنجاح'); e.target.reset(); sw('products'); }
+                    else toast(j.error || 'خطأ', 'error');
+                } catch (err) { toast('خطأ في الاتصال', 'error'); }
+            });
+
+            async function co(id, s) {
+                if (!confirm(`هل أنت متأكد من ${s === 'confirmed' ? 'تأكيد' : 'إلغاء'} هذا الطلب؟`)) return;
+                try {
+                    const r = await fwa(`/api/orders/${id}/status`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ status: s })
+                    });
+                    const j = await r.json();
+                    if (j.success) {
+                        toast(s === 'confirmed' ? 'تم تأكيد الطلب بنجاح' : 'تم إلغاء الطلب');
+                        lo(); ld();
+                    } else {
+                        toast(j.error || 'فشل تحديث الحالة', 'error');
+                    }
+                } catch (e) { toast('خطأ في الاتصال', 'error'); }
+            }
+
+            async function dp(id) {
+                if (!confirm('حذف المنتج؟')) return;
+                await fwa(`/api/products/${id}`, { method: 'DELETE' });
+                lp();
+                toast('تم حذف المنتج');
+            }
+
+            async function lbk() {
+                try {
+                    const r = await fwa(`/api/users/${SID}`);
+                    const j = await r.json();
+                    if (j.success) {
+                        const u = j.data;
+                        document.getElementById('b-name').value = u.bank_name || '';
+                        document.getElementById('b-holder').value = u.account_holder_name || '';
+                        document.getElementById('b-number').value = u.account_number || '';
+                        document.getElementById('b-iban').value = u.iban || '';
+                        document.getElementById('b-instapay').value = u.instapay_address || '';
+                        document.getElementById('b-vodafone').value = u.vodafone_cash_number || '';
+                    }
+                } catch (e) { }
+            }
+
+            document.getElementById('bank-form').addEventListener('submit', async e => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const d = Object.fromEntries(fd);
+                try {
+                    const r = await fwa(`/api/users/${SID}/bank`, {
+                        method: 'PUT',
+                        body: JSON.stringify(d)
+                    });
+                    const j = await r.json();
+                    if (j.success) toast('تم حفظ بيانات البنك بنجاح');
+                    else toast(j.error || 'خطأ', 'error');
+                } catch (err) { toast('خطأ في الاتصال', 'error'); }
+            });
+
+            async function ldep() {
+                try {
+                    const rb = await fwa(`/api/payments/balance/${SID}`);
+                    const jb = await rb.json();
+                    document.getElementById('dep-bal').textContent = parseFloat(jb.balance || 0).toFixed(2) + ' ج.م';
+                } catch (e) { }
+            }
+
+            function selDep(m, el) {
+                document.querySelectorAll('.dep-pm .pm-card').forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+                selDepMethod = m;
+                const inst = {
+                    bank_transfer: 'قم بالتحويل إلى حسابنا في البنك التجاري الدولي (CIB):<br>IBAN: <b>EG890044500700005007861381409</b>',
+                    instapay: 'قم بالتحويل عبر تطبيق انستاباي إلى العنوان التالي:<br>IPA: <b>wtsra201006513814</b>',
+                    vodafone_cash: 'قم بالتحويل إلى رقم فودافون كاش التالي:<br>الرقم: <b>01006513814</b>',
+                    orange_cash: 'قم بالتحويل إلى رقم أورنج كاش التالي:<br>الرقم: <b>01206613977</b>',
+                    etisalat_cash: 'قم بالتحويل إلى رقم اتصالات كاش التالي:<br>الرقم: <b>01117651342</b>',
+                    fawry: 'استخدم كود الخدمة التالي في أي ماكينة فوري:<br>كود الخدمة: <b>7890</b><br>رقم المرجع سيظهر بعد طلب الإيداع.',
+                    credit_card: 'سيتم تحويلك لبوابة الدفع الآمنة لإدخال بيانات البطاقة.'
+                };
+                document.getElementById('dep-instr-text').innerHTML = inst[m] || 'يرجى اختيار طريقة الدفع.';
+            }
+
+            function showDepConfirm() {
+                const amt = parseFloat(document.getElementById('dep-amt').value);
+                if (!amt || amt <= 1) { toast('يرجى إدخال مبلغ صحيح (أكبر من 1 ج.م)', 'error'); return; }
+                const gwNames = { bank_transfer: 'تحويل بنكي', instapay: 'انستاباي', vodafone_cash: 'فودافون كاش', orange_cash: 'أورنج كاش', etisalat_cash: 'اتصالات كاش', fawry: 'فوري', credit_card: 'بطاقة ائتمانية' };
+                document.getElementById('dc-gw-dep').textContent = gwNames[selDepMethod] || selDepMethod;
+                document.getElementById('dc-amt-dep').textContent = amt.toFixed(2) + ' ج.م';
+                new bootstrap.Modal(document.getElementById('depConfM')).show();
+            }
+
+            async function confirmDep() {
+                const m = bootstrap.Modal.getInstance(document.getElementById('depConfM'));
+                if (m) m.hide();
+                await doDep();
+            }
+
+            async function doDep() {
+                const amt = parseFloat(document.getElementById('dep-amt').value);
+                const fileInput = document.getElementById('dep-proof');
+                if (!fileInput.files[0]) { toast('يرجى رفع صورة الإيصال أو السكرين شوت أولاً', 'error'); return; }
+
+                const fd = new FormData();
+                fd.append('user_id', SID);
+                fd.append('amount', amt);
+                fd.append('method', selDepMethod);
+                fd.append('proof', fileInput.files[0]);
+
+                try {
+                    const r = await fwa('/api/payments/deposit', {
+                        method: 'POST',
+                        body: fd
+                    });
+                    const j = await r.json();
+                    if (j.success) {
+                        toast('تم إرسال طلب الإيداع بنجاح. سنقوم بمراجعته قريباً.');
+                        document.getElementById('dep-amt').value = '';
+                        fileInput.value = '';
+                        ldep();
+                    } else toast(j.error || 'فشل الإيداع', 'error');
+                } catch (e) { toast('خطأ في الاتصال', 'error'); }
+            }
+
+            async function doDelOrder(id) {
+                if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
+                try {
+                    const r = await fwa(`/api/orders/${id}`, { method: 'DELETE' });
+                    const j = await r.json();
+                    if (j.success) { toast('تم حذف الطلب بنجاح'); lo(); ld(); }
+                    else toast(j.error || 'فشل الحذف', 'error');
+                } catch (e) { toast('خطأ في الاتصال', 'error'); }
+            }
+
+            loadSubscription().then(() => ld());
+        </script>
+</body>
+
+</html>

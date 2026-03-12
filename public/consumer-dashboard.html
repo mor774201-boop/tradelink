@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المستهلك - TradeLink</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/responsive.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: #0b0f19;
+            color: #e2e8f0;
+            min-height: 100vh
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #111827, #0b0f19);
+            border-left: 1px solid rgba(239, 68, 68, .15);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 270px;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-brand {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            text-align: center
+        }
+
+        .sidebar-brand h4 {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            font-size: 1.2rem
+        }
+
+        .sidebar-brand small {
+            color: #64748b;
+            font-size: .75rem
+        }
+
+        .nav-link {
+            color: #94a3b8 !important;
+            padding: 13px 20px;
+            border-radius: 10px;
+            margin: 3px 12px;
+            transition: all .3s;
+            font-size: .85rem
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(239, 68, 68, .1);
+            color: #fca5a5 !important
+        }
+
+        .nav-link i {
+            width: 22px;
+            text-align: center;
+            margin-left: 10px
+        }
+
+        .nav-section {
+            color: #475569;
+            font-size: .7rem;
+            text-transform: uppercase;
+            padding: 10px 20px 5px;
+            letter-spacing: 1px
+        }
+
+        .main-content {
+            margin-right: 270px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: calc(100% - 270px);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px
+        }
+
+        .page-header h2 {
+            font-weight: 700;
+            color: #f1f5f9
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                margin-right: 0 !important;
+                width: 100% !important;
+                padding: 15px;
+                padding-top: 80px;
+            }
+
+            .sidebar {
+                right: -280px !important;
+                transform: none !important;
+            }
+
+            .sidebar.show {
+                right: 0 !important;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+
+            .mobile-top-bar {
+                display: flex;
+            }
+        }
+
+        .mobile-top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #111827;
+            border-bottom: 1px solid rgba(239, 68, 68, .15);
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 101;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sc {
+            background: linear-gradient(135deg, rgba(17, 24, 39, .9), rgba(11, 15, 25, .95));
+            border: 1px solid rgba(239, 68, 68, .12);
+            border-radius: 16px;
+            padding: 22px;
+            transition: all .3s
+        }
+
+        .sc:hover {
+            transform: translateY(-3px);
+            border-color: rgba(239, 68, 68, .3)
+        }
+
+        .sc .ic {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 14px
+        }
+
+        .ic.red {
+            background: rgba(239, 68, 68, .15);
+            color: #fca5a5
+        }
+
+        .ic.blue {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .ic.green {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80
+        }
+
+        .ic.amber {
+            background: rgba(245, 158, 11, .15);
+            color: #fbbf24
+        }
+
+        .sc h3 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 2px
+        }
+
+        .sc p {
+            color: #64748b;
+            font-size: .8rem;
+            margin: 0
+        }
+
+        .cd {
+            background: rgba(17, 24, 39, .7);
+            border: 1px solid rgba(239, 68, 68, .1);
+            border-radius: 16px;
+            overflow: hidden
+        }
+
+        .cd .ch {
+            background: rgba(239, 68, 68, .05);
+            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            padding: 16px 24px
+        }
+
+        .cd .ch h5 {
+            color: #e2e8f0;
+            margin: 0;
+            font-weight: 600;
+            font-size: 1rem
+        }
+
+        .cd .cb {
+            padding: 20px
+        }
+
+        .tbl {
+            color: #e2e8f0;
+            width: 100%
+        }
+
+        .tbl thead th {
+            background: rgba(239, 68, 68, .06);
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(239, 68, 68, .12);
+            font-size: .75rem;
+            text-transform: uppercase;
+            padding: 12px 14px
+        }
+
+        .tbl tbody td {
+            border-bottom: 1px solid rgba(239, 68, 68, .06);
+            padding: 12px 14px;
+            vertical-align: middle;
+            font-size: .9rem
+        }
+
+        .tbl tbody tr:hover {
+            background: rgba(239, 68, 68, .03)
+        }
+
+        .bs {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: .7rem;
+            font-weight: 600
+        }
+
+        .bs-g {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80
+        }
+
+        .bs-y {
+            background: rgba(245, 158, 11, .15);
+            color: #fbbf24
+        }
+
+        .bs-b {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .btn-g {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all .3s;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer
+        }
+
+        .btn-g:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, .3);
+            color: #fff
+        }
+
+        .wc {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            border-radius: 16px;
+            padding: 30px;
+            color: #fff;
+            position: relative;
+            overflow: hidden
+        }
+
+        .wc::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, .1) 0%, transparent 60%)
+        }
+
+        .wc h6 {
+            opacity: .8;
+            font-size: .85rem
+        }
+
+        .wc h2 {
+            font-size: 2.2rem;
+            font-weight: 700
+        }
+
+        .sec {
+            display: none
+        }
+
+        .sec.active {
+            display: block
+        }
+
+        .sf {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap
+        }
+
+        .sf input,
+        .sf select {
+            background: rgba(17, 24, 39, .9);
+            border: 1px solid rgba(239, 68, 68, .15);
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            flex: 1;
+            min-width: 180px
+        }
+
+        .sf input:focus,
+        .sf select:focus {
+            border-color: #ef4444;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
+        }
+
+        .pc {
+            background: rgba(17, 24, 39, .7);
+            border: 1px solid rgba(239, 68, 68, .1);
+            border-radius: 14px;
+            padding: 20px;
+            transition: all .3s;
+            cursor: pointer
+        }
+
+        .pc:hover {
+            border-color: rgba(239, 68, 68, .3);
+            transform: translateY(-3px)
+        }
+
+        .pc .pe {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, .08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px
+        }
+
+        .pc h5 {
+            color: #f1f5f9;
+            font-size: 1rem;
+            margin-bottom: 5px
+        }
+
+        .pc .sn {
+            color: #64748b;
+            font-size: .8rem
+        }
+
+        .pc .pr {
+            color: #fca5a5;
+            font-size: 1.2rem;
+            font-weight: 700
+        }
+
+        .modal-dark .modal-content {
+            background: #111827;
+            border: 1px solid rgba(239, 68, 68, .2);
+            color: #e2e8f0
+        }
+
+        .modal-dark .modal-header {
+            border-bottom: 1px solid rgba(239, 68, 68, .1)
+        }
+
+        .modal-dark .modal-footer {
+            border-top: 1px solid rgba(239, 68, 68, .1)
+        }
+
+        .modal-dark .btn-close {
+            filter: invert(1)
+        }
+
+        .fcd {
+            background: rgba(17, 24, 39, .9);
+            border: 1px solid rgba(239, 68, 68, .15);
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 16px
+        }
+
+        .fcd:focus {
+            background: rgba(17, 24, 39, 1);
+            border-color: #ef4444;
+            color: #f1f5f9;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
+        }
+
+        .fl {
+            color: #94a3b8;
+            font-size: .85rem;
+            font-weight: 600
+        }
+
+        .toast-wrap {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .toast-msg {
+            background: rgba(17, 24, 39, .95);
+            border: 1px solid rgba(239, 68, 68, .2);
+            color: #e2e8f0;
+            padding: 14px 20px;
+            border-radius: 12px;
+            animation: slideIn .3s ease;
+            backdrop-filter: blur(10px)
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1
+            }
+        }
+
+        .gw-box {
+            background: rgba(17, 24, 39, .5);
+            border: 1px solid rgba(239, 68, 68, .1);
+            border-radius: 10px;
+            padding: 12px 16px
+        }
+
+        .gw-label {
+            color: #64748b;
+            font-size: .75rem;
+            text-transform: uppercase
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-top-bar">
+        <div class="d-flex align-items-center">
+            <img src="assets/logo.png" style="height:30px; margin-left:10px"
+                onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
+            <span style="font-weight:700; color:#ef4444">TradeLink</span>
+        </div>
+        <button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h4><i class="fas fa-user me-2"></i>لوحة المستهلك</h4><small>TradeLink Consumer</small>
+        </div>
+        <nav class="nav flex-column sidebar-nav mt-2">
+            <div class="nav-section">الرئيسية</div>
+            <a class="nav-link active" href="#" onclick="sw('dashboard',this)"><i class="fas fa-home"></i>نظرة عامة</a>
+            <div class="nav-section">التسوق</div>
+            <a class="nav-link" href="#" onclick="sw('browse',this)"><i class="fas fa-search"></i>تصفح المنتجات</a>
+            <a class="nav-link" href="#" onclick="sw('orders',this)"><i class="fas fa-shopping-bag"></i>طلباتي</a>
+            <div class="nav-section">المالية</div>
+            <a class="nav-link" href="#" onclick="sw('payments',this)"><i class="fas fa-credit-card"></i>المحفظة
+                والمدفوعات</a>
+            <hr style="border-color:rgba(239,68,68,.1);margin:20px 0">
+            <a class="nav-link" href="/" style="color:#f87171!important"><i class="fas fa-sign-out-alt"></i>تسجيل
+                الخروج</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <!-- Dashboard Overview -->
+        <div id="dashboard-section" class="sec active">
+            <div class="page-header">
+                <h2>نظرة عامة</h2><span style="color:#64748b">مرحباً، أحمد</span>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="sc">
+                        <div class="ic red"><i class="fas fa-shopping-bag"></i></div>
+                        <h3 id="s-o">0</h3>
+                        <p>طلباتي</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="sc">
+                        <div class="ic amber"><i class="fas fa-clock"></i></div>
+                        <h3 id="s-p">0</h3>
+                        <p>قيد الانتظار</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="sc">
+                        <div class="ic green"><i class="fas fa-wallet"></i></div>
+                        <h3 id="s-b">0</h3>
+                        <p>رصيد المحفظة (ج.م)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="cd">
+                <div class="ch">
+                    <h5>آخر طلباتي</h5>
+                </div>
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم</th>
+                                    <th>البائع</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ro">
+                                <tr>
+                                    <td colspan="5" class="text-center" style="color:#64748b">جاري التحميل...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Browse Products -->
+        <div id="browse-section" class="sec">
+            <div class="page-header">
+                <h2>تصفح المنتجات</h2>
+            </div>
+            <div class="sf">
+                <input type="text" id="fn" placeholder="🔍 بحث بالاسم..." oninput="fp()">
+                <select id="fc" onchange="fp()">
+                    <option value="">كل الفئات</option>
+                </select>
+            </div>
+            <div class="row g-3" id="pg"></div>
+        </div>
+
+        <!-- Orders -->
+        <div id="orders-section" class="sec">
+            <div class="page-header">
+                <h2>طلباتي</h2>
+            </div>
+            <div class="cd">
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم</th>
+                                    <th>البائع</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                    <th>إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ot"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payments / Wallet -->
+        <div id="payments-section" class="sec">
+            <div class="page-header">
+                <h2>المدفوعات</h2>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-5">
+                    <div class="wc">
+                        <h6><i class="fas fa-wallet me-2"></i>رصيد المحفظة</h6>
+                        <h2 id="wb">0.00 ج.م</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="cd">
+                <div class="ch">
+                    <h5>سجل المدفوعات</h5>
+                </div>
+                <div class="cb">
+                    <div class="table-responsive">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>الطريقة</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>المرجع</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pmt"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div class="modal fade modal-dark" id="oM" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تأكيد الطلب</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="opi"></p>
+                    <div class="mb-3"><label class="fl">الكمية</label><input type="number" class="form-control fcd"
+                            id="oq" min="1" value="1"></div>
+                    <div class="mb-3"><label class="fl">طريقة الدفع</label><select class="form-control fcd" id="opm">
+                            <option value="wallet">محفظة</option>
+                            <option value="cash">نقدي</option>
+                            <option value="instapay">انستاباي</option>
+                            <option value="vodafone_cash">فودافون كاش</option>
+                        </select></div>
+                    <div class="mb-3" id="proof-div" style="display:none">
+                        <label class="fl">ارفع سكرين شوت (مطلوب):</label>
+                        <input type="file" id="o-proof" class="form-control fcd" accept="image/*">
+                    </div>
+                    <strong>الإجمالي: </strong><span id="otl">0</span> ج.م
+                    <div id="o-instr" class="gw-box mt-3"
+                        style="background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.1);display:none">
+                        <div class="gw-label mb-1">تعليمات الدفع</div>
+                        <div id="o-instr-text" style="font-size:0.8rem;line-height:1.4;color:#e2e8f0"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn-g" onclick="so()">تأكيد الطلب</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-wrap" id="tw"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        if (!user || !token || user.role?.name !== 'Customer') {
+            window.location.href = '/auth.html';
+        }
+        const CID = user.id;
+        let AP = [], SP = null;
+
+        async function fwa(u, o = {}) {
+            const headers = { ...o.headers, 'Authorization': `Bearer ${token}` };
+            if (!(o.body instanceof FormData)) {
+                headers['Content-Type'] = 'application/json';
+            }
+            o.headers = headers;
+            return fetch(u, o);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isShowing = sidebar.classList.toggle('show');
+            if (isShowing) {
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            } else {
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function sw(n, el) {
+            document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+            const sec = document.getElementById(n + '-section');
+            if (sec) sec.classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            if (window.innerWidth <= 992) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('show')) toggleSidebar();
+            }
+
+            if (n === 'dashboard') ld();
+            if (n === 'browse') lb();
+            if (n === 'orders') lo();
+            if (n === 'payments') lpm();
+        }
+
+        function toast(msg, type = 'success') {
+            const tw = document.getElementById('tw');
+            const d = document.createElement('div');
+            d.className = `toast-msg ${type}`;
+            d.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2" style="color:${type === 'success' ? '#4ade80' : '#fca5a5'}"></i>${msg}`;
+            tw.appendChild(d);
+            setTimeout(() => d.remove(), 4000);
+        }
+
+        document.getElementById('opm').onchange = function () {
+            const m = this.value;
+            const inst = {
+                wallet: 'سيتم خصم المبلغ مباشرة من رصيد محفظتك.',
+                cash: 'سداد المبلغ نقداً عند استلام الطلب من التاجر.',
+                instapay: 'يرجى التحويل عبر انستاباي للتاجر مباشرة أو حساب الشركة:<br>IPA: <b>wtsra201006513814</b>',
+                vodafone_cash: 'قم بالتحويل لرقم محفظة التاجر أو الشركة:<br>الرقم: <b>01006513814</b>',
+                bank_transfer: 'تحويل بنكي لشركة TradeLink:<br>IBAN: <b>EG890044500700005007861381409</b>'
+            };
+            const over = document.getElementById('o-instr');
+            if (over) {
+                over.style.display = 'block';
+                over.innerHTML = `<div class="gw-label mb-1">تعليمات الدفع</div><div style="font-size:0.8rem;line-height:1.4">${inst[m] || ''}</div>`;
+            }
+            document.getElementById('proof-div').style.display = (m !== 'wallet' && m !== 'cash') ? 'block' : 'none';
+        };
+
+        function sa(s) { return { pending: 'قيد الانتظار', confirmed: 'تم التأكيد', processing: 'قيد المعالجة', shipped: 'تم الشحن', delivered: 'تم التسليم', cancelled: 'ملغي', in_transit: 'جاري الشحن' }[s] || s }
+        function ma(m) { return { cash: 'نقدي', bank_transfer: 'تحويل بنكي', instapay: 'انستاباي', vodafone_cash: 'فودافون كاش', wallet: 'محفظة' }[m] || m }
+        function sbc(s) { return s === 'pending' ? 'bs-y' : s === 'delivered' ? 'bs-g' : 'bs-b' }
+
+        async function ld() {
+            try {
+                const r = await fwa('/api/orders');
+                const j = await r.json();
+                const o = (j.data || j).filter(x => x.buyer_id === CID);
+                document.getElementById('s-o').textContent = o.length;
+                document.getElementById('s-p').textContent = o.filter(x => x.status === 'pending').length;
+                // fetch balance
+                try {
+                    const br = await fwa(`/api/payments/balance/${CID}`);
+                    const bj = await br.json();
+                    document.getElementById('s-b').textContent = parseFloat(bj.balance || 0).toFixed(2);
+                } catch (e) { document.getElementById('s-b').textContent = '0.00'; }
+            } catch (e) { console.error(e); }
+            lro();
+        }
+
+        async function lro() {
+            try {
+                const r = await fwa('/api/orders');
+                const j = await r.json();
+                const o = (j.data || j).filter(x => x.buyer_id === CID);
+                const b = document.getElementById('ro');
+                if (!o.length) { b.innerHTML = '<tr><td colspan="5" class="text-center" style="color:#64748b">لا توجد طلبات</td></tr>'; return; }
+                b.innerHTML = o.slice(0, 5).map(x => `<tr><td>#${x.id}</td><td>${x.seller?.name || '#' + x.seller_id}</td><td>${parseFloat(x.total_amount).toFixed(2)} ج.م</td><td><span class="bs ${sbc(x.status)}">${sa(x.status)}</span></td><td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td></tr>`).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        async function lb() {
+            try {
+                const r = await fwa('/api/products');
+                const j = await r.json();
+                AP = j.data || j;
+                rp(AP);
+                lcf();
+            } catch (e) { console.error(e); }
+        }
+
+        function rp(p) {
+            const catMap = {
+                'Food & Grains': 'مواد غذائية وحبوب',
+                'Oils & Fats': 'زيوت ودهون',
+                'Beverages': 'مشروبات',
+                'Personal Care': 'عناية شخصية',
+                'Cleaning Supplies': 'منظفات',
+                'Electronics': 'إلكترونيات',
+                'Clothing': 'ملابس',
+                'Houseware': 'أدوات منزلية',
+                'Construction': 'بناء وإنشاءات',
+                'Clothing & Fashion': 'ملابس وأزياء',
+                'Construction Materials': 'بناء وإنشاءات',
+                'Home & Furniture': 'أثاث وأدوات منزلية',
+                'Auto Parts': 'قطع غيار سيارات',
+                'Medical Supplies': 'مستلزمات طبية',
+                'Industrial Equipment': 'معدات صناعية',
+                'Plastics & Packaging': 'بلاستيك وتغليف'
+            };
+            document.getElementById('pg').innerHTML = p.length ? p.map(x => `
+                <div class="col-md-4 col-lg-3">
+                    <div class="pc" onclick="om(${x.id})">
+                        <div class="pe" style="background: url('${x.image || 'assets/placeholder.png'}') center/cover no-repeat; height:150px; border-radius:12px; margin-bottom:12px">
+                            ${!x.image ? '<i class="fas fa-box" style="font-size:2rem; opacity:0.3"></i>' : ''}
+                            ${x.ai_confidence ? `<div class="ai-badge" style="position:absolute; top:10px; right:10px; background:rgba(192, 132, 252, 0.9); color:white; padding:2px 8px; border-radius:12px; font-size:0.65rem; border:1px solid rgba(255,255,255,0.2)"><i class="fas fa-brain me-1"></i>توصية ذكية: ${Math.round(x.ai_confidence * 100)}%</div>` : ''}
+                        </div>
+                        <h5>${x.name}</h5>
+                        <div class="sn"><i class="fas fa-store me-1"></i>${x.supplier?.name || 'مورد'}</div>
+                        <div class="mt-2" style="display:flex; justify-content:space-between; align-items:center">
+                            <span class="pr">${parseFloat(x.price).toFixed(2)} ج.م</span>
+                            <span style="color:#64748b;font-size:0.7rem">${catMap[x.category?.name] || x.category?.name || ''}</span>
+                        </div>
+                    </div>
+                </div>`).join('') : '<div class="col-12 text-center" style="color:#64748b;padding:40px">لا توجد منتجات متاحة</div>';
+        }
+
+        async function lcf() {
+            try {
+                const r = await fwa('/api/categories');
+                const j = await r.json();
+                const c = j.data || j;
+                const catMap = {
+                    'Food & Grains': 'مواد غذائية وحبوب',
+                    'Oils & Fats': 'زيوت ودهون',
+                    'Beverages': 'مشروبات',
+                    'Personal Care': 'عناية شخصية',
+                    'Cleaning Supplies': 'منظفات',
+                    'Electronics': 'إلكترونيات',
+                    'Clothing & Fashion': 'ملابس وأزياء',
+                    'Construction Materials': 'بناء وإنشاءات',
+                    'Home & Furniture': 'أثاث وأدوات منزلية',
+                    'Auto Parts': 'قطع غيار سيارات',
+                    'Medical Supplies': 'مستلزمات طبية',
+                    'Industrial Equipment': 'معدات صناعية',
+                    'Plastics & Packaging': 'بلاستيك وتغليف'
+                };
+                document.getElementById('fc').innerHTML = '<option value="">كل الفئات</option>' + c.map(x => `<option value="${x.id}">${catMap[x.name] || x.name}</option>`).join('');
+            } catch (e) { }
+        }
+
+        function fp() {
+            const n = document.getElementById('fn').value.toLowerCase(), c = document.getElementById('fc').value;
+            let f = AP;
+            if (n) f = f.filter(p => p.name.toLowerCase().includes(n));
+            if (c) f = f.filter(p => String(p.category_id) === c);
+            rp(f);
+        }
+
+        function om(id) {
+            SP = AP.find(p => p.id === id);
+            if (!SP) return;
+            document.getElementById('opi').innerHTML = `
+                <div style="display:flex; gap:15px; align-items:flex-start">
+                    <img src="${SP.image || 'assets/placeholder.png'}" style="width:100px; height:100px; border-radius:12px; object-fit:cover; border:1px solid rgba(255,255,255,0.1)">
+                    <div>
+                        <h4 style="margin:0">${SP.name}</h4>
+                        <div style="color:#ef4444; font-weight:700; font-size:1.2rem; margin:5px 0">${parseFloat(SP.price).toFixed(2)} ج.م</div>
+                        <div style="color:#64748b; font-size:0.85rem">${SP.supplier?.name || 'مورد'}</div>
+                    </div>
+                </div>
+                ${SP.ai_description ? `
+                <div style="margin-top:15px; padding:12px; background:rgba(192, 132, 252, 0.05); border:1px dashed rgba(192, 132, 252, 0.3); border-radius:12px">
+                    <div style="color:#c084fc; font-size:0.75rem; font-weight:700; margin-bottom:5px"><i class="fas fa-brain me-1"></i>رؤية الذكاء الاصطناعي (AI Insight)</div>
+                    <p style="margin:0; font-size:0.85rem; color:#94a3b8; line-height:1.5">${SP.ai_description}</p>
+                </div>` : ''}
+            `;
+            document.getElementById('oq').value = 1;
+            document.getElementById('o-instr').style.display = 'none';
+            document.getElementById('proof-div').style.display = 'none';
+            document.getElementById('opm').value = 'wallet';
+            ut();
+            document.getElementById('oq').oninput = ut;
+            new bootstrap.Modal(document.getElementById('oM')).show();
+        }
+
+        function ut() {
+            const q = parseInt(document.getElementById('oq').value) || 0;
+            document.getElementById('otl').textContent = (q * parseFloat(SP.price)).toFixed(2);
+        }
+
+        async function so() {
+            if (!SP) return;
+            const q = parseInt(document.getElementById('oq').value), m = document.getElementById('opm').value, up = parseFloat(SP.price), t = q * up;
+            const fileInput = document.getElementById('o-proof');
+            if (m !== 'wallet' && m !== 'cash' && !fileInput.files[0]) { toast('يرجى رفع صورة الإيصال أولاً', 'error'); return; }
+
+            try {
+                const or = await fwa('/api/orders', { method: 'POST', body: JSON.stringify({ buyer_id: CID, seller_id: SP.supplier_id, items: [{ product_id: SP.id, quantity: q, unit_price: up }] }) });
+                const oj = await or.json();
+                if (!oj.success) { toast(oj.error || 'خطأ في الطلب', 'error'); return; }
+
+                const fd = new FormData();
+                fd.append('order_id', oj.data.id);
+                fd.append('method', m);
+                fd.append('amount', t);
+                fd.append('buyer_id', CID);
+                if (fileInput.files[0]) fd.append('proof', fileInput.files[0]);
+
+                const pr = await fwa('/api/payments', { method: 'POST', body: fd });
+                const pj = await pr.json();
+                bootstrap.Modal.getInstance(document.getElementById('oM')).hide();
+                if (pj.success) {
+                    toast(`تم الطلب بنجاح! رقم #${oj.data.id} — ${t.toFixed(2)} ج.م`);
+                } else {
+                    toast('تم الطلب لكن فشل الدفع: ' + (pj.error || ''), 'error');
+                }
+                ld();
+            } catch (e) { toast('خطأ في الاتصال', 'error'); console.error(e); }
+        }
+
+        async function lo() {
+            try {
+                const r = await fwa('/api/orders');
+                const j = await r.json();
+                const o = (j.data || j).filter(x => x.buyer_id === CID);
+                document.getElementById('ot').innerHTML = o.length ? o.map(x => `<tr><td>#${x.id}</td><td>${x.seller?.name || '#' + x.seller_id}</td><td>${parseFloat(x.total_amount).toFixed(2)} ج.م</td><td><span class="bs ${sbc(x.status)}">${sa(x.status)}</span></td><td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td><td>${x.status === 'pending' ? `<button class="btn btn-sm btn-outline-danger" onclick="doDelOrder(${x.id})"><i class="fas fa-trash"></i></button>` : ''}</td></tr>`).join('') : '<tr><td colspan="6" class="text-center" style="color:#64748b">لا توجد طلبات</td></tr>';
+            } catch (e) { console.error(e); }
+        }
+
+        async function doDelOrder(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
+            try {
+                const r = await fwa(`/api/orders/${id}`, { method: 'DELETE' });
+                const j = await r.json();
+                if (j.success) { toast('تم حذف الطلب بنجاح'); lo(); ld(); }
+                else toast(j.error || 'فشل الحذف', 'error');
+            } catch (e) { toast('خطأ في الاتصال', 'error'); }
+        }
+
+        async function lpm() {
+            try {
+                const br = await fwa(`/api/payments/balance/${CID}`);
+                const bj = await br.json();
+                document.getElementById('wb').textContent = parseFloat(bj.balance || 0).toFixed(2) + ' ج.م';
+                document.getElementById('s-b').textContent = parseFloat(bj.balance || 0).toFixed(2);
+
+                const r = await fwa('/api/payments');
+                const j = await r.json();
+                const p = j.data || j;
+                document.getElementById('pmt').innerHTML = (Array.isArray(p) && p.length) ? p.map(x => `<tr><td>#${x.order_id}</td><td>${ma(x.method)}</td><td>${parseFloat(x.amount).toFixed(2)} ج.م</td><td><span class="bs ${x.status === 'completed' ? 'bs-g' : 'bs-y'}">${x.status === 'completed' ? 'مكتمل' : 'معلق'}</span></td><td><code style="color:#fca5a5">${x.transaction_ref || '-'}</code></td></tr>`).join('') : '<tr><td colspan="5" class="text-center" style="color:#64748b">لا توجد مدفوعات</td></tr>';
+            } catch (e) { console.error(e); }
+        }
+
+        // Init
+        ld();
+    </script>
+</body>
+
+</html>
