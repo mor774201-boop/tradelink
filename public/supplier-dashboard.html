@@ -9,6 +9,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/responsive.css">
+    <link rel="stylesheet" href="assets/theme.css">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -654,10 +666,7 @@
             <h4 style="font-size: 1.1rem; font-weight: 700; color: #ef4444; margin-bottom: 0;">TradeLink</h4>
             <small style="color: #64748b; font-size: 0.75rem;">لوحة الموردين</small>
         </div>
-        <div class="toolbar-btns">
-            <button class="toolbar-btn" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-sun"></i><span>وضع النهار</span></button>
-            <button class="toolbar-btn" onclick="toggleLang()" id="lang-btn"><i class="fas fa-globe"></i><span>English</span></button>
-        </div>
+
         <nav class="nav flex-column sidebar-nav mt-2">
             <div class="nav-section">الرئيسية</div>
             <a class="nav-link active" href="#" onclick="sw('dashboard',this)"><i class="fas fa-home"></i>نظرة عامة</a>
@@ -2005,51 +2014,7 @@
                 } catch (e) { toast('خطأ في الاتصال', 'error'); }
             }
 
-            // ── Theme & Language Logic ──────────────────────────────
-            let currentLang = localStorage.getItem('lang') || 'ar';
-            let currentTheme = localStorage.getItem('theme') || 'dark';
 
-            const i18n = {
-                ar: {
-                    dashboard: "نظرة عامة", products: "المنتجات", orders: "الطلبات", 'add-product': "إضافة منتج",
-                    earnings: "الأرباح", payments: "المدفوعات", withdraw: "سحب الأرباح", inventory: "المخزون",
-                    shipments: "الشحنات", invoices: "الفواتير", 'bank-settings': "إعدادات البنك", deposit: "إيداع رصيد",
-                    offers: "إدارة العروض", welcome: "مرحباً، المورد", wallet_bal: "رصيد المحفظة", 
-                    'day-mode': "وضع النهار", 'night-mode': "وضع الليل"
-                },
-                en: {
-                    dashboard: "Overview", products: "Products", orders: "Orders", 'add-product': "Add Product",
-                    earnings: "Earnings", payments: "Payments", withdraw: "Withdraw", inventory: "Inventory",
-                    shipments: "Shipments", invoices: "Invoices", 'bank-settings': "Bank Settings", deposit: "Deposit",
-                    offers: "Offers", welcome: "Welcome, Supplier", wallet_bal: "Wallet Balance",
-                    'day-mode': "Day Mode", 'night-mode': "Night Mode"
-                }
-            };
-
-            function toggleTheme() {
-                currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                applyTheme();
-            }
-
-            function applyTheme() {
-                document.body.classList.toggle('light-theme', currentTheme === 'light');
-                localStorage.setItem('theme', currentTheme);
-                const btn = document.getElementById('theme-btn');
-                if (btn) btn.innerHTML = currentTheme === 'light' ? '<i class="fas fa-moon"></i><span>وضع الليل</span>' : '<i class="fas fa-sun"></i><span>وضع النهار</span>';
-            }
-
-            function toggleLang() {
-                currentLang = currentLang === 'ar' ? 'en' : 'ar';
-                applyLang();
-            }
-
-            function applyLang() {
-                document.documentElement.lang = currentLang;
-                document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-                localStorage.setItem('lang', currentLang);
-                const btn = document.getElementById('lang-btn');
-                if (btn) btn.innerHTML = `<i class="fas fa-globe"></i><span>${currentLang === 'ar' ? 'English' : 'العربية'}</span>`;
-            }
 
             // ── Offers Logic ─────────────────────────────────────────
             async function lof() {
@@ -2138,9 +2103,10 @@
                 await submitDep();
             }
 
-            applyTheme(); applyLang();
             loadSubscription().then(() => ld());
         </script>
+    <script src="js/theme.js"></script>
+    <script src="js/i18n.js"></script>
 </body>
 
 </html>

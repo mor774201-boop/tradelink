@@ -9,7 +9,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/responsive.css">
+    <link rel="stylesheet" href="assets/theme.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -786,52 +798,6 @@
         .toolbar-btn:hover { background: rgba(255,255,255,0.08); color: #e2e8f0; }
         .toolbar-btn i { margin-inline-end: 4px; }
 
-        /* ── Light Theme ── */
-        body.light-theme {
-            --bg-main: #f1f5f9;
-            --bg-sidebar: #ffffff;
-            --bg-card: #ffffff;
-            --bg-input: #f8fafc;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border-color: #e2e8f0;
-            --shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-        body.light-theme .main-content { background: var(--bg-main); }
-        body.light-theme .sidebar { background: var(--bg-sidebar); border-inline-end: 1px solid var(--border-color); }
-        body.light-theme .sidebar .logo h2 { color: var(--text-primary); }
-        body.light-theme .sidebar .logo p { color: var(--text-secondary); }
-        body.light-theme .sidebar .nav-link { color: var(--text-secondary); }
-        body.light-theme .sidebar .nav-link:hover { background: #f1f5f9; color: #1e293b; }
-        body.light-theme .sidebar .nav-link.active { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
-        body.light-theme .sidebar .nav-group-title { color: var(--text-muted); }
-        body.light-theme .sc, body.light-theme .cd { background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--shadow); }
-        body.light-theme .ch { border-bottom-color: var(--border-color); }
-        body.light-theme .ch h5 { color: var(--text-primary); }
-        body.light-theme .page-header h2 { color: var(--text-primary); }
-        body.light-theme .sc h3 { color: var(--text-primary); }
-        body.light-theme .sc p { color: var(--text-secondary); }
-        body.light-theme .tbl th { background: #f8fafc; color: var(--text-secondary); border-bottom-color: var(--border-color); }
-        body.light-theme .tbl td { border-bottom-color: #f1f5f9; color: var(--text-primary); }
-        body.light-theme .fcd, body.light-theme .form-control { background: var(--bg-input) !important; border-color: var(--border-color) !important; color: var(--text-primary) !important; }
-        body.light-theme .fl { color: var(--text-secondary); }
-        body.light-theme .wc { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
-        body.light-theme .wc h6, body.light-theme .wc h2 { color: #991b1b; }
-        body.light-theme .pm-card { background: var(--bg-card); border-color: var(--border-color); color: var(--text-primary); }
-        body.light-theme .pm-card span, body.light-theme .pm-card i { color: var(--text-primary); }
-        body.light-theme .pm-card small { color: var(--text-muted); }
-        body.light-theme .gw-box { background: #fef2f2; border-color: #fecaca; }
-        body.light-theme .gw-label { color: var(--text-secondary); }
-        body.light-theme .dep-upload-area { border-color: rgba(37,99,235,0.2); background: rgba(37,99,235,0.03); }
-        body.light-theme .dep-upload-area:hover { border-color: rgba(37,99,235,0.5); background: rgba(37,99,235,0.06); }
-        body.light-theme .toast-msg { background: #fff; border-color: var(--border-color); color: var(--text-primary); box-shadow: var(--shadow); }
-        body.light-theme .toolbar-btns { border-bottom-color: var(--border-color); }
-        body.light-theme .toolbar-btn { border-color: var(--border-color); background: var(--bg-input); color: var(--text-secondary); }
-        body.light-theme .toolbar-btn:hover { background: #e2e8f0; color: var(--text-primary); }
-        body.light-theme .cb { color: var(--text-primary); }
-        body.light-theme .locked-overlay { background: rgba(255,255,255,0.95); }
-        body.light-theme .locked-overlay h5, body.light-theme .locked-overlay p { color: var(--text-primary); }
     </style>
 </head>
 
@@ -880,14 +846,7 @@
             <h4 style="font-size: 1.1rem; font-weight: 700; color: #ef4444; margin-bottom: 0;">TradeLink</h4>
             <small style="color: #64748b; font-size: 0.75rem;">تاجر الجملة</small>
         </div>
-        <div class="toolbar-btns">
-            <button class="toolbar-btn" onclick="toggleTheme()" id="theme-toggle-btn">
-                <i class="fas fa-sun"></i><span data-i18n="light_mode">الوضع الفاتح</span>
-            </button>
-            <button class="toolbar-btn" onclick="toggleLang()" id="lang-toggle-btn">
-                <i class="fas fa-language"></i><span>English</span>
-            </button>
-        </div>
+
         <nav class="nav flex-column sidebar-nav mt-2">
             <div class="nav-section">الرئيسية</div>
             <a class="nav-link active" href="#" onclick="sw('dashboard',this)"><i class="fas fa-home"></i>نظرة عامة</a>
@@ -2452,188 +2411,7 @@
             } catch (e) { toast('خطأ', 'error'); }
         }
 
-        // ── Theme Toggle (Light/Dark) ───────────────────────────
-        let currentTheme = localStorage.getItem('tl-theme') || 'dark';
-        function applyTheme(t) {
-            currentTheme = t;
-            if (t === 'light') {
-                document.body.classList.add('light-theme');
-                document.getElementById('theme-toggle-btn').innerHTML = '<i class="fas fa-moon"></i><span data-i18n="dark_mode">' + (currentLang === 'en' ? 'Dark Mode' : 'الوضع الغامق') + '</span>';
-            } else {
-                document.body.classList.remove('light-theme');
-                document.getElementById('theme-toggle-btn').innerHTML = '<i class="fas fa-sun"></i><span data-i18n="light_mode">' + (currentLang === 'en' ? 'Light Mode' : 'الوضع الفاتح') + '</span>';
-            }
-            localStorage.setItem('tl-theme', t);
-        }
-        function toggleTheme() {
-            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
-        }
 
-        // ── Language Toggle (Arabic/English) ─────────────────────
-        let currentLang = localStorage.getItem('tl-lang') || 'ar';
-
-        const i18n = {
-            // Sidebar
-            'الرئيسية': 'Home',
-            'نظرة عامة': 'Overview',
-            'إدارة التجارة': 'Trade Management',
-            'منتجاتي': 'My Products',
-            'الطلبات الواردة': 'Incoming Orders',
-            'إضافة منتج': 'Add Product',
-            'التوريد': 'Supply',
-            'تصفح الموردين': 'Browse Suppliers',
-            'طلباتي': 'My Orders',
-            'المالية': 'Finance',
-            'المحفظة والعمليات': 'Wallet & Transactions',
-            'إيداع رصيد': 'Deposit Balance',
-            'إعدادات البنك': 'Bank Settings',
-            'اللوجستيات': 'Logistics',
-            'الشحنات': 'Shipments',
-            'الفواتير': 'Invoices',
-            'التواصل والتقارير': 'Communication & Reports',
-            'الإشعارات': 'Notifications',
-            'التقارير المالية': 'Financial Reports',
-            'تسجيل الخروج': 'Logout',
-            // Page headers
-            'نظرة عامة': 'Overview',
-            'منتجاتي': 'My Products',
-            'الطلبات الواردة': 'Incoming Orders',
-            'إضافة منتج جديد': 'Add New Product',
-            'تصفح منتجات الموردين (جملة)': 'Browse Supplier Products (Wholesale)',
-            'طلباتي من الموردين': 'My Orders from Suppliers',
-            'المدفوعات والمحفظة': 'Payments & Wallet',
-            'إيداع رصيد في المحفظة': 'Deposit to Wallet',
-            'الشحنات': 'Shipments',
-            'الفواتير': 'Invoices',
-            'إعدادات الحساب البنكي': 'Bank Account Settings',
-            'الإشعارات': 'Notifications',
-            'التقارير المالية': 'Financial Reports',
-            // Stats cards
-            'منتجاتي': 'My Products',
-            'الطلبات الواردة': 'Incoming Orders',
-            'الإيرادات (ج.م)': 'Revenue (EGP)',
-            'رصيد المحفظة': 'Wallet Balance',
-            // Table headers
-            'رقم': 'No.',
-            'المشتري': 'Buyer',
-            'المورد': 'Supplier',
-            'المبلغ': 'Amount',
-            'الحالة': 'Status',
-            'التاريخ': 'Date',
-            'المنتج': 'Product',
-            'السعر': 'Price',
-            'سعر الجملة': 'Wholesale Price',
-            'الكمية': 'Quantity',
-            'الحد الأدنى': 'Min. Order',
-            'إجراء': 'Action',
-            // Form fields
-            'اسم المنتج': 'Product Name',
-            'السعر للتجزئة (ج.م)': 'Retail Price (EGP)',
-            'سعر الجملة (ج.م)': 'Wholesale Price (EGP)',
-            'الكمية': 'Quantity',
-            'الفئة': 'Category',
-            'الحد الأدنى للطلب': 'Minimum Order',
-            'رابط صورة المنتج (URL)': 'Product Image URL',
-            'وصف المنتج': 'Product Description',
-            'إضافة المنتج': 'Add Product',
-            'المبلغ (ج.م)': 'Amount (EGP)',
-            // Buttons
-            'إيداع الآن': 'Deposit Now',
-            'إتمام الطلب الآن': 'Complete Order',
-            'اشترك الآن': 'Subscribe Now',
-            'الوضع الفاتح': 'Light Mode',
-            'الوضع الغامق': 'Dark Mode',
-            // Deposit
-            'صورة الإيصال / سكرين شوت': 'Receipt / Screenshot',
-            'اضغط هنا لرفع صورة الإيصال أو السكرين شوت': 'Click here to upload receipt or screenshot',
-            'تم رفع الصورة بنجاح': 'Image uploaded successfully',
-            'اختر طريقة الإيداع': 'Choose Deposit Method',
-            'تعليمات الإيداع': 'Deposit Instructions',
-            'رصيد المحفظة الحالي': 'Current Wallet Balance',
-            'معلومات الإيداع': 'Deposit Info',
-            'الإيداع فوري وآمن': 'Instant & secure deposit',
-            'لا توجد رسوم إضافية': 'No extra fees',
-            'مشفر وآمن': 'Encrypted & secure',
-            // Payment methods
-            'تحويل بنكي': 'Bank Transfer',
-            'انستاباي': 'InstaPay',
-            'فودافون كاش': 'Vodafone Cash',
-            'أورنج كاش': 'Orange Cash',
-            'اتصالات كاش': 'Etisalat Cash',
-            'فوري': 'Fawry',
-            'بطاقة ائتمانية': 'Credit Card',
-            // AI
-            'توليد صورة بالذكاء الاصطناعي': 'Generate AI Image',
-            'توليد وصف بالذكاء الاصطناعي': 'Generate AI Description',
-            // Financial
-            'رصيد المحفظة': 'Wallet Balance',
-            'إجمالي الواردات': 'Total Income',
-            'إجمالي المصروفات': 'Total Expenses',
-            'إجمالي الطلبات': 'Total Orders',
-            'إجمالي المبيعات (ج.م)': 'Total Sales (EGP)',
-            'صافي الدخل (تقريبي)': 'Net Income (Approx.)',
-            'تحليل المبيعات الشهرية': 'Monthly Sales Analysis',
-            // Empty states
-            'لا توجد منتجات': 'No products',
-            'لا توجد طلبات': 'No orders',
-            'لا توجد طلبات واردة': 'No incoming orders',
-            'لا توجد مدفوعات': 'No payments',
-            'لا توجد شحنات': 'No shipments',
-            'لا توجد فواتير': 'No invoices',
-            'السلة فارغة حالياً': 'Cart is empty',
-            'سلة المشتريات': 'Shopping Cart',
-            'الإجمالي الكلي:': 'Grand Total:',
-            // Reports headers
-            'آخر الطلبات الواردة': 'Latest Incoming Orders',
-            'آخر طلباتي من الموردين': 'My Latest Supplier Orders',
-            'جاري التحميل...': 'Loading...',
-        };
-
-        // Reverse map for EN -> AR
-        const i18nReverse = {};
-        Object.entries(i18n).forEach(([ar, en]) => { i18nReverse[en] = ar; });
-
-        function applyLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('tl-lang', lang);
-            const dir = lang === 'ar' ? 'rtl' : 'ltr';
-            document.documentElement.dir = dir;
-            document.documentElement.lang = lang;
-
-            // Update lang toggle button text
-            const langBtn = document.getElementById('lang-toggle-btn');
-            langBtn.querySelector('span').textContent = lang === 'ar' ? 'English' : 'العربية';
-
-            // Update theme button text
-            applyTheme(currentTheme);
-
-            // Translate all text nodes
-            const dict = lang === 'en' ? i18n : i18nReverse;
-            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-            const textNodes = [];
-            while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-            textNodes.forEach(node => {
-                const trimmed = node.textContent.trim();
-                if (trimmed && dict[trimmed]) {
-                    node.textContent = node.textContent.replace(trimmed, dict[trimmed]);
-                }
-            });
-
-            // Translate placeholders
-            document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
-                const p = el.placeholder.trim();
-                if (dict[p]) el.placeholder = dict[p];
-            });
-        }
-
-        function toggleLang() {
-            applyLang(currentLang === 'ar' ? 'en' : 'ar');
-        }
-
-        // Apply saved preferences on load
-        applyTheme(currentTheme);
-        if (currentLang === 'en') applyLang('en');
 
         async function lsh() {
             try {
@@ -3277,6 +3055,8 @@
 
         loadSubscription().then(() => { ld(); loadCart(); loadRecs(); });
     </script>
+    <script src="js/theme.js"></script>
+    <script src="js/i18n.js"></script>
 </body>
 
 </html>

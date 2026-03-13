@@ -9,6 +9,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/responsive.css">
+    <link rel="stylesheet" href="assets/theme.css">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -949,10 +961,7 @@
             <h4 style="font-size: 1.1rem; font-weight: 700; color: #ef4444; margin-bottom: 0;">TradeLink</h4>
             <small style="color: #64748b; font-size: 0.75rem;">تاجر التجزئة</small>
         </div>
-        <div class="toolbar-btns">
-            <button class="toolbar-btn" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-sun"></i><span>وضع النهار</span></button>
-            <button class="toolbar-btn" onclick="toggleLang()" id="lang-btn"><i class="fas fa-globe"></i><span>English</span></button>
-        </div>
+
         <nav class="nav flex-column sidebar-nav mt-2">
             <div class="nav-section">الرئيسية</div>
             <a class="nav-link active" href="#" onclick="sw('dashboard',this)"><i class="fas fa-home"></i>نظرة عامة</a>
@@ -2321,56 +2330,7 @@
             } catch (e) { console.error(e); }
         }
 
-        // ── Theme & Language Logic ──────────────────────────────
-        let currentLang = localStorage.getItem('lang') || 'ar';
-        let currentTheme = localStorage.getItem('theme') || 'dark';
 
-        const i18n = {
-            ar: {
-                dashboard: "نظرة عامة", browse: "تصفح المنتجات", orders: "طلباتي", payments: "المدفوعات", 
-                deposit: "إيداع رصيد", shipments: "الشحنات", 'bank-settings': "إعدادات البنك", offers: "العروض",
-                welcome: "مرحباً، تاجر التجزئة", wallet_bal: "رصيد المحفظة", month: "هذا الشهر", yesterday: "أمس",
-                total: "الإجمالي", last_orders: "آخر الطلبات", buy: "شراء", qty: "الكمية", 
-                pay_method: "طريقة الدفع", 'day-mode': "وضع النهار", 'night-mode': "وضع الليل"
-            },
-            en: {
-                dashboard: "Overview", browse: "Browse Products", orders: "My Orders", payments: "Payments",
-                deposit: "Deposit", shipments: "Shipments", 'bank-settings': "Bank Settings", offers: "Offers",
-                welcome: "Welcome, Retailer", wallet_bal: "Wallet Balance", month: "This Month", yesterday: "Yesterday",
-                total: "Total", last_orders: "Recent Orders", buy: "Buy", qty: "Qty",
-                pay_method: "Payment Method", 'day-mode': "Day Mode", 'night-mode': "Night Mode"
-            }
-        };
-
-        function toggleTheme() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            applyTheme();
-        }
-
-        function applyTheme() {
-            document.body.classList.toggle('light-theme', currentTheme === 'light');
-            localStorage.setItem('theme', currentTheme);
-            const btn = document.getElementById('theme-btn');
-            if (btn) btn.innerHTML = currentTheme === 'light' ? '<i class="fas fa-moon"></i><span>وضع الليل</span>' : '<i class="fas fa-sun"></i><span>وضع النهار</span>';
-        }
-
-        function toggleLang() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            applyLang();
-        }
-
-        function applyLang() {
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            localStorage.setItem('lang', currentLang);
-            const btn = document.getElementById('lang-btn');
-            if (btn) btn.innerHTML = `<i class="fas fa-globe"></i><span>${currentLang === 'ar' ? 'English' : 'العربية'}</span>`;
-            
-            // Re-render navigation or static texts if needed
-            document.querySelectorAll('.nav-link span, .nav-section').forEach(el => {
-                // Simplified text swap for demo
-            });
-        }
 
         // ── Offers Logic ─────────────────────────────────────────
         async function lof() {
@@ -2421,9 +2381,10 @@
             }
         }
 
-        applyTheme(); applyLang();
         loadSubscription().then(() => { ld(); loadCart(); loadRecs(); });
     </script>
+    <script src="js/theme.js"></script>
+    <script src="js/i18n.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,134 @@
+/* ═══════════════════════════════════════════════════════════════
+   TradeLink Theme System (Dark / Light Mode)
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+    /* Default Dark Mode Variables */
+    --bg-color: #0b0f19;
+    --card-bg: rgba(17, 24, 39, 0.8);
+    --sidebar-bg: linear-gradient(180deg, #111827, #0b0f19);
+    --text-main: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border-color: rgba(239, 68, 68, 0.15);
+    --input-bg: rgba(15, 23, 42, 0.6);
+    --accent-glow: rgba(239, 68, 68, 0.06);
+    --table-header-bg: rgba(15, 23, 42, 0.6);
+    --table-border: rgba(239, 68, 68, 0.1);
+}
+
+body.light-mode {
+    /* Light Mode Variables overrides */
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --sidebar-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --input-bg: #f1f5f9;
+    --accent-glow: rgba(239, 68, 68, 0.03);
+    --table-header-bg: #f8fafc;
+    --table-border: rgba(0, 0, 0, 0.05);
+}
+
+/* Base Apply Variables globally to standard tags */
+body {
+    background: var(--bg-color);
+    color: var(--text-main);
+}
+
+.sidebar {
+    background: var(--sidebar-bg);
+    border-left: 1px solid var(--border-color);
+}
+
+.auth-card, .cd, .pc, .wc, .modal-content, .gw-box {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+h1, h2, h3, h4, h5, h6, .page-header h2 {
+    color: var(--text-main) !important;
+}
+
+p, .text-muted, .sub, .sidebar-brand small, .cart-item-info .text-muted, .cd .cb {
+    color: var(--text-muted) !important;
+}
+
+.form-control, .fcd, select, input, .form-select {
+    background: var(--input-bg) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.tbl th, thead th {
+    background: var(--table-header-bg) !important;
+    color: var(--text-muted) !important;
+    border-bottom: 2px solid var(--border-color) !important;
+}
+
+.tbl td, tbody td {
+    border-bottom: 1px solid var(--table-border) !important;
+    color: var(--text-main) !important;
+}
+
+/* Light mode overrides for background radial gradient */
+body.light-mode::before {
+    background: radial-gradient(ellipse at 30% 50%, rgba(239, 68, 68, 0.03) 0%, transparent 50%), 
+                radial-gradient(ellipse at 70% 30%, rgba(249, 115, 22, 0.02) 0%, transparent 50%);
+}
+
+/* Cart & Sidebar Overrides */
+.cart-sidebar, .offcanvas {
+    background: var(--sidebar-bg) !important;
+    color: var(--text-main) !important;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+}
+
+.cart-header, .cart-footer, .cart-item {
+    border-color: var(--border-color) !important;
+}
+
+.cart-header h5, .cart-item-info h6 {
+    color: var(--text-main) !important;
+}
+
+.qty-btn {
+    background: var(--input-bg) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.qty-val {
+    color: var(--text-main) !important;
+}
+
+/* Category Filters (Mobile Slider) */
+.cat-pill {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
+
+.cat-pill.active {
+    background: linear-gradient(135deg, #ef4444, #f97316) !important;
+    color: white !important;
+    border-color: transparent !important;
+}
+
+.pc .q-add, .pc .q-ctrls {
+    background: var(--input-bg) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.pc .q-add i, .pc .q-cbtn {
+    color: var(--text-main) !important;
+}
+
+.pc .q-cval {
+    color: var(--text-main) !important;
+}
+
+.btn-g, .btn-primary, .btn-danger {
+    color: white !important; /* Preserve button text visibility */
+}
