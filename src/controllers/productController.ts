@@ -2,16 +2,18 @@ import { Request, Response, NextFunction } from "express";
 import { Product } from "../models/Product";
 import { User } from "../models/User";
 import { Category } from "../models/Category";
+import { Role } from "../models/Role";
 import { Op } from "sequelize";
 
 export async function listProducts(req: Request, res: Response, next: NextFunction) {
   try {
-    const { name, location, category_id, role } = req.query;
+    const { name, location, category_id, role, supplier_id } = req.query;
     const where: any = {};
     const userWhere: any = {};
 
     if (name) where.name = { [Op.like]: `%${name}%` };
     if (category_id) where.category_id = category_id;
+    if (supplier_id) where.supplier_id = supplier_id;
     if (location) userWhere.location = { [Op.like]: `%${location}%` };
 
     const products = await Product.findAll({
@@ -40,6 +42,23 @@ export async function listProducts(req: Request, res: Response, next: NextFuncti
     });
 
     res.json({ success: true, data: processedProducts });
+  } catch (err) { next(err); }
+}
+
+export async function listSuppliers(_req: Request, res: Response, next: NextFunction) {
+  try {
+    const suppliers = await User.findAll({
+      where: { status: "active" },
+      include: [
+        {
+          model: Role,
+          as: "role",
+          where: { name: ["Supplier", "Wholesaler"] }
+        }
+      ],
+      attributes: ["id", "name", "company_name", "location", "email", "phone"]
+    });
+    res.json({ success: true, data: suppliers });
   } catch (err) { next(err); }
 }
 

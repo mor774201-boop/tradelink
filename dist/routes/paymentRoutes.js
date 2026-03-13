@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.paymentRouter = void 0;
+const express_1 = require("express");
+const paymentController_1 = require("../controllers/paymentController");
+const auth_1 = require("../middleware/auth");
+exports.paymentRouter = (0, express_1.Router)();
+exports.paymentRouter.get("/methods", paymentController_1.getPaymentMethods);
+exports.paymentRouter.get("/", auth_1.requireAuth, paymentController_1.listPayments);
+exports.paymentRouter.post("/", auth_1.requireAuth, paymentController_1.uploadPaymentProof.single("proof"), paymentController_1.createPayment);
+exports.paymentRouter.post("/deposit", auth_1.requireAuth, paymentController_1.uploadPaymentProof.single("proof"), paymentController_1.depositToWallet);
+exports.paymentRouter.post("/verify-otp", auth_1.requireAuth, paymentController_1.verifyPaymentOTP);
+exports.paymentRouter.get("/balance/:userId", auth_1.requireAuth, paymentController_1.getBalance);
+exports.paymentRouter.get("/:id", auth_1.requireAuth, paymentController_1.getPayment);
+exports.paymentRouter.patch("/:id/status", auth_1.requireAdmin, paymentController_1.updatePaymentStatus);
+exports.paymentRouter.post("/:id/approve", auth_1.requireAdmin, paymentController_1.approvePayment);

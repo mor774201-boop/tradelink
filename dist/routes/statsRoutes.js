@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.statsRouter = void 0;
+const express_1 = require("express");
+const statsController_1 = require("../controllers/statsController");
+const auth_1 = require("../middleware/auth");
+exports.statsRouter = (0, express_1.Router)();
+exports.statsRouter.get("/", auth_1.requireAuth, statsController_1.getDashboardStats);
+exports.statsRouter.get("/supplier/:id", auth_1.requireAuth, statsController_1.getSupplierStats);
+exports.statsRouter.get("/admin", auth_1.requireAdmin, statsController_1.getAdminStats);
+exports.statsRouter.get("/wholesaler/:id", auth_1.requireAuth, statsController_1.getWholesalerStats);
+exports.statsRouter.get("/wholesaler/:id/report", auth_1.requireAuth, statsController_1.getWholesalerReport);
+exports.statsRouter.get("/retailer/:id", auth_1.requireAuth, statsController_1.getRetailerStats);

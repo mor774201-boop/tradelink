@@ -24,8 +24,10 @@
         }
 
         .sidebar {
-            background: linear-gradient(180deg, #111827, #0b0f19);
-            border-left: 1px solid rgba(239, 68, 68, .15);
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(239, 68, 68, .1);
             height: 100vh;
             position: fixed;
             right: 0;
@@ -397,32 +399,44 @@
         }
 
         .pc .pe {
-            font-size: 2.5rem;
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            background: rgba(239, 68, 68, .08);
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 14px;
+            background: rgba(239, 68, 68, .05);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 10px
+            margin-bottom: 15px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .pc:hover .pe {
+            transform: scale(1.02);
         }
 
         .pc h5 {
             color: #f1f5f9;
-            font-size: 1rem;
-            margin-bottom: 5px
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .pc .sn {
-            color: #64748b;
-            font-size: .8rem
+            color: #94a3b8;
+            font-size: .8rem;
+            margin-bottom: 8px;
         }
 
         .pc .pr {
             color: #fca5a5;
-            font-size: 1.2rem;
-            font-weight: 700
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .modal-dark .modal-content {
@@ -525,7 +539,9 @@
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <h4><i class="fas fa-user me-2"></i>لوحة المستهلك</h4><small>TradeLink Consumer</small>
+            <img src="assets/logo.png" alt="TradeLink Logo" style="width: 50px; margin-bottom: 15px;">
+            <h4 style="font-size: 1.1rem; font-weight: 700; color: #ef4444; margin-bottom: 0;">TradeLink</h4>
+            <small style="color: #64748b; font-size: 0.75rem;">لوحة المستهلك</small>
         </div>
         <nav class="nav flex-column sidebar-nav mt-2">
             <div class="nav-section">الرئيسية</div>
@@ -534,8 +550,8 @@
             <a class="nav-link" href="#" onclick="sw('browse',this)"><i class="fas fa-search"></i>تصفح المنتجات</a>
             <a class="nav-link" href="#" onclick="sw('orders',this)"><i class="fas fa-shopping-bag"></i>طلباتي</a>
             <div class="nav-section">المالية</div>
-            <a class="nav-link" href="#" onclick="sw('payments',this)"><i class="fas fa-credit-card"></i>المحفظة
-                والمدفوعات</a>
+            <a class="nav-link" href="#" onclick="sw('payments',this)"><i class="fas fa-credit-card"></i>المحفظة والمدفوعات</a>
+            <a class="nav-link" href="#" onclick="sw('suppliers',this)"><i class="fas fa-store"></i>الموردين</a>
             <hr style="border-color:rgba(239,68,68,.1);margin:20px 0">
             <a class="nav-link" href="/" style="color:#f87171!important"><i class="fas fa-sign-out-alt"></i>تسجيل
                 الخروج</a>
@@ -545,6 +561,22 @@
     <div class="main-content">
         <!-- Dashboard Overview -->
         <div id="dashboard-section" class="sec active">
+            <!-- Verification Alert -->
+            <div id="verification-banner" class="alert alert-warning border-0 shadow-sm mb-4" style="display: none; background: rgba(245, 158, 11, 0.1); border-right: 4px solid #f59e0b !important; color: #f59e0b; border-radius: 12px; padding: 15px 20px;">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-3" style="font-size: 1.2rem;"></i>
+                        <div>
+                            <strong class="d-block mb-1">يرجى تأكيد رقم هاتفك</strong>
+                            <span class="small opacity-75">قم بتأكيد رقم هاتفك لتتمكن من إجراء العمليات المالية بأمان تام.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm px-4 py-2" style="background: #f59e0b; color: #fff; border-radius: 8px; font-weight: 700;" onclick="startPhoneVerification()">
+                        تأكيد الآن <i class="fas fa-arrow-left ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
             <div class="page-header">
                 <h2>نظرة عامة</h2><span style="color:#64748b">مرحباً، أحمد</span>
             </div>
@@ -572,9 +604,6 @@
                 </div>
             </div>
             <div class="cd">
-                <div class="ch">
-                    <h5>آخر طلباتي</h5>
-                </div>
                 <div class="cb">
                     <div class="table-responsive">
                         <table class="tbl">
@@ -594,6 +623,15 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+            <!-- Notifications Section placeholder if needed -->
+            <div id="notif-section" class="sec">
+                <div class="page-header">
+                    <h2>الإشعارات</h2>
+                </div>
+                <div class="cd">
+                    <div class="cb" id="notif-list"></div>
                 </div>
             </div>
         </div>
@@ -673,40 +711,70 @@
                 </div>
             </div>
         </div>
+
+        <!-- Suppliers -->
+        <div id="suppliers-section" class="sec">
+            <div class="page-header">
+                <h2>الموردين المتاحين</h2>
+            </div>
+            <div class="row g-3" id="sl"></div>
+        </div>
     </div>
 
-    <!-- Order Modal -->
+    <!-- Order & Product Details Modal -->
     <div class="modal fade modal-dark" id="oM" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">تأكيد الطلب</h5>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; background: #0f172a;">
+                <div class="modal-header border-0 pb-0" style="padding: 25px;">
+                    <h5 class="modal-title fw-bold" style="font-size: 1.3rem;">تفاصيل المنتج</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <p id="opi"></p>
-                    <div class="mb-3"><label class="fl">الكمية</label><input type="number" class="form-control fcd"
-                            id="oq" min="1" value="1"></div>
-                    <div class="mb-3"><label class="fl">طريقة الدفع</label><select class="form-control fcd" id="opm">
-                            <option value="wallet">محفظة</option>
-                            <option value="cash">نقدي</option>
-                            <option value="instapay">انستاباي</option>
-                            <option value="vodafone_cash">فودافون كاش</option>
-                        </select></div>
-                    <div class="mb-3" id="proof-div" style="display:none">
-                        <label class="fl">ارفع سكرين شوت (مطلوب):</label>
-                        <input type="file" id="o-proof" class="form-control fcd" accept="image/*">
+                <div class="modal-body" style="padding: 25px;">
+                    <div id="opi" class="row g-4 align-items-center mb-4"></div>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-7">
+                            <div class="p-4 rounded-4" style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(239, 68, 68, 0.1);">
+                                <h6 class="text-muted small text-uppercase mb-3 fw-bold">خيارات الطلب</h6>
+                                <div class="mb-3">
+                                    <label class="fl mb-2">الكمية المطلوبة</label>
+                                    <input type="number" class="form-control fcd border-0" id="oq" min="1" value="1" style="background: #1e293b;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fl mb-2">طريقة الدفع</label>
+                                    <select class="form-control fcd border-0" id="opm" style="background: #1e293b;">
+                                        <option value="wallet">المحفظة (دفع فوري)</option>
+                                        <option value="cash">نقدي عند الاستلام</option>
+                                        <option value="instapay">انستاباي (IPA)</option>
+                                        <option value="vodafone_cash">فودافون كاش</option>
+                                    </select>
+                                </div>
+                                <div id="o-instr" class="gw-box border-0 mt-3" style="background: rgba(239, 68, 68, 0.05); display:none">
+                                    <div id="o-instr-text" style="font-size:0.8rem; line-height:1.6; color:#94a3b8"></div>
+                                </div>
+                                <div class="mb-3 mt-4" id="proof-div" style="display:none">
+                                    <label class="fl mb-2">إثبات الدفع (سكرين شوت)</label>
+                                    <input type="file" id="o-proof" class="form-control fcd border-0" accept="image/*" style="background: #1e293b;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="p-4 rounded-4 h-100 d-flex flex-column justify-content-between" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(249, 115, 22, 0.1)); border: 1px solid rgba(239, 68, 68, 0.1);">
+                                <div>
+                                    <h6 class="text-muted small text-uppercase mb-3 fw-bold">ملخص الحساب</h6>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-muted">سعر الوحدة:</span>
+                                        <span id="unit-price-display" class="fw-bold">0.00 ج.م</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary">
+                                        <span class="text-muted">الإجمالي:</span>
+                                        <span class="h4 m-0 fw-bold text-white"><span id="otl">0</span> <small style="font-size: 0.6em;">ج.م</small></span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-g w-100 py-3 mt-4" onclick="so()">تأكيد وإتمام الطلب</button>
+                            </div>
+                        </div>
                     </div>
-                    <strong>الإجمالي: </strong><span id="otl">0</span> ج.م
-                    <div id="o-instr" class="gw-box mt-3"
-                        style="background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.1);display:none">
-                        <div class="gw-label mb-1">تعليمات الدفع</div>
-                        <div id="o-instr-text" style="font-size:0.8rem;line-height:1.4;color:#e2e8f0"></div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="button" class="btn-g" onclick="so()">تأكيد الطلب</button>
                 </div>
             </div>
         </div>
@@ -714,6 +782,7 @@
 
     <div class="toast-wrap" id="tw"></div>
 
+    <script src="js/otp-handler.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const user = JSON.parse(localStorage.getItem('user'));
@@ -760,16 +829,51 @@
 
             if (n === 'dashboard') ld();
             if (n === 'browse') lb();
+            if (n === 'suppliers') ls();
             if (n === 'orders') lo();
             if (n === 'payments') lpm();
         }
 
+        async function ls() {
+            try {
+                const r = await fwa('/api/products/suppliers');
+                const j = await r.json();
+                const s = j.data || j;
+                const b = document.getElementById('sl');
+                if (!s.length) { b.innerHTML = '<div class="col-12 text-center" style="color:#64748b;padding:40px">لا يوجد موردين حالياً</div>'; return; }
+                b.innerHTML = s.map(x => `
+                    <div class="col-md-4 col-lg-3">
+                        <div class="pc" onclick="fb('${x.id}')">
+                            <div class="pe" style="background: rgba(15, 23, 42, 0.4); border: 1px dashed rgba(239, 68, 68, 0.2);">
+                                <i class="fas fa-store" style="font-size: 1.5rem; color: #ef4444; opacity: 0.8;"></i>
+                            </div>
+                            <h5 class="mb-1">${x.company_name || x.name}</h5>
+                            <div class="sn mb-3"><i class="fas fa-map-marker-alt me-1"></i>${x.location || 'غير محدد'}</div>
+                            <button class="btn-g w-100" style="padding: 6px; font-size: 0.8rem">📦 تصفح المنتجات</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        function fb(id) {
+            sw('browse');
+            lb(id);
+        }
+
         function toast(msg, type = 'success') {
             const tw = document.getElementById('tw');
+            if (!tw) {
+                // Fallback for dashboards missing the wrapper
+                const wrap = document.createElement('div');
+                wrap.id = 'tw';
+                wrap.className = 'toast-wrap';
+                document.body.appendChild(wrap);
+            }
             const d = document.createElement('div');
             d.className = `toast-msg ${type}`;
             d.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2" style="color:${type === 'success' ? '#4ade80' : '#fca5a5'}"></i>${msg}`;
-            tw.appendChild(d);
+            document.getElementById('tw').appendChild(d);
             setTimeout(() => d.remove(), 4000);
         }
 
@@ -794,8 +898,30 @@
         function ma(m) { return { cash: 'نقدي', bank_transfer: 'تحويل بنكي', instapay: 'انستاباي', vodafone_cash: 'فودافون كاش', wallet: 'محفظة' }[m] || m }
         function sbc(s) { return s === 'pending' ? 'bs-y' : s === 'delivered' ? 'bs-g' : 'bs-b' }
 
+        function startPhoneVerification() {
+            OTPHandler.show(CID, 'سوف نقوم بإرسال رمز للتحقق من رقم هاتفك.', () => {
+                toast('تم تأكيد رقم هاتفك بنجاح! ✨');
+                document.getElementById('verification-banner').style.display = 'none';
+                // Update local storage
+                const u = JSON.parse(localStorage.getItem('user'));
+                u.is_phone_verified = true;
+                localStorage.setItem('user', JSON.stringify(u));
+            });
+        }
+
         async function ld() {
             try {
+                // Refresh user data to get is_phone_verified
+                const ur = await fwa('/api/user-data');
+                const uj = await ur.json();
+                if (uj.success) {
+                    const latestUser = uj.data;
+                    localStorage.setItem('user', JSON.stringify(latestUser));
+                    if (!latestUser.is_phone_verified) {
+                        document.getElementById('verification-banner').style.display = 'block';
+                    }
+                }
+
                 const r = await fwa('/api/orders');
                 const j = await r.json();
                 const o = (j.data || j).filter(x => x.buyer_id === CID);
@@ -822,9 +948,11 @@
             } catch (e) { console.error(e); }
         }
 
-        async function lb() {
+        async function lb(sid = null) {
             try {
-                const r = await fwa('/api/products');
+                let u = '/api/products';
+                if (sid) u += '?supplier_id=' + sid;
+                const r = await fwa(u);
                 const j = await r.json();
                 AP = j.data || j;
                 rp(AP);
@@ -854,15 +982,14 @@
             document.getElementById('pg').innerHTML = p.length ? p.map(x => `
                 <div class="col-md-4 col-lg-3">
                     <div class="pc" onclick="om(${x.id})">
-                        <div class="pe" style="background: url('${x.image || 'assets/placeholder.png'}') center/cover no-repeat; height:150px; border-radius:12px; margin-bottom:12px">
-                            ${!x.image ? '<i class="fas fa-box" style="font-size:2rem; opacity:0.3"></i>' : ''}
-                            ${x.ai_confidence ? `<div class="ai-badge" style="position:absolute; top:10px; right:10px; background:rgba(192, 132, 252, 0.9); color:white; padding:2px 8px; border-radius:12px; font-size:0.65rem; border:1px solid rgba(255,255,255,0.2)"><i class="fas fa-brain me-1"></i>توصية ذكية: ${Math.round(x.ai_confidence * 100)}%</div>` : ''}
+                        <div class="pe" style="background: url('${x.image || 'assets/placeholder.png'}') center/cover no-repeat;">
+                            ${!x.image ? '<i class="fas fa-box" style="font-size:2rem; opacity:0.1"></i>' : ''}
                         </div>
                         <h5>${x.name}</h5>
                         <div class="sn"><i class="fas fa-store me-1"></i>${x.supplier?.name || 'مورد'}</div>
                         <div class="mt-2" style="display:flex; justify-content:space-between; align-items:center">
-                            <span class="pr">${parseFloat(x.price).toFixed(2)} ج.م</span>
-                            <span style="color:#64748b;font-size:0.7rem">${catMap[x.category?.name] || x.category?.name || ''}</span>
+                            <span class="pr">${parseFloat(x.price).toFixed(2)} <small style="font-size:0.6em">ج.م</small></span>
+                            <span style="color:#475569;font-size:0.65rem;font-weight:700;text-transform:uppercase">${catMap[x.category?.name] || x.category?.name || ''}</span>
                         </div>
                     </div>
                 </div>`).join('') : '<div class="col-12 text-center" style="color:#64748b;padding:40px">لا توجد منتجات متاحة</div>';
@@ -903,21 +1030,37 @@
         function om(id) {
             SP = AP.find(p => p.id === id);
             if (!SP) return;
-            document.getElementById('opi').innerHTML = `
-                <div style="display:flex; gap:15px; align-items:flex-start">
-                    <img src="${SP.image || 'assets/placeholder.png'}" style="width:100px; height:100px; border-radius:12px; object-fit:cover; border:1px solid rgba(255,255,255,0.1)">
-                    <div>
-                        <h4 style="margin:0">${SP.name}</h4>
-                        <div style="color:#ef4444; font-weight:700; font-size:1.2rem; margin:5px 0">${parseFloat(SP.price).toFixed(2)} ج.م</div>
-                        <div style="color:#64748b; font-size:0.85rem">${SP.supplier?.name || 'مورد'}</div>
-                    </div>
+            
+            document.getElementById('upi').innerHTML = `
+                <div class="col-md-5">
+                    <div class="rounded-4 overflow-hidden shadow-lg" style="aspect-ratio: 1/1; background: url('${SP.image || 'assets/placeholder.png'}') center/cover no-repeat; border: 1px solid rgba(255,255,255,0.05);"></div>
                 </div>
-                ${SP.ai_description ? `
-                <div style="margin-top:15px; padding:12px; background:rgba(192, 132, 252, 0.05); border:1px dashed rgba(192, 132, 252, 0.3); border-radius:12px">
-                    <div style="color:#c084fc; font-size:0.75rem; font-weight:700; margin-bottom:5px"><i class="fas fa-brain me-1"></i>رؤية الذكاء الاصطناعي (AI Insight)</div>
-                    <p style="margin:0; font-size:0.85rem; color:#94a3b8; line-height:1.5">${SP.ai_description}</p>
-                </div>` : ''}
+                <div class="col-md-7">
+                    <span class="badge bg-danger bg-opacity-10 text-danger mb-2 px-3 py-2 rounded-pill" style="font-size: 0.7rem;">${SP.category?.name || 'منتج عام'}</span>
+                    <h3 class="text-white fw-bold mb-1">${SP.name}</h3>
+                    <div class="d-flex align-items-center text-muted small mb-3">
+                        <i class="fas fa-store me-2"></i> ${SP.supplier?.name || 'مورد عام'}
+                        <span class="mx-2">|</span>
+                        <i class="fas fa-box me-2"></i> SKU: ${SP.sku || 'N/A'}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="text-white small fw-bold mb-2">وصف المنتج</h6>
+                        <p class="text-muted small mb-0" style="line-height: 1.6;">${SP.description || 'لا يوجد وصف متاح لهذا المنتج حالياً.'}</p>
+                    </div>
+
+                    ${SP.ai_description ? `
+                    <div class="p-3 rounded-3" style="background: rgba(192, 132, 252, 0.05); border: 1px dashed rgba(192, 132, 252, 0.2);">
+                        <div class="d-flex align-items-center mb-1">
+                            <i class="fas fa-brain text-purple me-2" style="color: #c084fc;"></i>
+                            <span style="color: #c084fc; font-size: 0.75rem; font-weight: 700;">ذكاء اصطناعي (AI Insight)</span>
+                        </div>
+                        <p class="m-0 small text-light opacity-75">${SP.ai_description}</p>
+                    </div>` : ''}
+                </div>
             `;
+            
+            document.getElementById('unit-price-display').textContent = parseFloat(SP.price).toFixed(2) + ' ج.م';
             document.getElementById('oq').value = 1;
             document.getElementById('o-instr').style.display = 'none';
             document.getElementById('proof-div').style.display = 'none';
@@ -932,34 +1075,58 @@
             document.getElementById('otl').textContent = (q * parseFloat(SP.price)).toFixed(2);
         }
 
-        async function so() {
+        async function so(isVerified = false) {
             if (!SP) return;
             const q = parseInt(document.getElementById('oq').value), m = document.getElementById('opm').value, up = parseFloat(SP.price), t = q * up;
             const fileInput = document.getElementById('o-proof');
             if (m !== 'wallet' && m !== 'cash' && !fileInput.files[0]) { toast('يرجى رفع صورة الإيصال أولاً', 'error'); return; }
 
-            try {
-                const or = await fwa('/api/orders', { method: 'POST', body: JSON.stringify({ buyer_id: CID, seller_id: SP.supplier_id, items: [{ product_id: SP.id, quantity: q, unit_price: up }] }) });
-                const oj = await or.json();
-                if (!oj.success) { toast(oj.error || 'خطأ في الطلب', 'error'); return; }
+            const submitOrder = async (isVerified = false) => {
+                try {
+                    const orderData = { 
+                        buyer_id: CID, 
+                        seller_id: SP.supplier_id, 
+                        items: [{ product_id: SP.id, quantity: q, unit_price: up }] 
+                    };
+                    if (isVerified) orderData.verified_phone = true;
 
-                const fd = new FormData();
-                fd.append('order_id', oj.data.id);
-                fd.append('method', m);
-                fd.append('amount', t);
-                fd.append('buyer_id', CID);
-                if (fileInput.files[0]) fd.append('proof', fileInput.files[0]);
+                    const or = await fwa('/api/orders', { method: 'POST', body: JSON.stringify(orderData) });
+                    const oj = await or.json();
 
-                const pr = await fwa('/api/payments', { method: 'POST', body: fd });
-                const pj = await pr.json();
-                bootstrap.Modal.getInstance(document.getElementById('oM')).hide();
-                if (pj.success) {
-                    toast(`تم الطلب بنجاح! رقم #${oj.data.id} — ${t.toFixed(2)} ج.م`);
-                } else {
-                    toast('تم الطلب لكن فشل الدفع: ' + (pj.error || ''), 'error');
-                }
-                ld();
-            } catch (e) { toast('خطأ في الاتصال', 'error'); console.error(e); }
+                    if (oj.verification_required) {
+                        OTPHandler.show(CID, oj.message, () => submitOrder(true));
+                        return;
+                    }
+
+                    if (!oj.success) { toast(oj.error || 'خطأ في الطلب', 'error'); return; }
+
+                    const fd = new FormData();
+                    fd.append('order_id', oj.data.id);
+                    fd.append('method', m);
+                    fd.append('amount', t);
+                    fd.append('buyer_id', CID);
+                    if (fileInput.files[0]) fd.append('proof', fileInput.files[0]);
+                    if (isVerified) fd.append('verified_phone', 'true');
+
+                    const pr = await fwa('/api/payments', { method: 'POST', body: fd });
+                    const pj = await pr.json();
+
+                    if (pj.verification_required) {
+                        OTPHandler.show(CID, pj.message, () => submitOrder(true));
+                        return;
+                    }
+
+                    bootstrap.Modal.getInstance(document.getElementById('oM')).hide();
+                    if (pj.success) {
+                        toast(`تم الطلب بنجاح! رقم #${oj.data.id} — ${t.toFixed(2)} ج.م`);
+                    } else {
+                        toast('تم الطلب لكن فشل الدفع: ' + (pj.error || ''), 'error');
+                    }
+                    ld();
+                } catch (e) { toast('خطأ في الاتصال', 'error'); console.error(e); }
+            };
+
+            await submitOrder(isVerified);
         }
 
         async function lo() {

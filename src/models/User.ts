@@ -23,12 +23,17 @@ export interface UserAttributes {
   account_holder_name: string | null;
   instapay_address: string | null;
   vodafone_cash_number: string | null;
+  otp_code: string | null;
+  otp_expiry: Date | null;
+  governorate: string | null;
+  center: string | null;
+  is_phone_verified: boolean;
   created_at: Date;
 }
 
 export type UserCreationAttributes = Optional<
   UserAttributes,
-  "id" | "phone" | "company_name" | "location" | "balance" | "status" | "subscription_status" | "subscription_expiry" | "subscription_date" | "bank_name" | "account_number" | "iban" | "swift_code" | "account_holder_name" | "instapay_address" | "vodafone_cash_number" | "created_at"
+  "id" | "phone" | "company_name" | "location" | "balance" | "status" | "subscription_status" | "subscription_expiry" | "subscription_date" | "bank_name" | "account_number" | "iban" | "swift_code" | "account_holder_name" | "instapay_address" | "vodafone_cash_number" | "otp_code" | "otp_expiry" | "governorate" | "center" | "is_phone_verified" | "created_at"
 >;
 
 export class User
@@ -54,6 +59,11 @@ export class User
   public account_holder_name!: string | null;
   public instapay_address!: string | null;
   public vodafone_cash_number!: string | null;
+  public otp_code!: string | null;
+  public otp_expiry!: Date | null;
+  public governorate!: string | null;
+  public center!: string | null;
+  public is_phone_verified!: boolean;
   public created_at!: Date;
 }
 
@@ -150,6 +160,27 @@ User.init(
       type: DataTypes.STRING,
       allowNull: true
     },
+    otp_code: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    otp_expiry: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    governorate: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    center: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    is_phone_verified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -161,7 +192,7 @@ User.init(
     tableName: "users",
     timestamps: false,
     defaultScope: {
-      attributes: { exclude: ["password"] }
+      attributes: { exclude: ["password", "otp_code"] }
     }
   }
 );

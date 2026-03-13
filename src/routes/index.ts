@@ -19,10 +19,14 @@ import { cartRouter } from "./cartRoutes";
 import { recommendationRouter } from "./recommendationRoutes";
 import dashboardRoutes from "./dashboardRoutes";
 import { aiRouter } from "./aiRoutes";
+import { offerRouter } from "./offerRoutes";
+import { otpRouter } from "./otpRoutes";
+import { locationRouter } from "./locationRoutes";
 
 import * as userController from "../controllers/userController";
 import * as productController from "../controllers/productController";
 import * as paymentController from "../controllers/paymentController";
+import * as otpController from "../controllers/otpController";
 
 export const apiRouter = Router();
 
@@ -45,6 +49,9 @@ apiRouter.use("/cart", cartRouter);
 apiRouter.use("/recommendations", recommendationRouter);
 apiRouter.use("/", dashboardRoutes);
 apiRouter.use("/ai", aiRouter);
+apiRouter.use("/offers", offerRouter);
+apiRouter.use("/otp", otpRouter);
+apiRouter.use("/locations", locationRouter);
 
 // Dashboard & Unique Utility Routes
 apiRouter.get("/user-data", requireAuth, userController.getCurrentUserData);

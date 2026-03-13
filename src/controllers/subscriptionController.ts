@@ -34,8 +34,17 @@ export async function checkSubscriptionStatus(req: Request, res: Response, next:
 export async function paySubscription(req: Request, res: Response, next: NextFunction) {
     const t = await sequelize.transaction();
     try {
-        const { user_id, method } = req.body;
+        const { user_id, method, verified_phone } = req.body;
         if (!user_id) return res.status(400).json({ success: false, error: "user_id مطلوب" });
+
+        // OTP verification required
+        if (!verified_phone) {
+            return res.status(202).json({ 
+                success: false, 
+                verification_required: true, 
+                message: "التحقق عبر الهاتف مطلوب لتفعيل الاشتراك" 
+            });
+        }
 
         const user = await User.findByPk(user_id);
         if (!user) return res.status(404).json({ success: false, error: "المستخدم غير موجود" });

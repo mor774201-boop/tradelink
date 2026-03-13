@@ -43,10 +43,11 @@ export async function getOrder(req: Request, res: Response, next: NextFunction) 
 }
 
 export async function createOrder(req: Request, res: Response, next: NextFunction) {
-  const { buyer_id, seller_id, items } = req.body as {
+  const { buyer_id, seller_id, items, verified_phone } = req.body as {
     buyer_id: number;
     seller_id: number;
     items: { product_id: number; quantity: number; unit_price: number }[];
+    verified_phone?: boolean;
   };
 
   if (!buyer_id || !seller_id) {
@@ -55,6 +56,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ success: false, error: "At least one order item is required" });
   }
+
 
   try {
     const total_amount = items.reduce((sum, item) => sum + item.quantity * item.unit_price, 0);

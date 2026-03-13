@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { listProducts, getProduct, createProduct, updateProduct, deleteProduct } from "../controllers/productController";
+import { listProducts, listSuppliers, getProduct, createProduct, updateProduct, deleteProduct } from "../controllers/productController";
 import { requireAuth } from "../middleware/auth";
 
 export const productRouter = Router();
 
+productRouter.get("/suppliers", listSuppliers);
 productRouter.get("/", listProducts);
 productRouter.post("/", requireAuth, createProduct);
 productRouter.get("/:id", getProduct);

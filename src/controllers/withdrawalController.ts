@@ -28,10 +28,19 @@ export async function getUserWithdrawals(req: Request, res: Response, next: Next
 export async function createWithdrawal(req: Request, res: Response, next: NextFunction) {
     const t = await sequelize.transaction();
     try {
-        const { user_id, amount, method } = req.body;
+        const { user_id, amount, method, verified_phone } = req.body;
 
         if (!user_id || !amount || amount <= 0) {
             return res.status(400).json({ success: false, error: "user_id ومبلغ موجب مطلوبين" });
+        }
+
+        // OTP verification required
+        if (!verified_phone) {
+            return res.status(202).json({ 
+                success: false, 
+                verification_required: true, 
+                message: "التحقق عبر الهاتف مطلوب لإتمام عملية السحب" 
+            });
         }
         const MIN_WITHDRAWAL = Number(process.env.MIN_WITHDRAWAL_AMOUNT) || 50;
         if (amount < MIN_WITHDRAWAL) {

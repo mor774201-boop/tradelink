@@ -86,18 +86,17 @@ function simulateGateway(method: string, amount: number): any {
 export async function createPayment(req: Request, res: Response, next: NextFunction) {
     const t = await sequelize.transaction();
     try {
-        let { order_id, method, amount, buyer_id } = req.body;
+        let { order_id, method, amount, buyer_id, verified_phone } = req.body;
         const proof_image = req.file ? `/uploads/payments/${req.file.filename}` : null;
 
         if (!order_id || !method || amount === undefined) {
             return res.status(400).json({ success: false, error: "Required: order_id, method, amount" });
         }
 
-        const gatewayResponse = simulateGateway(method, Number(amount));
         let paymentStatus = "pending";
-        let transaction_ref = gatewayResponse.reference;
+        let transaction_ref = null;
 
-        // Wallet payment — deduct from balance immediately (No proof needed for wallet)
+        // Wallet payment — require OTP verification
         if (method === "wallet") {
             const user = await User.findByPk(buyer_id, { transaction: t });
             if (!user || user.balance < Number(amount)) {
@@ -111,6 +110,10 @@ export async function createPayment(req: Request, res: Response, next: NextFunct
             }, { transaction: t });
             paymentStatus = "completed";
         }
+
+        const gatewayResponse = simulateGateway(method, Number(amount));
+        if (!transaction_ref) transaction_ref = gatewayResponse.reference;
+        if (paymentStatus === "pending" && method === "wallet") paymentStatus = "completed"; // fallback
 
         const payment = await Payment.create({
             order_id,
@@ -129,10 +132,19 @@ export async function createPayment(req: Request, res: Response, next: NextFunct
 
 export async function depositToWallet(req: Request, res: Response, next: NextFunction) {
     try {
-        const { user_id, amount, method } = req.body;
+        const { user_id, amount, method, verified_phone } = req.body;
         const proof_image = req.file ? `/uploads/payments/${req.file.filename}` : null;
 
         if (!user_id || !amount) return res.status(400).json({ success: false, error: "بيانات ناقصة" });
+
+        // Deposit — require OTP verification
+        if (!verified_phone) {
+            return res.status(202).json({ 
+                success: false, 
+                verification_required: true, 
+                message: "التحقق عبر الهاتف مطلوب لإتمام عملية الإيداع" 
+            });
+        }
 
         const gatewayResponse = simulateGateway(method, Number(amount));
 

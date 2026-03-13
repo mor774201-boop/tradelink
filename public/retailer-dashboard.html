@@ -661,7 +661,7 @@
             background: rgba(17, 24, 39, .8);
             border: 2px solid rgba(239, 68, 68, .1);
             border-radius: 12px;
-            padding: 14px;
+            padding: 12px 10px;
             cursor: pointer;
             transition: all .3s;
             text-align: center
@@ -678,7 +678,7 @@
         }
 
         .pm-card i {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             margin-bottom: 6px;
             color: #fca5a5;
             display: block
@@ -686,14 +686,21 @@
 
         .pm-card span {
             display: block;
-            font-size: .8rem;
+            font-size: .78rem;
             color: #e2e8f0;
             font-weight: 600
         }
 
         .pm-card small {
             color: #64748b;
-            font-size: .7rem
+            font-size: .65rem
+        }
+
+        @media (max-width: 768px) {
+            .pm-card { padding: 8px 6px; border-radius: 10px; }
+            .pm-card i { font-size: 1rem; margin-bottom: 4px; }
+            .pm-card span { font-size: .7rem; }
+            .pm-card small { font-size: .6rem; }
         }
 
         .toast-wrap {
@@ -812,6 +819,88 @@
         .sec {
             position: relative;
         }
+
+        /* Deposit Upload Area */
+        .dep-upload-area {
+            border: 2px dashed rgba(96, 165, 250, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(96, 165, 250, 0.03);
+        }
+        .dep-upload-area:hover {
+            border-color: rgba(96, 165, 250, 0.6);
+            background: rgba(96, 165, 250, 0.08);
+        }
+
+        /* Theme & Language Toggles */
+        .toolbar-btns {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .toolbar-btn {
+            flex: 1;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            color: #94a3b8;
+            font-size: .75rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all .2s;
+        }
+        .toolbar-btn:hover { background: rgba(255,255,255,0.08); color: #e2e8f0; }
+        .toolbar-btn i { margin-inline-end: 4px; }
+
+        /* ── Light Theme ── */
+        body.light-theme {
+            --bg-main: #f1f5f9;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        body.light-theme .main-content { background: var(--bg-main); }
+        body.light-theme .sidebar { background: var(--bg-sidebar); border-inline-end: 1px solid var(--border-color); }
+        body.light-theme .sidebar .logo h4 { color: var(--text-primary); }
+        body.light-theme .sidebar .nav-link { color: var(--text-secondary); }
+        body.light-theme .sidebar .nav-link:hover { background: #f1f5f9; color: #1e293b; }
+        body.light-theme .sidebar .nav-link.active { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+        body.light-theme .sc, body.light-theme .cd { background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--shadow); }
+        body.light-theme .ch { border-bottom-color: var(--border-color); }
+        body.light-theme .ch h5 { color: var(--text-primary); }
+        body.light-theme .page-header h2 { color: var(--text-primary); }
+        body.light-theme .sc h3 { color: var(--text-primary); }
+        body.light-theme .sc p { color: var(--text-secondary); }
+        body.light-theme .tbl th { background: #f8fafc; color: var(--text-secondary); border-bottom-color: var(--border-color); }
+        body.light-theme .tbl td { border-bottom-color: #f1f5f9; color: var(--text-primary); }
+        body.light-theme .fcd, body.light-theme .sf input, body.light-theme .sf select { background: var(--bg-input) !important; border-color: var(--border-color) !important; color: var(--text-primary) !important; }
+        body.light-theme .fl { color: var(--text-secondary); }
+        body.light-theme .wc { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
+        body.light-theme .wc h6, body.light-theme .wc h2 { color: #991b1b; }
+        body.light-theme .pm-card { background: var(--bg-card); border-color: var(--border-color); color: var(--text-primary); }
+        body.light-theme .pm-card span, body.light-theme .pm-card i { color: var(--text-primary); }
+        body.light-theme .pm-card small { color: var(--text-muted); }
+        body.light-theme .gw-box { background: #fef2f2; border-color: #fecaca; }
+        body.light-theme .gw-label { color: var(--text-secondary); }
+        body.light-theme .dep-upload-area { border-color: rgba(37,99,235,0.2); background: rgba(37,99,235,0.03); }
+        body.light-theme .dep-upload-area:hover { border-color: rgba(37,99,235,0.5); background: rgba(37,99,235,0.06); }
+        body.light-theme .toast-msg { background: #fff; border-color: var(--border-color); color: var(--text-primary); box-shadow: var(--shadow); }
+        body.light-theme .toolbar-btns { border-bottom-color: var(--border-color); }
+        body.light-theme .toolbar-btn { border-color: var(--border-color); background: var(--bg-input); color: var(--text-secondary); }
+        body.light-theme .toolbar-btn:hover { background: #e2e8f0; color: var(--text-primary); }
+        body.light-theme .cb { color: var(--text-primary); }
+        body.light-theme .locked-overlay { background: rgba(255,255,255,0.95); }
+        body.light-theme .locked-overlay h5, body.light-theme .locked-overlay p { color: var(--text-primary); }
     </style>
 </head>
 
@@ -856,7 +945,13 @@
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <h4><i class="fas fa-shopping-cart me-2"></i>تاجر التجزئة</h4><small>TradeLink Retailer</small>
+            <img src="assets/logo.png" alt="TradeLink Logo" style="width: 50px; margin-bottom: 15px;">
+            <h4 style="font-size: 1.1rem; font-weight: 700; color: #ef4444; margin-bottom: 0;">TradeLink</h4>
+            <small style="color: #64748b; font-size: 0.75rem;">تاجر التجزئة</small>
+        </div>
+        <div class="toolbar-btns">
+            <button class="toolbar-btn" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-sun"></i><span>وضع النهار</span></button>
+            <button class="toolbar-btn" onclick="toggleLang()" id="lang-btn"><i class="fas fa-globe"></i><span>English</span></button>
         </div>
         <nav class="nav flex-column sidebar-nav mt-2">
             <div class="nav-section">الرئيسية</div>
@@ -882,6 +977,22 @@
     <div class="main-content">
         <!-- Dashboard -->
         <div id="dashboard-section" class="sec active">
+            <!-- Verification Alert -->
+            <div id="verification-banner" class="alert alert-warning border-0 shadow-sm mb-4" style="display: none; background: rgba(245, 158, 11, 0.1); border-right: 4px solid #f59e0b !important; color: #f59e0b; border-radius: 12px; padding: 15px 20px;">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-3" style="font-size: 1.2rem;"></i>
+                        <div>
+                            <strong class="d-block mb-1">يرجى تأكيد رقم هاتفك</strong>
+                            <span class="small opacity-75">قم بتأكيد رقم هاتفك لتتمكن من إجراء العمليات المالية بأمان تام.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm px-4 py-2" style="background: #f59e0b; color: #fff; border-radius: 8px; font-weight: 700;" onclick="startPhoneVerification()">
+                        تأكيد الآن <i class="fas fa-arrow-left ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
             <div class="page-header">
                 <h2>نظرة عامة</h2><span style="color:#64748b">مرحباً، تاجر التجزئة</span>
             </div>
@@ -1018,6 +1129,23 @@
             </div>
         </div>
 
+        <!-- Offers & Discounts -->
+        <div id="offers-section" class="sec">
+            <div class="page-header">
+                <h2>العروض والتخفيضات</h2>
+            </div>
+            <div class="cd">
+                <div class="ch">
+                    <h5><i class="fas fa-fire me-2" style="color:#f97316"></i>أقوى العروض الحالية</h5>
+                </div>
+                <div class="cb">
+                    <div id="offers-list" class="row g-3">
+                        <div class="text-center py-4" style="color:#64748b">جاري تحميل العروض...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Payments & Wallet -->
         <div id="payments-section" class="sec">
             <div class="page-header">
@@ -1141,26 +1269,54 @@
                                 <input type="number" class="form-control fcd mt-2" id="dep-amt" step="0.01" min="1"
                                     placeholder="أدخل المبلغ...">
                             </div>
-                            <button class="btn-g w-100" onclick="showDepConfirm()"><i
-                                    class="fas fa-shield-alt me-2"></i>تأكيد ومراجعة الإيداع</button>
-                            <div id="dep-result" class="gw-box mt-3" style="display:none"></div>
+                            <div class="gw-box mt-3" style="display:none" id="dep-confirm">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div
+                                        style="width:40px;height:40px;background:#4ade80;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:700;color:#4ade80">تم إرسال الإثبات بنجاح</div>
+                                        <div style="font-size:.75rem;color:#64748b">سيتم مراجعة الطلب وإضافة الرصيد قريباً</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-g w-100 mt-3" onclick="doDep()"><i
+                                    class="fas fa-paper-plane me-2"></i>إرسال طلب الإيداع</button>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-5">
-                    <div class="wc mb-3">
-                        <h6><i class="fas fa-wallet me-2"></i>رصيد المحفظة الحالي</h6>
-                        <h2 id="dep-bal">0.00 ج.م</h2>
-                    </div>
                     <div class="cd">
                         <div class="ch">
-                            <h5>معلومات الإيداع</h5>
+                            <h5>رفع صورة الإيصال (Screenshot)</h5>
                         </div>
-                        <div class="cb" style="font-size:.85rem;color:#94a3b8;line-height:1.8">
-                            <p><i class="fas fa-check-circle me-2" style="color:#4ade80"></i>الإيداع فوري وآمن</p>
-                            <p><i class="fas fa-check-circle me-2" style="color:#4ade80"></i>لا توجد رسوم إضافية</p>
-                            <p><i class="fas fa-check-circle me-2" style="color:#4ade80"></i>متاح 24/7</p>
-                            <p><i class="fas fa-shield-alt me-2" style="color:#60a5fa"></i>مشفر وآمن</p>
+                        <div class="cb">
+                            <div class="dep-upload-area" onclick="document.getElementById('dep-proof-main').click()">
+                                <div id="dep-upload-placeholder">
+                                    <i class="fas fa-cloud-upload-alt mb-3"
+                                        style="font-size:2.5rem;color:rgba(96,165,250,0.4)"></i>
+                                    <div style="font-weight:600;margin-bottom:4px">اضغط أو اسحب صورة الإيصال هنا</div>
+                                    <div style="font-size:.7rem;color:#64748b">PNG, JPG حتى 5MB</div>
+                                </div>
+                                <div id="dep-upload-preview" style="display:none">
+                                    <img id="dep-proof-img" src=""
+                                        style="max-width:100%;max-height:200px;border-radius:8px;margin-bottom:12px">
+                                    <div style="font-size:.75rem;color:#4ade80"><i class="fas fa-check-circle me-1"></i>تم
+                                        اختيار الصورة</div>
+                                </div>
+                                <input type="file" id="dep-proof-main" hidden accept="image/*"
+                                    onchange="previewDepProof(this)">
+                            </div>
+                            <div class="mt-3 p-3" style="background:rgba(255,255,255,0.03);border-radius:10px">
+                                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:8px"><i
+                                        class="fas fa-info-circle me-1"></i>تعليمات هامة:</div>
+                                <ul style="font-size:0.7rem;color:#64748b;padding-right:15px;margin:0">
+                                    <li>تأكد من وضوح رقم العملية وتاريخ التحويل.</li>
+                                    <li>لا تقم برفع نفس الإيصال أكثر من مرة.</li>
+                                    <li>يتم تأكيد العمليات يدوياً خلال 30 دقيقة.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1271,7 +1427,7 @@
                     </div>
                     <div class="mt-3">
                         <label class="fl" style="font-size:0.85rem">ارفع سكرين شوت للعملية (مطلوب):</label>
-                        <input type="file" id="dep-proof" class="form-control fcd" accept="image/*">
+                        <input type="file" id="dep-proof-modal" class="form-control fcd" accept="image/*">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1411,6 +1567,7 @@
 
     <div class="toast-wrap" id="tw"></div>
 
+    <script src="js/otp-handler.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const user = JSON.parse(localStorage.getItem('user'));
@@ -1470,6 +1627,17 @@
 
         async function loadSubscription() {
             try {
+                // Refresh user data to get is_phone_verified
+                const ur = await fwa('/api/user-data');
+                const uj = await ur.json();
+                if (uj.success) {
+                    const latestUser = uj.data;
+                    localStorage.setItem('user', JSON.stringify(latestUser));
+                    if (!latestUser.is_phone_verified) {
+                        document.getElementById('verification-banner').style.display = 'block';
+                    }
+                }
+
                 const r = await fwa(`/api/subscription/${RID}`);
                 const j = await r.json();
                 if (j.success) isSubscribed = j.data.is_active;
@@ -1501,23 +1669,41 @@
             new bootstrap.Modal(document.getElementById('subM')).show();
         }
 
-        async function paySubNow() {
+        function startPhoneVerification() {
+            OTPHandler.show(RID, 'سوف نقوم بإرسال رمز للتحقق من رقم هاتفك.', () => {
+                toast('تم تأكيد رقم هاتفك بنجاح! ✨');
+                document.getElementById('verification-banner').style.display = 'none';
+                // Update local storage
+                const u = JSON.parse(localStorage.getItem('user'));
+                u.is_phone_verified = true;
+                localStorage.setItem('user', JSON.stringify(u));
+            });
+        }
+
+        async function paySubNow(isVerified = false) {
             toast('جاري معالجة الاشتراك...', 'info');
             try {
+                const bodyData = { user_id: RID, method: subPayMethod };
+                if (isVerified) bodyData.verified_phone = true;
+
                 const r = await fwa('/api/subscription/pay', {
                     method: 'POST',
-                    body: JSON.stringify({ user_id: RID, method: subPayMethod })
+                    body: JSON.stringify(bodyData)
                 });
                 const j = await r.json();
+
+                if (j.verification_required) {
+                    OTPHandler.show(RID, j.message, () => paySubNow(true));
+                    return;
+                }
+
                 if (j.success) {
                     isSubscribed = true;
                     const m = bootstrap.Modal.getInstance(document.getElementById('subM'));
                     if (m) m.hide();
                     toast('تم تفعيل الاشتراك بنجاح! جميع الخدمات متاحة الآن. ✨');
                     document.querySelectorAll('.locked-overlay').forEach(o => o.remove());
-                } else {
-                    toast(j.error || 'فشل الاشتراك', 'error');
-                }
+                } else toast(j.error || 'فشل الاشتراك', 'error');
             } catch (e) {
                 toast('خطأ في الاتصال', 'error');
             }
@@ -1547,7 +1733,7 @@
                 checkSubGating(n + '-section');
             }
 
-            const map = { dashboard: ld, browse: lb, orders: lo, payments: lpm, deposit: ldep, shipments: lsh, 'bank-settings': lbk };
+            const map = { dashboard: ld, browse: lb, orders: lo, payments: lpm, deposit: ldep, shipments: lsh, 'bank-settings': lbk, offers: lof };
             if (map[n]) map[n]();
         }
 
@@ -1767,25 +1953,58 @@
             document.getElementById('dep-instr-text').innerHTML = inst[m] || 'يرجى اختيار طريقة الدفع.';
         }
 
-        async function so() {
+        async function so(isVerified = false) {
             if (!SP) return;
             const q = parseInt(document.getElementById('oq').value);
             const up = parseFloat(SP.price);
             const t = q * up;
             const btn = document.getElementById('order-btn');
-            btn.disabled = true; btn.textContent = 'جاري المعالجة...';
+            
             try {
+                // 1. Create Order
+                const orderData = { 
+                    buyer_id: RID, 
+                    seller_id: SP.supplier_id, 
+                    items: [{ product_id: SP.id, quantity: q, unit_price: up }] 
+                };
+                if (isVerified) orderData.verified_phone = true;
+
+                btn.disabled = true; btn.textContent = 'جاري المعالجة...';
+
                 const or = await fwa('/api/orders', {
                     method: 'POST',
-                    body: JSON.stringify({ buyer_id: RID, seller_id: SP.supplier_id, items: [{ product_id: SP.id, quantity: q, unit_price: up }] })
+                    body: JSON.stringify(orderData)
                 });
                 const oj = await or.json();
+
+                if (oj.verification_required) {
+                    OTPHandler.show(RID, oj.message, () => so(true));
+                    btn.disabled = false; btn.textContent = 'تأكيد الطلب والدفع';
+                    return;
+                }
                 if (!oj.success) { toast(oj.error || 'خطأ في الطلب', 'error'); btn.disabled = false; btn.textContent = 'تأكيد الطلب والدفع'; return; }
+
+                // 2. Create Payment
+                const paymentData = { 
+                    order_id: oj.data.id, 
+                    method: selPayMethod, 
+                    amount: t, 
+                    buyer_id: RID 
+                };
+                if (isVerified) paymentData.verified_phone = true;
+
                 const pr = await fwa('/api/payments', {
                     method: 'POST',
-                    body: JSON.stringify({ order_id: oj.data.id, method: selPayMethod, amount: t, buyer_id: RID })
+                    body: JSON.stringify(paymentData)
                 });
                 const pj = await pr.json();
+
+                if (pj.verification_required) {
+                    OTPHandler.show(RID, pj.message, () => so(true));
+                    btn.disabled = false; btn.textContent = 'تأكيد الطلب والدفع';
+                    return;
+                }
+
                 if (pj.success) {
                     const gw = pj.gateway_response;
                     const gwBox = document.getElementById('gw-resp');
@@ -1836,29 +2055,41 @@
 
         async function doDep() {
             const amt = parseFloat(document.getElementById('dep-amt').value);
-            const fileInput = document.getElementById('dep-proof');
+            let fileInput = document.getElementById('dep-proof-main');
+            if (!fileInput.files[0]) fileInput = document.getElementById('dep-proof-modal');
             if (!amt || amt <= 0) { toast('يرجى إدخال مبلغ صحيح', 'error'); return; }
             if (!fileInput.files[0]) { toast('يرجى رفع صورة الإيصال أو السكرين شوت أولاً', 'error'); return; }
 
-            const fd = new FormData();
-            fd.append('user_id', RID);
-            fd.append('amount', amt);
-            fd.append('method', selDepMethod);
-            fd.append('proof', fileInput.files[0]);
+            const submitDep = async (isVerified = false) => {
+                const fd = new FormData();
+                fd.append('user_id', RID);
+                fd.append('amount', amt);
+                fd.append('method', selDepMethod);
+                fd.append('proof', fileInput.files[0]);
+                if (isVerified) fd.append('verified_phone', 'true');
 
-            try {
-                const r = await fwa('/api/payments/deposit', {
-                    method: 'POST',
-                    body: fd
-                });
-                const j = await r.json();
-                if (j.success) {
-                    toast('تم إرسال طلب الإيداع بنجاح. سنقوم بمراجعته قريباً.');
-                    document.getElementById('dep-amt').value = '';
-                    fileInput.value = '';
-                    ld();
-                } else toast(j.error || 'فشل الإيداع', 'error');
-            } catch (e) { toast('خطأ في الاتصال', 'error'); }
+                try {
+                    const r = await fwa('/api/payments/deposit', {
+                        method: 'POST',
+                        body: fd
+                    });
+                    const j = await r.json();
+
+                    if (j.verification_required) {
+                        OTPHandler.show(RID, j.message, () => submitDep(true));
+                        return;
+                    }
+
+                    if (j.success) {
+                        toast('تم إرسال طلب الإيداع بنجاح. سنقوم بمراجعته قريباً.');
+                        document.getElementById('dep-amt').value = '';
+                        fileInput.value = '';
+                        ld();
+                    } else toast(j.error || 'فشل الإيداع', 'error');
+                } catch (e) { toast('خطأ في الاتصال', 'error'); }
+            };
+
+            await submitDep();
         }
 
         function showDepConfirm() {
@@ -2090,6 +2321,107 @@
             } catch (e) { console.error(e); }
         }
 
+        // ── Theme & Language Logic ──────────────────────────────
+        let currentLang = localStorage.getItem('lang') || 'ar';
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+
+        const i18n = {
+            ar: {
+                dashboard: "نظرة عامة", browse: "تصفح المنتجات", orders: "طلباتي", payments: "المدفوعات", 
+                deposit: "إيداع رصيد", shipments: "الشحنات", 'bank-settings': "إعدادات البنك", offers: "العروض",
+                welcome: "مرحباً، تاجر التجزئة", wallet_bal: "رصيد المحفظة", month: "هذا الشهر", yesterday: "أمس",
+                total: "الإجمالي", last_orders: "آخر الطلبات", buy: "شراء", qty: "الكمية", 
+                pay_method: "طريقة الدفع", 'day-mode': "وضع النهار", 'night-mode': "وضع الليل"
+            },
+            en: {
+                dashboard: "Overview", browse: "Browse Products", orders: "My Orders", payments: "Payments",
+                deposit: "Deposit", shipments: "Shipments", 'bank-settings': "Bank Settings", offers: "Offers",
+                welcome: "Welcome, Retailer", wallet_bal: "Wallet Balance", month: "This Month", yesterday: "Yesterday",
+                total: "Total", last_orders: "Recent Orders", buy: "Buy", qty: "Qty",
+                pay_method: "Payment Method", 'day-mode': "Day Mode", 'night-mode': "Night Mode"
+            }
+        };
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme();
+        }
+
+        function applyTheme() {
+            document.body.classList.toggle('light-theme', currentTheme === 'light');
+            localStorage.setItem('theme', currentTheme);
+            const btn = document.getElementById('theme-btn');
+            if (btn) btn.innerHTML = currentTheme === 'light' ? '<i class="fas fa-moon"></i><span>وضع الليل</span>' : '<i class="fas fa-sun"></i><span>وضع النهار</span>';
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            applyLang();
+        }
+
+        function applyLang() {
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            localStorage.setItem('lang', currentLang);
+            const btn = document.getElementById('lang-btn');
+            if (btn) btn.innerHTML = `<i class="fas fa-globe"></i><span>${currentLang === 'ar' ? 'English' : 'العربية'}</span>`;
+            
+            // Re-render navigation or static texts if needed
+            document.querySelectorAll('.nav-link span, .nav-section').forEach(el => {
+                // Simplified text swap for demo
+            });
+        }
+
+        // ── Offers Logic ─────────────────────────────────────────
+        async function lof() {
+            const list = document.getElementById('offers-list');
+            if (!list) return;
+            try {
+                const r = await fwa('/api/offers');
+                const j = await r.json();
+                const d = j.data || [];
+                if (!d.length) {
+                    list.innerHTML = '<div class="col-12 text-center py-5 text-muted">لا توجد عروض نشطة حالياً</div>';
+                    return;
+                }
+                list.innerHTML = d.map(x => `
+                    <div class="col-md-4">
+                        <div class="sc h-100 p-0 overflow-hidden" style="border-color:rgba(249,115,22,0.2)">
+                            <div style="background:linear-gradient(135deg, #f97316, #ea580c); padding:15px; color:#fff">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="m-0">${x.title}</h5>
+                                    <span class="badge bg-white text-orange">${x.discount_value}% OFF</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <p class="small mb-3 text-secondary">${x.description || ''}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-orange fw-bold">${x.product?.name || 'منتج عام'}</div>
+                                    <button class="btn-g btn-sm py-1 px-3" onclick="sw('browse')">تسوق الآن</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { list.innerHTML = 'خطأ في تحميل العروض'; }
+        }
+
+        function previewDepProof(input) {
+            const preview = document.getElementById('dep-upload-preview');
+            const placeholder = document.getElementById('dep-upload-placeholder');
+            const img = document.getElementById('dep-proof-img');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        applyTheme(); applyLang();
         loadSubscription().then(() => { ld(); loadCart(); loadRecs(); });
     </script>
 </body>

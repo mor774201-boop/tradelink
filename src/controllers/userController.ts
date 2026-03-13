@@ -22,7 +22,7 @@ export async function getUser(req: Request, res: Response, next: NextFunction) {
 // Register — new users get status "pending" until admin approves
 export async function register(req: Request, res: Response, next: NextFunction) {
   try {
-    const { name, email, password, role_id, phone, company_name, location } = req.body;
+    const { name, email, password, role_id, phone, company_name, location, governorate, center } = req.body;
     if (!name || !email || !password || !role_id) {
       return res.status(400).json({ success: false, error: "name, email, password, role_id are required" });
     }
@@ -33,6 +33,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
     const user = await User.create({
       name, email, password: hashedPassword, role_id,
       phone, company_name, location,
+      governorate, center,
       status: "pending"  // pending until admin approves
     });
 
@@ -44,7 +45,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
 // Admin creates user directly (active immediately)
 export async function createUser(req: Request, res: Response, next: NextFunction) {
   try {
-    const { name, email, password, role_id, phone, company_name, location } = req.body;
+    const { name, email, password, role_id, phone, company_name, location, governorate, center } = req.body;
     if (!name || !email || !password || !role_id) {
       return res.status(400).json({ success: false, error: "name, email, password, role_id are required" });
     }
@@ -55,6 +56,7 @@ export async function createUser(req: Request, res: Response, next: NextFunction
     const user = await User.create({
       name, email, password: hashedPassword, role_id,
       phone, company_name, location,
+      governorate, center,
       status: "active"  // admin-created users are active immediately
     });
 

@@ -506,7 +506,9 @@
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <h4><i class="fas fa-shield-alt me-2"></i>لوحة الأدمن</h4><small>TradeLink Admin Panel</small>
+            <img src="assets/logo.png" alt="TradeLink Logo" style="width: 50px; margin-bottom: 15px;">
+            <h4 style="font-size: 1.1rem; font-weight: 700; color: #ef4444; margin-bottom: 0;">TradeLink</h4>
+            <small style="color: #64748b; font-size: 0.75rem;">لوحة التحكم</small>
         </div>
         <nav class="nav flex-column mt-2">
             <div class="nav-section">نظرة عامة</div>
@@ -823,9 +825,10 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Orders -->
-            <div id="orders-section" class="sec">
+        <!-- Orders -->
+        <div id="orders-section" class="sec">
                 <div class="page-header">
                     <h2>جميع الطلبات</h2>
                     <div class="d-flex gap-2">
@@ -862,7 +865,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
 
             <!-- Payments -->
@@ -1143,7 +1145,16 @@
                     if (sidebar.classList.contains('show')) toggleSidebar();
                 }
 
-                if (n === 'overview') lov(); if (n === 'pending') lpe(); if (n === 'users') lu(); if (n === 'products') lpr(); if (n === 'orders') lor(); if (n === 'payments') lpm(); if (n === 'add-user') lrl(); if (n === 'subs') lsu(); if (n === 'withdrawals') lwd();
+                if (n === 'overview') lov(); 
+                if (n === 'pending') lpe(); 
+                if (n === 'users') lu(); 
+                if (n === 'products') lpr(); 
+                if (n === 'orders') lor(); 
+                if (n === 'payments') lpm(); 
+                if (n === 'add-user') lrl(); 
+                if (n === 'subs') lsu(); 
+                if (n === 'withdrawals') lwd();
+                if (n === 'settings') { /* No data load needed for settings currently */ }
             }
 
             // ── Search & Filters ─────────────────────────────────────
@@ -1406,7 +1417,7 @@
                             <td class="fw-bold">${parseFloat(x.amount).toFixed(2)} ج.م</td>
                             <td>${ma(x.method)}</td>
                             <td>
-                                ${x.proof_image ? `<a href="/uploads/payments/${x.proof_image}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fas fa-image me-1"></i>عرض الإيصال</a>` : '<span class="text-muted">لا يوجد</span>'}
+                                ${x.proof_image ? `<a href="${x.proof_image.startsWith('/uploads') ? x.proof_image : (x.proof_image.startsWith('uploads') ? '/' + x.proof_image : '/uploads/payments/' + x.proof_image)}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fas fa-image me-1"></i>عرض الإيصال</a>` : '<span class="text-muted">لا يوجد</span>'}
                             </td>
                             <td>${new Date(x.created_at).toLocaleDateString('ar-EG')}</td>
                             <td>
@@ -1440,7 +1451,7 @@
             async function approvePay(id) {
                 if (!confirm('قبول العملية؟ سيتم إخطار المستخدم وتعديل رصيده/طلبه.')) return;
                 try {
-                    const r = await fwa(`/api/payments/approve/${id}`, { method: 'POST', body: JSON.stringify({ admin_id: user.id, status: 'completed' }) });
+                    const r = await fwa(`/api/payments/${id}/approve`, { method: 'POST', body: JSON.stringify({ admin_id: user.id, status: 'completed' }) });
                     const j = await r.json();
                     if (j.success) { toast('تم القبول بنجاح'); lpm(); }
                     else toast(j.error || 'فشل', 'error');
@@ -1451,7 +1462,7 @@
                 const reason = prompt('سبب الرفض:');
                 if (reason === null) return;
                 try {
-                    const r = await fwa(`/api/payments/approve/${id}`, { method: 'POST', body: JSON.stringify({ admin_id: user.id, status: 'failed', notes: reason }) });
+                    const r = await fwa(`/api/payments/${id}/approve`, { method: 'POST', body: JSON.stringify({ admin_id: user.id, status: 'failed', notes: reason }) });
                     const j = await r.json();
                     if (j.success) { toast('تم الرفض'); lpm(); }
                     else toast(j.error || 'فشل', 'error');
@@ -1460,12 +1471,7 @@
 
             lov();
 
-            // Extend sw function to load payments
-            const os = sw;
-            sw = function (n, el) {
-                os(n, el);
-                if (n === 'payments') lpm();
-            };
+            // Removed redundant sw re-definition
 
             function filterPM() {
                 const q = document.getElementById('pm-search').value.toLowerCase();

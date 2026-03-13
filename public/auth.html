@@ -265,8 +265,9 @@
 <body>
     <div class="auth-container">
         <div class="logo">
-            <h1>TradeLink</h1>
-            <p>منصة التجارة المتكاملة</p>
+            <img src="assets/logo.png" alt="TradeLink Logo" style="width: 60px; margin-bottom: 20px;">
+            <p style="font-size: 1.5rem; font-weight: 700; color: #ef4444; margin: 0; line-height: 1;">TradeLink</p>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 8px;">منصة التجارة المتكاملة</p>
         </div>
         <div class="auth-card">
             <div class="tabs">
@@ -307,10 +308,18 @@
                         placeholder="6 أحرف على الأقل" minlength="6" required></div>
                 <div class="form-group"><label>اسم الشركة / المتجر</label><input type="text" id="r-company"
                         placeholder="اختياري"></div>
-                <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="r-phone"
+                <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="r-phone" required
                         placeholder="01xxxxxxxxx"></div>
-                <div class="form-group"><label>الموقع / المدينة</label><input type="text" id="r-location"
-                        placeholder="مثال: القاهرة"></div>
+                <div class="form-group"><label>المحافظة</label>
+                    <select id="r-gov" onchange="updCen()" required>
+                        <option value="">اختر المحافظة</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>المركز / الحي</label>
+                    <select id="r-center" required>
+                        <option value="">اختر المركز أولاً</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn-submit" id="r-btn"><i class="fas fa-user-plus me-2"></i>إنشاء
                     الحساب</button>
             </form>
@@ -318,9 +327,12 @@
         <div class="back-link"><a href="/"><i class="fas fa-arrow-right me-1"></i> العودة للرئيسية</a></div>
     </div>
     <script>
-        let selectedRoleId = null, rolesMap = {};
+        let selectedRoleId = null, rolesMap = {}, eLocs = [];
         async function loadRoles() { try { const r = await fetch('/api/users/roles'); const j = await r.json(); if (j.success) (j.data || []).forEach(r => { rolesMap[r.name] = r.id; }); } catch (e) { console.error(e); } }
+        async function loadLocs() { try { const r = await fetch('/api/locations/egypt'); const j = await r.json(); if (j.success) { eLocs = j.data; const g = document.getElementById('r-gov'); g.innerHTML = '<option value="">اختر المحافظة</option>' + eLocs.map(x => `<option value="${x.governorate}">${x.governorate}</option>`).join(''); } } catch (e) { console.error(e); } }
+        function updCen() { const g = document.getElementById('r-gov').value; const c = document.getElementById('r-center'); const gov = eLocs.find(x => x.governorate === g); if (gov) { c.innerHTML = '<option value="">اختر المركز</option>' + gov.centers.map(x => `<option value="${x}">${x}</option>`).join(''); } else { c.innerHTML = '<option value="">اختر المركز أولاً</option>'; } }
         loadRoles();
+        loadLocs();
         function showTab(t) { document.querySelectorAll('.tab').forEach(b => b.classList.remove('active')); document.querySelector(`.tab:${t === 'login' ? 'first' : 'last'}-child`).classList.add('active'); document.getElementById('login-form').classList.toggle('hidden', t !== 'login'); document.getElementById('register-form').classList.toggle('hidden', t !== 'register'); hideAlert(); }
         function selectRole(el, role) { document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedRoleId = rolesMap[role]; }
         function showAlert(msg, type) { const a = document.getElementById('alert-box'); a.textContent = msg; a.className = 'alert alert-' + type; }
@@ -354,7 +366,17 @@
             e.preventDefault(); hideAlert();
             if (!selectedRoleId) { showAlert('يرجى اختيار نوع الحساب', 'error'); return; }
             document.getElementById('r-btn').disabled = true;
-            const data = { name: document.getElementById('r-name').value, email: document.getElementById('r-email').value, password: document.getElementById('r-pass').value, role_id: selectedRoleId, company_name: document.getElementById('r-company').value, phone: document.getElementById('r-phone').value, location: document.getElementById('r-location').value };
+            const data = { 
+                name: document.getElementById('r-name').value, 
+                email: document.getElementById('r-email').value, 
+                password: document.getElementById('r-pass').value, 
+                role_id: selectedRoleId, 
+                company_name: document.getElementById('r-company').value, 
+                phone: document.getElementById('r-phone').value, 
+                governorate: document.getElementById('r-gov').value,
+                center: document.getElementById('r-center').value,
+                location: `${document.getElementById('r-gov').value}, ${document.getElementById('r-center').value}`
+            };
             try {
                 const r = await fetch('/api/users/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
                 const j = await r.json();

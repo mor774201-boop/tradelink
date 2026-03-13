@@ -14,6 +14,7 @@ import { Withdrawal } from "./Withdrawal";
 import { WalletTransaction } from "./WalletTransaction";
 import { Cart } from "./Cart";
 import { CartItem } from "./CartItem";
+import { Offer } from "./Offer";
 
 export function initModels() {
   // users & roles
@@ -83,5 +84,11 @@ export function initModels() {
   Cart.hasMany(CartItem, { foreignKey: "cart_id", as: "items" });
   CartItem.belongsTo(Product, { foreignKey: "product_id", as: "product" });
   Product.hasMany(CartItem, { foreignKey: "product_id", as: "cartItems" });
+
+  // offers
+  Offer.belongsTo(Product, { foreignKey: "product_id", as: "product" });
+  Product.hasMany(Offer, { foreignKey: "product_id", as: "offers" });
+  Offer.belongsTo(User, { foreignKey: "user_id", as: "user" });
+  User.hasMany(Offer, { foreignKey: "user_id", as: "offers" });
 }
 
