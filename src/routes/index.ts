@@ -52,7 +52,7 @@ apiRouter.use("/ai", aiRouter);
 apiRouter.use("/offers", offerRouter);
 apiRouter.use("/otp", otpRouter);
 apiRouter.use("/locations", locationRouter);
-
+apiRouter.use("/suppliers", supplierRouter);
 // Dashboard & Unique Utility Routes
 apiRouter.get("/user-data", requireAuth, userController.getCurrentUserData);
 apiRouter.post("/logout", requireAuth, userController.logout);
@@ -60,4 +60,8 @@ apiRouter.post("/logout", requireAuth, userController.logout);
 // Specialized views
 apiRouter.get("/admin/users", requireAdmin, userController.listUsers);
 apiRouter.get("/admin/payments", requireAdmin, paymentController.listPayments);
+// 1. استيراد الراوتر في أعلى الملف
+import { supplierRouter } from "./supplierRoutes"; // أو الاسم الصحيح لملفك
 
+// 2. ربطه مع بقية المسارات (تحت السطر 54 مثلاً)
+apiRouter.use("/suppliers", supplierRouter);
