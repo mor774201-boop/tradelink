@@ -51,39 +51,38 @@ const OTPHandler = {
 
     init() {
         if (!document.getElementById(this.modalId)) {
-            const isLight = this.isLight();
-            const bg = isLight ? '#ffffff' : '#0f172a';
-            const border = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
-            const text = isLight ? '#1e293b' : '#ffffff';
-            const inputBg = isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.05)';
             const lang = this.getLang();
             const dir = lang === 'ar' ? 'rtl' : 'ltr';
 
             const modalHTML = `
             <div class="modal fade" id="${this.modalId}" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" dir="${dir}">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content" style="background: ${bg}; border: 1px solid ${border}; border-radius: 16px; color: ${text};">
+                    <div class="modal-content" style="border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
                         <div class="modal-header border-0 pb-0">
-                            <h5 class="modal-title w-100 text-center mt-3">${this.t('title')}</h5>
-                            <button type="button" class="btn-close ${isLight ? '' : 'btn-close-white'}" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h5 class="modal-title w-100 text-center mt-3" style="font-weight: 700;">${this.t('title')}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center p-4">
                             <div class="mb-4">
-                                <i class="fas fa-shield-alt" style="font-size: 3rem; color: #ef4444; opacity: 0.8;"></i>
+                                <div class="otp-icon-wrapper mb-3" style="width: 80px; height: 80px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                    <i class="fas fa-mobile-alt" style="font-size: 2.5rem; color: #ef4444;"></i>
+                                </div>
                             </div>
-                            <p id="otp-message" style="font-size: 0.95rem; color: ${isLight ? '#64748b' : '#94a3b8'};">${this.t('message')}</p>
+                            <p id="otp-message" style="font-size: 0.95rem; margin-bottom: 25px;">${this.t('message')}</p>
                             
-                            <div class="d-flex justify-content-center gap-2 mb-4" id="otp-inputs" dir="ltr">
-                                ${Array(6).fill(0).map(() => `<input type="text" class="form-control text-center otp-input" maxlength="1" style="width: 45px; height: 55px; font-size: 1.5rem; background: ${inputBg}; color: ${text}; border: 1px solid ${border};">`).join('')}
+                            <div class="mb-4">
+                                <input type="text" id="otp-single-input" class="form-control text-center" 
+                                       maxlength="6" placeholder="------" 
+                                       style="letter-spacing: 12px; font-size: 2rem; font-weight: 700; height: 70px; border-radius: 15px; background: var(--input-bg); color: var(--text-main); border: 2px solid var(--border-color);">
                             </div>
 
-                            <button id="verify-otp-btn" class="btn btn-danger w-100 py-3 mb-3" style="border-radius: 12px; font-weight: 600;">${this.t('confirm')}</button>
+                            <button id="verify-otp-btn" class="btn btn-danger w-100 py-3 mb-3" style="border-radius: 12px; font-weight: 700; font-size: 1.1rem; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3); transition: all 0.3s;">${this.t('confirm')}</button>
                             
-                            <div class="text-center">
-                                <span style="font-size: 0.85rem; color: ${isLight ? '#94a3b8' : '#64748b'};">${this.t('resendTitle')} </span>
-                                <a href="javascript:void(0)" id="resend-otp-link" class="text-danger small text-decoration-none fw-bold" style="font-size: 0.85rem;">${this.t('resendLink')}</a>
+                            <div class="text-center mt-2">
+                                <span class="text-muted" style="font-size: 0.9rem;">${this.t('resendTitle')} </span>
+                                <a href="javascript:void(0)" id="resend-otp-link" class="text-danger text-decoration-none fw-bold" style="font-size: 0.9rem;">${this.t('resendLink')}</a>
                             </div>
-                            <div id="otp-error" class="mt-3 text-danger small" style="display: none;"></div>
+                            <div id="otp-error" class="mt-3 text-danger small fw-bold" style="display: none; padding: 10px; background: rgba(239, 68, 68, 0.05); border-radius: 8px;"></div>
                         </div>
                     </div>
                 </div>
@@ -94,19 +93,19 @@ const OTPHandler = {
     },
 
     setupListeners() {
-        const inputs = document.querySelectorAll('.otp-input');
-        inputs.forEach((input, index) => {
+        const input = document.getElementById('otp-single-input');
+        if (input) {
             input.addEventListener('input', (e) => {
-                if (e.target.value.length === 1 && index < inputs.length - 1) {
-                    inputs[index + 1].focus();
+                // Only allow numbers
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                if (e.target.value.length === 6) {
+                    this.verify();
                 }
             });
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                    inputs[index - 1].focus();
-                }
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.verify();
             });
-        });
+        }
 
         document.getElementById('verify-otp-btn').addEventListener('click', () => this.verify());
         document.getElementById('resend-otp-link').addEventListener('click', () => this.resend());
@@ -126,13 +125,16 @@ const OTPHandler = {
         this.verificationCallback = callback;
         if (message) document.getElementById('otp-message').innerText = message;
         
-        document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+        const input = document.getElementById('otp-single-input');
+        if (input) input.value = '';
+        
         document.getElementById('otp-error').style.display = 'none';
         
         const success = await this.resend(true); 
         if (success) {
             const modal = new bootstrap.Modal(document.getElementById(this.modalId));
             modal.show();
+            setTimeout(() => input?.focus(), 500);
         }
     },
 
@@ -152,8 +154,8 @@ const OTPHandler = {
                     const msgEl = document.getElementById('otp-message');
                     if (msgEl) {
                         msgEl.innerHTML = `${this.t('message')}<br>
-                        <div class="mt-2 p-2 rounded" style="background: rgba(239, 68, 68, 0.1); border: 1px dashed #ef4444; color: #fca5a5;">
-                            <b>${this.t('debugMode')}</b> ${this.t('debugInfo')} <b>${j.otp_debug}</b>
+                        <div class="mt-3 p-2 rounded" style="background: rgba(239, 68, 68, 0.1); border: 1px dashed #ef4444; color: #ef4444; font-size: 0.85rem;">
+                            <i class="fas fa-bug me-1"></i><b>${this.t('debugMode')}</b> ${this.t('debugInfo')} <b style="font-size: 1.1rem; letter-spacing: 2px;">${j.otp_debug}</b>
                         </div>`;
                     }
                     console.log(`%c[TradeLink OTP DEBUG] Code: ${j.otp_debug}`, 'color: #ef4444; font-weight: bold; font-size: 14px;');
@@ -162,34 +164,24 @@ const OTPHandler = {
                 if (j.otp_debug && typeof toast === 'function') {
                     toast(`${this.t('debugMode')} ${j.otp_debug}`, 'info');
                 } else if (!silent) {
-                    const msg = this.t('sentSuccess');
-                    if (typeof toast === 'function') {
-                        toast(msg);
-                    } else {
-                        alert(msg);
-                    }
+                    toast(this.t('sentSuccess'));
                 }
                 return true;
             } else {
                 const errorMsg = j.error || this.t('errorWrong');
-                if (!silent) {
-                    if (typeof toast === 'function') {
-                        toast(errorMsg, 'error');
-                    } else {
-                        alert(errorMsg);
-                    }
-                }
+                if (!silent) toast(errorMsg, 'error');
                 return false;
             }
         } catch (e) {
             console.error('OTP Request Error:', e);
-            if (!silent) alert(this.t('errorServer'));
+            if (!silent) toast(this.t('errorServer'), 'error');
             return false;
         }
     },
 
     async verify() {
-        const code = Array.from(document.querySelectorAll('.otp-input')).map(i => i.value).join('');
+        const input = document.getElementById('otp-single-input');
+        const code = input ? input.value : '';
         if (code.length < 6) {
             this.showError(this.t('errorComplete'));
             return;

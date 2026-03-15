@@ -14,6 +14,19 @@
     --accent-glow: rgba(239, 68, 68, 0.06);
     --table-header-bg: rgba(15, 23, 42, 0.6);
     --table-border: rgba(239, 68, 68, 0.1);
+    
+    /* Semantic Colors */
+    --primary: #ef4444;
+    --primary-hover: #dc2626;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+
+    /* Specific Token Overrides */
+    --nav-active-bg: rgba(239, 44, 44, 0.1);
+    --nav-active-text: #fca5a5;
+    --modal-overlay: rgba(0, 0, 0, 0.7);
 }
 
 body.light-mode {
@@ -28,12 +41,17 @@ body.light-mode {
     --accent-glow: rgba(239, 68, 68, 0.03);
     --table-header-bg: #f8fafc;
     --table-border: rgba(0, 0, 0, 0.05);
+
+    --nav-active-bg: rgba(239, 68, 68, 0.05);
+    --nav-active-text: #ef4444;
+    --modal-overlay: rgba(0, 0, 0, 0.4);
 }
 
-/* Base Apply Variables globally to standard tags */
+/* Base Styles */
 body {
     background: var(--bg-color);
     color: var(--text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .sidebar {
@@ -41,9 +59,19 @@ body {
     border-left: 1px solid var(--border-color);
 }
 
-.auth-card, .cd, .pc, .wc, .modal-content, .gw-box {
+.nav-link {
+    color: var(--text-muted) !important;
+}
+
+.nav-link:hover, .nav-link.active {
+    background: var(--nav-active-bg) !important;
+    color: var(--nav-active-text) !important;
+}
+
+.auth-card, .cd, .pc, .wc, .modal-content, .gw-box, .sc {
     background: var(--card-bg) !important;
-    border-color: var(--border-color) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 4px 6px -1px var(--accent-glow) !important;
 }
 
 h1, h2, h3, h4, h5, h6, .page-header h2 {
@@ -60,6 +88,11 @@ p, .text-muted, .sub, .sidebar-brand small, .cart-item-info .text-muted, .cd .cb
     border: 1px solid var(--border-color) !important;
 }
 
+.form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 2px var(--nav-active-bg) !important;
+}
+
 .tbl th, thead th {
     background: var(--table-header-bg) !important;
     color: var(--text-muted) !important;
@@ -71,39 +104,14 @@ p, .text-muted, .sub, .sidebar-brand small, .cart-item-info .text-muted, .cd .cb
     color: var(--text-main) !important;
 }
 
-/* Light mode overrides for background radial gradient */
-body.light-mode::before {
-    background: radial-gradient(ellipse at 30% 50%, rgba(239, 68, 68, 0.03) 0%, transparent 50%), 
-                radial-gradient(ellipse at 70% 30%, rgba(249, 115, 22, 0.02) 0%, transparent 50%);
+/* Alerts and Banners */
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1) !important;
+    border: 1px solid rgba(245, 158, 11, 0.2) !important;
+    color: var(--warning) !important;
 }
 
-/* Cart & Sidebar Overrides */
-.cart-sidebar, .offcanvas {
-    background: var(--sidebar-bg) !important;
-    color: var(--text-main) !important;
-    border-left: 1px solid var(--border-color);
-    border-right: 1px solid var(--border-color);
-}
-
-.cart-header, .cart-footer, .cart-item {
-    border-color: var(--border-color) !important;
-}
-
-.cart-header h5, .cart-item-info h6 {
-    color: var(--text-main) !important;
-}
-
-.qty-btn {
-    background: var(--input-bg) !important;
-    color: var(--text-main) !important;
-    border: 1px solid var(--border-color) !important;
-}
-
-.qty-val {
-    color: var(--text-main) !important;
-}
-
-/* Category Filters (Mobile Slider) */
+/* Custom Component Overrides */
 .cat-pill {
     background: var(--card-bg) !important;
     border: 1px solid var(--border-color) !important;
@@ -111,24 +119,23 @@ body.light-mode::before {
 }
 
 .cat-pill.active {
-    background: linear-gradient(135deg, #ef4444, #f97316) !important;
+    background: linear-gradient(135deg, var(--primary), #f97316) !important;
     color: white !important;
-    border-color: transparent !important;
 }
 
-.pc .q-add, .pc .q-ctrls {
-    background: var(--input-bg) !important;
+/* Modal Specifics */
+.modal-content {
+    background: var(--card-bg) !important;
     border: 1px solid var(--border-color) !important;
 }
 
-.pc .q-add i, .pc .q-cbtn {
-    color: var(--text-main) !important;
+.btn-close {
+    filter: invert(var(--close-invert, 0));
 }
 
-.pc .q-cval {
-    color: var(--text-main) !important;
+body.light-mode .btn-close {
+    --close-invert: 0;
 }
-
-.btn-g, .btn-primary, .btn-danger {
-    color: white !important; /* Preserve button text visibility */
+body:not(.light-mode) .btn-close {
+    --close-invert: 1;
 }

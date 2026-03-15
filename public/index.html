@@ -46,8 +46,8 @@
 
         body {
             font-family: 'Cairo', 'Segoe UI', sans-serif;
-            background: #0b0f19;
-            color: #e2e8f0;
+            background: var(--bg-color);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -62,7 +62,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at 30% 50%, rgba(239, 68, 68, .06), transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(249, 115, 22, .04), transparent 50%);
+            background: var(--bg-color);
             z-index: 0
         }
 
@@ -85,7 +85,7 @@
         }
 
         .sub {
-            color: #64748b;
+            color: var(--text-muted);
             font-size: 1rem;
             margin-bottom: 40px
         }
@@ -131,12 +131,12 @@
         }
 
         .card {
-            background: rgba(17, 24, 39, .7);
-            border: 1px solid rgba(239, 68, 68, .1);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 28px 20px;
             text-decoration: none;
-            color: #e2e8f0;
+            color: var(--text-main);
             transition: all .3s;
             position: relative;
             overflow: hidden
@@ -190,7 +190,7 @@
 
         .card p {
             font-size: .8rem;
-            color: #64748b
+            color: var(--text-muted)
         }
 
         .auth-btn {
@@ -215,9 +215,10 @@
         }
 
         .footer {
-            color: #475569;
+            color: var(--text-muted);
             font-size: .75rem;
-            margin-top: 20px
+            margin-top: 20px;
+            opacity: 0.8;
         }
 
         .payment-methods {
@@ -229,23 +230,23 @@
         }
 
         .pm {
-            background: rgba(17, 24, 39, .5);
-            border: 1px solid rgba(239, 68, 68, .08);
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 6px 12px;
             font-size: .7rem;
-            color: #64748b
+            color: var(--text-muted)
         }
 
         .pm i {
             margin-left: 5px;
-            color: #94a3b8
+            color: var(--text-muted)
         }
 
         .hero-section {
             width: 100%;
             height: 480px;
-            background: linear-gradient(rgba(11, 15, 25, 0.4), rgba(11, 15, 25, 0.9)), url('assets/motivational_bg.png') center/cover no-repeat;
+            background: linear-gradient(rgba(11, 15, 25, 0.4), var(--bg-color)), url('assets/motivational_bg.png') center/cover no-repeat;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -263,11 +264,12 @@
             font-weight: 800;
             margin-bottom: 12px;
             letter-spacing: -1px;
+            color: var(--text-main);
         }
 
         .hero-subtitle {
             font-size: 1.4rem;
-            color: #94a3b8;
+            color: var(--text-muted);
             max-width: 600px;
             margin: 0 auto 30px;
             line-height: 1.6;
@@ -277,11 +279,11 @@
             display: flex;
             gap: 30px;
             margin-top: 20px;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             padding: 20px 40px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
         }
 
         .stat-item h4 {
@@ -292,7 +294,7 @@
 
         .stat-item p {
             font-size: 0.8rem;
-            color: #64748b;
+            color: var(--text-muted);
             text-transform: uppercase;
         }
 
@@ -305,6 +307,7 @@
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 10px;
+            color: var(--text-main);
         }
 
         .trust-badges {
@@ -312,7 +315,7 @@
             justify-content: center;
             gap: 40px;
             margin: 50px 0;
-            opacity: 0.6;
+            opacity: 0.4;
             filter: grayscale(1);
         }
 

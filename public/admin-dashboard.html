@@ -31,14 +31,14 @@
 
         body {
             font-family: 'Cairo', 'Segoe UI', sans-serif;
-            background: #0b0f19;
-            color: #e2e8f0;
+            background: var(--bg-color);
+            color: var(--text-main);
             min-height: 100vh;
         }
 
         .sidebar {
-            background: linear-gradient(180deg, #111827, #1f2937);
-            border-left: 1px solid rgba(239, 68, 68, .15);
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border-color);
             height: 100vh;
             position: fixed;
             right: 0;
@@ -51,7 +51,7 @@
 
         .sidebar-brand {
             padding: 25px 20px;
-            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            border-bottom: 1px solid var(--border-color);
             text-align: center
         }
 
@@ -65,12 +65,12 @@
         }
 
         .sidebar-brand small {
-            color: #64748b;
+            color: var(--text-muted);
             font-size: .75rem
         }
 
         .nav-link {
-            color: #94a3b8 !important;
+            color: var(--text-muted) !important;
             padding: 13px 20px;
             border-radius: 10px;
             margin: 3px 12px;
@@ -80,8 +80,8 @@
 
         .nav-link:hover,
         .nav-link.active {
-            background: rgba(239, 68, 68, .1);
-            color: #fca5a5 !important
+            background: var(--nav-hover-bg);
+            color: var(--nav-hover-color) !important
         }
 
         .nav-link i {
@@ -91,11 +91,12 @@
         }
 
         .nav-section {
-            color: #475569;
+            color: var(--text-muted);
             font-size: .7rem;
             text-transform: uppercase;
             padding: 10px 20px 5px;
-            letter-spacing: 1px
+            letter-spacing: 1px;
+            opacity: 0.6;
         }
 
         .main-content {
@@ -133,7 +134,7 @@
 
         .page-header h2 {
             font-weight: 700;
-            color: #f1f5f9
+            color: var(--text-main);
         }
 
         @media (max-width: 992px) {
@@ -165,8 +166,8 @@
             left: 0;
             right: 0;
             height: 60px;
-            background: #111827;
-            border-bottom: 1px solid rgba(239, 68, 68, .15);
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border-color);
             display: none;
             align-items: center;
             justify-content: space-between;
@@ -192,8 +193,8 @@
         }
 
         .sc {
-            background: linear-gradient(135deg, rgba(17, 24, 39, .9), rgba(11, 15, 25, .95));
-            border: 1px solid rgba(239, 68, 68, .12);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 22px;
             transition: all .3s
@@ -246,10 +247,10 @@
         }
 
         .glass-card {
-            background: rgba(17, 24, 39, 0.6);
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 24px;
             height: 100%;
@@ -275,7 +276,7 @@
 
         .activity-item {
             padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -298,26 +299,26 @@
         .sc h3 {
             font-size: 1.7rem;
             font-weight: 700;
-            color: #f1f5f9;
+            color: var(--text-main);
             margin-bottom: 2px
         }
 
         .sc p {
-            color: #64748b;
+            color: var(--text-muted);
             font-size: .8rem;
             margin: 0
         }
 
         .cd {
-            background: rgba(17, 24, 39, .7);
-            border: 1px solid rgba(239, 68, 68, .1);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             overflow: hidden
         }
 
         .cd .ch {
-            background: rgba(239, 68, 68, .05);
-            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            background: var(--table-header-bg);
+            border-bottom: 1px solid var(--border-color);
             padding: 16px 24px;
             display: flex;
             justify-content: space-between;
@@ -325,7 +326,7 @@
         }
 
         .cd .ch h5 {
-            color: #e2e8f0;
+            color: var(--text-main);
             margin: 0;
             font-weight: 600;
             font-size: 1rem
@@ -336,28 +337,28 @@
         }
 
         .tbl {
-            color: #e2e8f0;
+            color: var(--text-main);
             width: 100%
         }
 
         .tbl thead th {
-            background: rgba(239, 68, 68, .06);
-            color: #94a3b8;
-            border-bottom: 1px solid rgba(239, 68, 68, .12);
+            background: var(--table-header-bg);
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
             font-size: .75rem;
             text-transform: uppercase;
             padding: 12px 14px
         }
 
         .tbl tbody td {
-            border-bottom: 1px solid rgba(239, 68, 68, .06);
+            border-bottom: 1px solid var(--border-color);
             padding: 12px 14px;
             vertical-align: middle;
             font-size: .9rem
         }
 
         .tbl tbody tr:hover {
-            background: rgba(239, 68, 68, .03)
+            background: var(--table-hover-bg)
         }
 
         .bs {
@@ -438,22 +439,22 @@
         }
 
         .fcd {
-            background: rgba(17, 24, 39, .9);
-            border: 1px solid rgba(239, 68, 68, .15);
-            color: #e2e8f0;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
             border-radius: 10px;
             padding: 10px 16px
         }
 
         .fcd:focus {
-            background: rgba(17, 24, 39, 1);
+            background: var(--input-bg);
             border-color: #ef4444;
-            color: #f1f5f9;
+            color: var(--text-main);
             box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
         }
 
         .fl {
-            color: #94a3b8;
+            color: var(--text-muted);
             font-size: .85rem;
             font-weight: 600
         }
@@ -467,23 +468,22 @@
         }
 
         .rfb {
-            background: rgba(17, 24, 39, .9);
-            border: 1px solid rgba(239, 68, 68, .15);
-            color: #94a3b8;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
             padding: 8px 16px;
             border-radius: 10px;
             cursor: pointer;
             transition: all .3s;
             font-size: .85rem;
             font-family: 'Cairo', sans-serif;
-            border: 1px solid rgba(239, 68, 68, .15)
         }
 
         .rfb:hover,
         .rfb.active {
             border-color: rgba(239, 68, 68, .4);
-            color: #fca5a5;
-            background: rgba(239, 68, 68, .08)
+            color: var(--text-main);
+            background: var(--nav-hover-bg);
         }
 
         .pending-badge {
@@ -550,6 +550,21 @@
     <div class="main-content">
         <!-- نظرة عامة -->
         <div id="overview-section" class="sec active">
+            <div id="verification-banner" class="alert alert-warning border-0 shadow-sm mb-4" style="display: none; background: rgba(245, 158, 11, 0.1); border-right: 4px solid #f59e0b !important; color: #f59e0b; border-radius: 12px; padding: 15px 20px;">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-3" style="font-size: 1.2rem;"></i>
+                        <div>
+                            <strong class="d-block mb-1">يرجى تأكيد رقم هاتفك</strong>
+                            <span class="small opacity-75">قم بتأكيد رقم هاتفك لتتمكن من إدارة النظام بأمان تام.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm px-4 py-2" style="background: #f59e0b; color: #fff; border-radius: 8px; font-weight: 700;" onclick="startPhoneVerification()">
+                        تأكيد الآن <i class="fas fa-arrow-left ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
             <div class="page-header">
                 <h2>نظرة عامة على النظام</h2><span style="color:#64748b">مرحباً، أدمن</span>
             </div>
@@ -1481,7 +1496,33 @@
                 } catch (e) { toast('خطأ في الاتصال', 'error'); }
             }
 
+            async function checkPhoneVerification() {
+                try {
+                    const u = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (!u.id) return;
+                    const r = await fwa(`/api/users/${u.id}`);
+                    const j = await r.json();
+                    if (j.success && j.data) {
+                        const banner = document.getElementById('verification-banner');
+                        if (banner) {
+                            if (j.data.is_phone_verified) banner.style.display = 'none';
+                            else banner.style.display = 'block';
+                        }
+                    }
+                } catch (e) { console.error('Error checking verification:', e); }
+            }
+
+            async function startPhoneVerification() {
+                const u = JSON.parse(localStorage.getItem('user') || '{}');
+                if (!u.id) return;
+                OTPHandler.show(u.id, 'يرجى تأكيد رقم هاتفك لتتمكن من إدارة النظام بأمان.', () => {
+                    toast('تم تأكيد رقم الهاتف بنجاح! ✅', 'success');
+                    checkPhoneVerification();
+                });
+            }
+
             lov();
+            checkPhoneVerification();
 
             // Removed redundant sw re-definition
 
@@ -1493,6 +1534,7 @@
                 });
             }
         </script>
+    <script src="js/otp-handler.js"></script>
     <script src="js/theme.js"></script>
     <script src="js/i18n.js"></script>
 </body>

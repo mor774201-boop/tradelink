@@ -9,6 +9,10 @@ export async function requestOTP(req: Request, res: Response, next: NextFunction
         const user = await User.findByPk(user_id);
         if (!user) return res.status(404).json({ success: false, error: "المستخدم غير موجود" });
 
+        if (!user.phone) {
+            return res.status(400).json({ success: false, error: "رقم الهاتف غير مسجل في الحساب. يرجى تحديث بياناتك أولاً." });
+        }
+
         // Generate 6-digit OTP
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const expiry = new Date();
@@ -26,8 +30,7 @@ export async function requestOTP(req: Request, res: Response, next: NextFunction
 
         if (provider !== 'none') {
             try {
-                if (!user.phone) throw new Error("رقم الهاتف غير مسجل لهذا المستخدم");
-                smsSent = await sendSMS(user.phone, `TradeLink OTP: ${otp}`);
+                smsSent = await sendSMS(user.phone, `رمز التحقق الخاص بك في TradeLink هو: ${otp}`);
             } catch (err: any) {
                 smsError = err.message;
                 console.error(`[SMS ERROR] ${err.message}`);
@@ -38,7 +41,7 @@ export async function requestOTP(req: Request, res: Response, next: NextFunction
 
         res.json({ 
             success: true, 
-            message: smsSent ? "تم إرسال رمز التحقق إلى هاتفك المسجل" : "تم إنشاء رمز التحقق (لم يتم الإرسال عبر SMS)",
+            message: smsSent ? "تم إرسال الرمز بنجاح إلى هاتفك" : "تم إنشاء الرمز (وضع التجربة)",
             sms_sent: smsSent,
             sms_error: smsError,
             // Always return OTP if not in production for easier testing

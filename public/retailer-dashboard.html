@@ -11,926 +11,23 @@
     <link rel="stylesheet" href="assets/responsive.css">
     <link rel="stylesheet" href="assets/theme.css">
     
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js');
-            });
-        }
-    </script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box
-        }
-
-        body {
-            font-family: 'Cairo', 'Segoe UI', sans-serif;
-            background: #0b0f19;
-            color: #e2e8f0;
-            min-height: 100vh
-        }
-
-        .sidebar {
-            background: linear-gradient(180deg, #111827, #0b0f19);
-            border-left: 1px solid rgba(239, 68, 68, .15);
-            height: 100vh;
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 270px;
-            z-index: 1000;
-            overflow-y: auto;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .sidebar-brand {
-            padding: 25px 20px;
-            border-bottom: 1px solid rgba(239, 68, 68, .1);
-            text-align: center
-        }
-
-        .sidebar-brand h4 {
-            background: linear-gradient(135deg, #ef4444, #f97316);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
-            font-size: 1.2rem
-        }
-
-        .sidebar-brand small {
-            color: #64748b;
-            font-size: .75rem
-        }
-
-        .nav-link {
-            color: #94a3b8 !important;
-            padding: 13px 20px;
-            border-radius: 10px;
-            margin: 3px 12px;
-            transition: all .3s;
-            font-size: .85rem
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            background: rgba(239, 68, 68, .1);
-            color: #fca5a5 !important
-        }
-
-        .nav-link i {
-            width: 22px;
-            text-align: center;
-            margin-left: 10px
-        }
-
-        .nav-section {
-            color: #475569;
-            font-size: .7rem;
-            text-transform: uppercase;
-            padding: 10px 20px 5px;
-            letter-spacing: 1px
-        }
-
-        .main-content {
-            margin-right: 270px;
-            padding: 30px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            width: calc(100% - 270px);
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(2px);
-            z-index: 999;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .sidebar-overlay.show {
-            display: block;
-            opacity: 1;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px
-        }
-
-        .page-header h2 {
-            font-weight: 700;
-            color: #f1f5f9
-        }
-
-        @media (max-width: 992px) {
-            .main-content {
-                margin-right: 0 !important;
-                width: 100% !important;
-                padding: 15px;
-                padding-top: 80px;
-            }
-
-            .sidebar {
-                right: -280px !important;
-                transform: none !important;
-            }
-
-            .sidebar.show {
-                right: 0 !important;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-            }
-
-            .mobile-top-bar {
-                display: flex;
-            }
-
-            .cart-float {
-                bottom: 20px;
-                left: 20px;
-                width: 55px;
-                height: 55px;
-            }
-        }
-
-        .mobile-top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: #111827;
-            border-bottom: 1px solid rgba(239, 68, 68, .15);
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 101;
-        }
-
-        .toggle-btn {
-            background: none;
-            border: none;
-            color: #ef4444;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Cart Styles */
-        .cart-float {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            width: 65px;
-            height: 65px;
-            background: linear-gradient(135deg, #ef4444, #f97316);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 5px 25px rgba(239, 68, 68, 0.4);
-            transition: all 0.3s;
-        }
-
-        .cart-float:hover {
-            transform: scale(1.1);
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: white;
-            color: #ef4444;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            font-size: 0.75rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ef4444;
-        }
-
-        .cart-sidebar {
-            position: fixed;
-            top: 0;
-            left: -350px;
-            width: 350px;
-            height: 100vh;
-            background: #0f172a;
-            z-index: 1001;
-            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
-            transition: left 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid rgba(239, 68, 68, 0.1);
-        }
-
-        .cart-sidebar.active {
-            left: 0;
-        }
-
-        .cart-header {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .cart-footer {
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .cart-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .supplier-group {
-            margin-bottom: 20px;
-        }
-
-        .supplier-header {
-            font-size: 0.75rem;
-            color: #ef4444;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .add-cart-btn {
-            background: rgba(239, 68, 68, 0.1);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .add-cart-btn:hover {
-            background: #ef4444;
-            color: white;
-            border-color: #ef4444;
-        }
-
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .qty-btn {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: transparent;
-            color: #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-        }
-
-        .qty-btn:hover {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-
-        .btn-purple {
-            background: #a855f7;
-            color: white;
-            border: none;
-            transition: all 0.3s;
-        }
-
-        .btn-purple:hover {
-            background: #9333ea;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
-        }
-
-        .text-purple {
-            color: #c084fc;
-        }
-
-        .sc {
-            background: linear-gradient(135deg, rgba(17, 24, 39, .9), rgba(11, 15, 25, .95));
-            border: 1px solid rgba(239, 68, 68, .12);
-            border-radius: 16px;
-            padding: 22px;
-            transition: all .3s
-        }
-
-        .sc:hover {
-            transform: translateY(-3px);
-            border-color: rgba(239, 68, 68, .3)
-        }
-
-        .sc .ic {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            margin-bottom: 14px
-        }
-
-        .ic.red {
-            background: rgba(239, 68, 68, .15);
-            color: #fca5a5
-        }
-
-        .ic.blue {
-            background: rgba(59, 130, 246, .15);
-            color: #60a5fa
-        }
-
-        .ic.green {
-            background: rgba(34, 197, 94, .15);
-            color: #4ade80
-        }
-
-        .ic.amber {
-            background: rgba(245, 158, 11, .15);
-            color: #fbbf24
-        }
-
-        .sc h3 {
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: #f1f5f9;
-            margin-bottom: 2px
-        }
-
-        .sc p {
-            color: #64748b;
-            font-size: .8rem;
-            margin: 0
-        }
-
-        .cd {
-            background: rgba(17, 24, 39, .7);
-            border: 1px solid rgba(239, 68, 68, .1);
-            border-radius: 16px;
-            overflow: hidden
-        }
-
-        .cd .ch {
-            background: rgba(239, 68, 68, .05);
-            border-bottom: 1px solid rgba(239, 68, 68, .1);
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center
-        }
-
-        .cd .ch h5 {
-            color: #e2e8f0;
-            margin: 0;
-            font-weight: 600;
-            font-size: 1rem
-        }
-
-        .cd .cb {
-            padding: 20px
-        }
-
-        .tbl {
-            color: #e2e8f0;
-            width: 100%
-        }
-
-        .tbl thead th {
-            background: rgba(239, 68, 68, .06);
-            color: #94a3b8;
-            border-bottom: 1px solid rgba(239, 68, 68, .12);
-            font-size: .75rem;
-            text-transform: uppercase;
-            padding: 12px 14px
-        }
-
-        .tbl tbody td {
-            border-bottom: 1px solid rgba(239, 68, 68, .06);
-            padding: 12px 14px;
-            vertical-align: middle;
-            font-size: .9rem
-        }
-
-        .tbl tbody tr:hover {
-            background: rgba(239, 68, 68, .03)
-        }
-
-        .bs {
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: .7rem;
-            font-weight: 600
-        }
-
-        .bs-g {
-            background: rgba(34, 197, 94, .15);
-            color: #4ade80
-        }
-
-        .bs-y {
-            background: rgba(245, 158, 11, .15);
-            color: #fbbf24
-        }
-
-        .bs-b {
-            background: rgba(59, 130, 246, .15);
-            color: #60a5fa
-        }
-
-        .bs-r {
-            background: rgba(239, 68, 68, .15);
-            color: #fca5a5
-        }
-
-        .btn-g {
-            background: linear-gradient(135deg, #ef4444, #f97316);
-            color: #fff;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all .3s;
-            font-family: 'Cairo', sans-serif;
-            cursor: pointer
-        }
-
-        .btn-g:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(239, 68, 68, .3);
-            color: #fff
-        }
-
-        .fcd {
-            background: rgba(17, 24, 39, .9);
-            border: 1px solid rgba(239, 68, 68, .15);
-            color: #e2e8f0;
-            border-radius: 10px;
-            padding: 10px 16px
-        }
-
-        .fcd:focus {
-            background: rgba(17, 24, 39, 1);
-            border-color: #ef4444;
-            color: #f1f5f9;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
-        }
-
-        .fl {
-            color: #94a3b8;
-            font-size: .85rem;
-            font-weight: 600
-        }
-
-        .wc {
-            background: linear-gradient(135deg, #ef4444, #f97316);
-            border-radius: 16px;
-            padding: 30px;
-            color: #fff;
-            position: relative;
-            overflow: hidden
-        }
-
-        .wc::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, .1) 0%, transparent 60%)
-        }
-
-        .wc h6 {
-            opacity: .8;
-            font-size: .85rem
-        }
-
-        .wc h2 {
-            font-size: 2.2rem;
-            font-weight: 700
-        }
-
-        .sec {
-            display: none
-        }
-
-        .sec.active {
-            display: block
-        }
-
-        .sf {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            flex-wrap: wrap
-        }
-
-        .sf input,
-        .sf select {
-            background: rgba(17, 24, 39, .9);
-            border: 1px solid rgba(239, 68, 68, .15);
-            color: #e2e8f0;
-            border-radius: 10px;
-            padding: 10px 16px;
-            flex: 1;
-            min-width: 180px
-        }
-
-        .sf input:focus,
-        .sf select:focus {
-            border-color: #ef4444;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
-        }
-
-        .pc {
-            background: rgba(17, 24, 39, .7);
-            border: 1px solid rgba(239, 68, 68, .1);
-            border-radius: 14px;
-            padding: 20px;
-            transition: all .3s;
-            cursor: pointer
-        }
-
-        .pc:hover {
-            border-color: rgba(239, 68, 68, .3);
-            transform: translateY(-3px)
-        }
-
-        .pc .pe {
-            font-size: 2.5rem;
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            background: rgba(239, 68, 68, .08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px
-        }
-
-        .pc h5 {
-            color: #f1f5f9;
-            font-size: 1rem;
-            margin-bottom: 5px
-        }
-
-        .pc .sn {
-            color: #64748b;
-            font-size: .8rem
-        }
-
-        .pc .pr {
-            color: #fca5a5;
-            font-size: 1.2rem;
-            font-weight: 700
-        }
-
-        .pc .op {
-            color: #64748b;
-            font-size: .85rem;
-            text-decoration: line-through
-        }
-
-        .bw {
-            background: rgba(239, 68, 68, .15);
-            color: #fca5a5;
-            padding: 3px 8px;
-            border-radius: 8px;
-            font-size: .7rem
-        }
-
-        .modal-dark .modal-content {
-            background: #111827;
-            border: 1px solid rgba(239, 68, 68, .2);
-            color: #e2e8f0
-        }
-
-        .modal-dark .modal-header {
-            border-bottom: 1px solid rgba(239, 68, 68, .1)
-        }
-
-        .modal-dark .modal-footer {
-            border-top: 1px solid rgba(239, 68, 68, .1)
-        }
-
-        .modal-dark .btn-close {
-            filter: invert(1)
-        }
-
-        .pm-card {
-            background: rgba(17, 24, 39, .8);
-            border: 2px solid rgba(239, 68, 68, .1);
-            border-radius: 12px;
-            padding: 12px 10px;
-            cursor: pointer;
-            transition: all .3s;
-            text-align: center
-        }
-
-        .pm-card:hover {
-            border-color: rgba(239, 68, 68, .4);
-            transform: translateY(-2px)
-        }
-
-        .pm-card.selected {
-            border-color: #ef4444;
-            background: rgba(239, 68, 68, .08)
-        }
-
-        .pm-card i {
-            font-size: 1.3rem;
-            margin-bottom: 6px;
-            color: #fca5a5;
-            display: block
-        }
-
-        .pm-card span {
-            display: block;
-            font-size: .78rem;
-            color: #e2e8f0;
-            font-weight: 600
-        }
-
-        .pm-card small {
-            color: #64748b;
-            font-size: .65rem
-        }
-
-        @media (max-width: 768px) {
-            .pm-card { padding: 8px 6px; border-radius: 10px; }
-            .pm-card i { font-size: 1rem; margin-bottom: 4px; }
-            .pm-card span { font-size: .7rem; }
-            .pm-card small { font-size: .6rem; }
-        }
-
-        .toast-wrap {
-            position: fixed;
-            bottom: 24px;
-            left: 24px;
-            z-index: 9999
-        }
-
-        .toast-msg {
-            background: rgba(17, 24, 39, .95);
-            border: 1px solid rgba(239, 68, 68, .2);
-            color: #e2e8f0;
-            padding: 14px 20px;
-            border-radius: 12px;
-            margin-top: 10px;
-            font-size: .85rem;
-            animation: slideIn .3s ease
-        }
-
-        .toast-msg.success {
-            border-color: rgba(34, 197, 94, .3)
-        }
-
-        .toast-msg.error {
-            border-color: rgba(239, 68, 68, .5)
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(-100%);
-                opacity: 0
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1
-            }
-        }
-
-        .gw-box {
-            background: rgba(34, 197, 94, .08);
-            border: 1px solid rgba(34, 197, 94, .2);
-            border-radius: 10px;
-            padding: 14px;
-            margin-top: 12px;
-            font-size: .82rem
-        }
-
-        .gw-label {
-            color: #64748b;
-            font-size: .72rem;
-            text-transform: uppercase;
-            letter-spacing: .5px
-        }
-
-        .gw-val {
-            color: #4ade80;
-            font-weight: 600
-        }
-
-        .locked-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(11, 15, 25, 0.85);
-            backdrop-filter: blur(4px);
-            z-index: 10;
-            border-radius: inherit;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            color: #f1f5f9;
-        }
-
-        .locked-overlay i {
-            font-size: 2.5rem;
-            color: #ef4444;
-            margin-bottom: 12px;
-        }
-
-        .locked-overlay h5 {
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .locked-overlay p {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            max-width: 250px;
-        }
-
-        .sub-btn {
-            background: linear-gradient(135deg, #ef4444, #f97316);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-top: 15px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .sub-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-        }
-
-        .sec {
-            position: relative;
-        }
-
-        /* Deposit Upload Area */
-        .dep-upload-area {
-            border: 2px dashed rgba(96, 165, 250, 0.3);
-            border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(96, 165, 250, 0.03);
-        }
-        .dep-upload-area:hover {
-            border-color: rgba(96, 165, 250, 0.6);
-            background: rgba(96, 165, 250, 0.08);
-        }
-
-        /* Theme & Language Toggles */
-        .toolbar-btns {
-            display: flex;
-            gap: 8px;
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .toolbar-btn {
-            flex: 1;
-            padding: 6px 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.03);
-            color: #94a3b8;
-            font-size: .75rem;
-            cursor: pointer;
-            text-align: center;
-            transition: all .2s;
-        }
-        .toolbar-btn:hover { background: rgba(255,255,255,0.08); color: #e2e8f0; }
-        .toolbar-btn i { margin-inline-end: 4px; }
-
-        /* ── Light Theme ── */
-        body.light-theme {
-            --bg-main: #f1f5f9;
-            --bg-sidebar: #ffffff;
-            --bg-card: #ffffff;
-            --bg-input: #f8fafc;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border-color: #e2e8f0;
-            --shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-        body.light-theme .main-content { background: var(--bg-main); }
-        body.light-theme .sidebar { background: var(--bg-sidebar); border-inline-end: 1px solid var(--border-color); }
-        body.light-theme .sidebar .logo h4 { color: var(--text-primary); }
-        body.light-theme .sidebar .nav-link { color: var(--text-secondary); }
-        body.light-theme .sidebar .nav-link:hover { background: #f1f5f9; color: #1e293b; }
-        body.light-theme .sidebar .nav-link.active { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
-        body.light-theme .sc, body.light-theme .cd { background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--shadow); }
-        body.light-theme .ch { border-bottom-color: var(--border-color); }
-        body.light-theme .ch h5 { color: var(--text-primary); }
-        body.light-theme .page-header h2 { color: var(--text-primary); }
-        body.light-theme .sc h3 { color: var(--text-primary); }
-        body.light-theme .sc p { color: var(--text-secondary); }
-        body.light-theme .tbl th { background: #f8fafc; color: var(--text-secondary); border-bottom-color: var(--border-color); }
-        body.light-theme .tbl td { border-bottom-color: #f1f5f9; color: var(--text-primary); }
-        body.light-theme .fcd, body.light-theme .sf input, body.light-theme .sf select { background: var(--bg-input) !important; border-color: var(--border-color) !important; color: var(--text-primary) !important; }
-        body.light-theme .fl { color: var(--text-secondary); }
-        body.light-theme .wc { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
-        body.light-theme .wc h6, body.light-theme .wc h2 { color: #991b1b; }
-        body.light-theme .pm-card { background: var(--bg-card); border-color: var(--border-color); color: var(--text-primary); }
-        body.light-theme .pm-card span, body.light-theme .pm-card i { color: var(--text-primary); }
-        body.light-theme .pm-card small { color: var(--text-muted); }
-        body.light-theme .gw-box { background: #fef2f2; border-color: #fecaca; }
-        body.light-theme .gw-label { color: var(--text-secondary); }
-        body.light-theme .dep-upload-area { border-color: rgba(37,99,235,0.2); background: rgba(37,99,235,0.03); }
-        body.light-theme .dep-upload-area:hover { border-color: rgba(37,99,235,0.5); background: rgba(37,99,235,0.06); }
-        body.light-theme .toast-msg { background: #fff; border-color: var(--border-color); color: var(--text-primary); box-shadow: var(--shadow); }
-        body.light-theme .toolbar-btns { border-bottom-color: var(--border-color); }
-        body.light-theme .toolbar-btn { border-color: var(--border-color); background: var(--bg-input); color: var(--text-secondary); }
-        body.light-theme .toolbar-btn:hover { background: #e2e8f0; color: var(--text-primary); }
-        body.light-theme .cb { color: var(--text-primary); }
-        body.light-theme .locked-overlay { background: rgba(255,255,255,0.95); }
-        body.light-theme .locked-overlay h5, body.light-theme .locked-overlay p { color: var(--text-primary); }
-    </style>
+    <!-- PWA & Mobile CSS -->
+    <link rel="stylesheet" href="assets/mobile-app.css">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 </head>
 
 <body>
-    <!-- Floating Cart Button -->
-    <div class="cart-float" onclick="toggleCart()">
-        <i class="fas fa-shopping-basket"></i>
-        <span class="cart-count" id="cart-count">0</span>
-    </div>
+    <div class="app-container">
 
-    <!-- Cart Sidebar -->
-    <div class="cart-sidebar" id="cart-sidebar">
+    <!-- Cart Navigation (Moved Inside) -->
+    <div class="cart-sidebar" id="cart-sidebar" style="position: absolute;">
         <div class="cart-header">
             <h5 class="m-0"><i class="fas fa-shopping-cart me-2"></i>سلة المشتريات</h5>
             <button class="btn-close btn-close-white" onclick="toggleCart()"></button>
         </div>
         <div class="cart-body" id="cart-items-list">
-            <!-- Items grouped by supplier will appear here -->
             <div class="text-center py-5 text-muted">السلة فارغة حالياً</div>
         </div>
         <div class="cart-footer">
@@ -944,50 +41,11 @@
         </div>
     </div>
 
-    <div class="mobile-top-bar">
-        <div class="d-flex align-items-center">
-            <img src="assets/logo.png" style="height:30px; margin-left:10px"
-                onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
-            <span style="font-weight:700; color:#ef4444">TradeLink</span>
-        </div>
-        <button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-    </div>
-
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <img src="assets/logo.png" alt="TradeLink Logo" style="width: 50px; margin-bottom: 15px;">
-            <h4 style="font-size: 1.1rem; font-weight: 700; color: #ef4444; margin-bottom: 0;">TradeLink</h4>
-            <small style="color: #64748b; font-size: 0.75rem;">تاجر التجزئة</small>
-        </div>
-
-        <nav class="nav flex-column sidebar-nav mt-2">
-            <div class="nav-section">الرئيسية</div>
-            <a class="nav-link active" href="#" onclick="sw('dashboard',this)"><i class="fas fa-home"></i>نظرة عامة</a>
-            <div class="nav-section">التسوق</div>
-            <a class="nav-link" href="#" onclick="sw('browse',this)"><i class="fas fa-search"></i>تصفح منتجات الجملة</a>
-            <a class="nav-link" href="#" onclick="sw('orders',this)"><i class="fas fa-shopping-bag"></i>طلباتي</a>
-            <div class="nav-section">المالية</div>
-            <a class="nav-link" href="#" onclick="sw('payments',this)"><i class="fas fa-credit-card"></i>المحفظة
-                والعمليات</a>
-            <a class="nav-link" href="#" onclick="sw('deposit',this)"><i class="fas fa-plus-circle"></i>إيداع رصيد</a>
-            <a class="nav-link" href="#" onclick="sw('bank-settings',this)"><i class="fas fa-university"></i>إعدادات
-                البنك</a>
-            <div class="nav-section">اللوجستيات</div>
-            <a class="nav-link" href="#" onclick="sw('shipments',this)"><i class="fas fa-shipping-fast"></i>تتبع
-                الشحنات</a>
-            <hr style="border-color:rgba(239,68,68,.1);margin:20px 0">
-            <a class="nav-link" href="/" style="color:#f87171!important"><i class="fas fa-sign-out-alt"></i>تسجيل
-                الخروج</a>
-        </nav>
-    </div>
-
     <div class="main-content">
         <!-- Dashboard -->
         <div id="dashboard-section" class="sec active">
             <!-- Verification Alert -->
-            <div id="verification-banner" class="alert alert-warning border-0 shadow-sm mb-4" style="display: none; background: rgba(245, 158, 11, 0.1); border-right: 4px solid #f59e0b !important; color: #f59e0b; border-radius: 12px; padding: 15px 20px;">
+            <div id="verification-banner" class="alert alert-warning border-0 shadow-sm mb-4" style="display: none; background: rgba(245, 158, 11, 0.1); border-right: 4px solid #f59e0b !important; color: #f59e0b; border-radius: 12px; padding: 15px 20px; margin: 15px;">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-exclamation-triangle me-3" style="font-size: 1.2rem;"></i>
@@ -1002,101 +60,177 @@
                 </div>
             </div>
 
-            <div class="page-header">
-                <h2>نظرة عامة</h2><span style="color:#64748b">مرحباً، تاجر التجزئة</span>
-            </div>
-            <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="sc">
-                        <div class="ic red"><i class="fas fa-shopping-bag"></i></div>
-                        <h3 id="s-o">0</h3>
-                        <p>طلباتي</p>
+            <!-- Home Header -->
+            <div class="home-header">
+                <div class="search-bar-container">
+                    <div class="search-input-wrapper" onclick="sw('browse', document.querySelector('.nav-item:nth-child(2)'))">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="بتدور على منتج معين؟" readonly style="pointer-events: none;">
                     </div>
+                    <button class="notification-btn text-muted-custom border-color">
+                        <i class="far fa-bell"></i>
+                    </button>
                 </div>
-                <div class="col-md-3">
-                    <div class="sc">
-                        <div class="ic amber"><i class="fas fa-clock"></i></div>
-                        <h3 id="s-p">0</h3>
-                        <p>قيد الانتظار</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="sc">
-                        <div class="ic green"><i class="fas fa-coins"></i></div>
-                        <h3 id="s-s">0</h3>
-                        <p>إجمالي المشتريات</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="sc">
-                        <div class="ic blue"><i class="fas fa-wallet"></i></div>
-                        <h3 id="s-b">0</h3>
-                        <p>رصيد المحفظة</p>
-                    </div>
+                
+                <div class="top-action-cards">
+                    <a href="#" class="top-action-card" onclick="sw('orders', document.querySelector('.nav-item:nth-child(4)'))">
+                        <i class="fas fa-receipt text-primary-custom" style="font-size: 1.8rem;"></i>
+                        <span>الطلبات</span>
+                    </a>
+                    <a href="#" class="top-action-card" onclick="sw('deposit', null)">
+                        <i class="fas fa-wallet text-primary-custom" style="font-size: 1.8rem;"></i>
+                        <span>المحفظة</span>
+                    </a>
+                    <a href="#" class="top-action-card" onclick="sw('offers', null)">
+                        <i class="fas fa-fire text-primary-custom" style="font-size: 1.8rem; color:#f97316;"></i>
+                        <span>عروض مكسب</span>
+                    </a>
                 </div>
             </div>
-            <div class="cd">
-                <div class="ch">
-                    <h5>آخر طلباتي</h5><button class="btn-g btn-sm" onclick="sw('browse')"><i
-                            class="fas fa-plus me-1"></i>طلب جديد</button>
-                </div>
-                <div class="cb">
-                    <div class="table-responsive">
-                        <table class="tbl">
-                            <thead>
-                                <tr>
-                                    <th>رقم</th>
-                                    <th>البائع</th>
-                                    <th>المبلغ</th>
-                                    <th>الحالة</th>
-                                    <th>التاريخ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ro">
-                                <tr>
-                                    <td colspan="5" class="text-center" style="color:#64748b">جاري التحميل...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
-                <div class="mt-5" id="ai-recommendations">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="m-0"><i class="fas fa-magic me-2 text-purple" style="color:#c084fc"></i>ذكاء
-                            TradeLink:
-                            ترشيحات لك</h4>
-                        <small class="text-muted">بناءً على مشترياتك السابقة</small>
+            <!-- Promotional Banner (Swiper) -->
+            <div class="banner-slider mt-2">
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide banner-slide">
+                            <img src="https://images.unsplash.com/photo-1628102491629-77858ab5721d?auto=format&fit=crop&w=800&q=80" alt="Offer 1">
+                        </div>
+                        <div class="swiper-slide banner-slide">
+                            <img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=800&q=80" alt="Offer 2">
+                        </div>
                     </div>
-                    <div id="ai-recs-grid" class="row g-3">
-                        <!-- AI recommendations will be injected here -->
-                    </div>
+                    <div class="swiper-pagination"></div>
                 </div>
+            </div>
+
+            <!-- Shortcuts -->
+            <h3 class="section-title mt-2">اختصارات</h3>
+            <div class="shortcuts-grid">
+                <a href="#" class="shortcut-card buy-again" onclick="sw('orders', document.querySelector('.nav-item:nth-child(4)'))">
+                    <i class="fas fa-history" style="font-size:1.8rem; color: #3b82f6; margin-bottom:8px;"></i>
+                    اشتري تاني
+                </a>
+                <a href="#" class="shortcut-card bundles" onclick="sw('offers', null)">
+                    <i class="fas fa-box-open" style="font-size:1.8rem; color: #ef4444; margin-bottom:8px;"></i>
+                    باقات التوفير
+                </a>
+            </div>
+
+            <!-- Categories Quick Grid -->
+            <div class="d-flex justify-content-between align-items-center mb-3 px-3">
+                <h3 class="section-title m-0">تصفح الأقسام</h3>
+                <a href="#" class="text-primary-custom fw-bold" style="font-size:0.85rem;" onclick="sw('browse', document.querySelector('.nav-item:nth-child(2)'))">الكل</a>
+            </div>
+            
+            <div class="categories-grid">
+                <a href="#" class="category-card" onclick="sw('browse', document.querySelector('.nav-item:nth-child(2)'))">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081840.png" alt="Food">
+                    <span>مواد غذائية</span>
+                </a>
+                <a href="#" class="category-card" onclick="sw('browse', document.querySelector('.nav-item:nth-child(2)'))">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png" alt="Beverages">
+                    <span>مشروبات</span>
+                </a>
+                <a href="#" class="category-card" onclick="sw('browse', document.querySelector('.nav-item:nth-child(2)'))">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2921/2921822.png" alt="Cleaners">
+                    <span>منظفات</span>
+                </a>
+                <a href="#" class="category-card" onclick="sw('browse', document.querySelector('.nav-item:nth-child(2)'))">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" alt="Personal Care">
+                    <span>عناية شخصية</span>
+                </a>
+                <a href="#" class="category-card" onclick="sw('browse', document.querySelector('.nav-item:nth-child(2)'))">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1054/1054238.png" alt="Oils">
+                    <span>زيوت ودهون</span>
+                </a>
+                <a href="#" class="category-card" onclick="sw('browse', document.querySelector('.nav-item:nth-child(2)'))">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2727/2727397.png" alt="More">
+                    <span>المزيد</span>
+                </a>
+            </div>
+
+            <!-- AI Recommendations -->
+            <div class="mt-4 px-3 mb-4" id="ai-recommendations">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title m-0 px-0"><i class="fas fa-magic me-2" style="color:#c084fc"></i>ذكاء TradeLink</h3>
+                </div>
+                <!-- Adding simple horizontal scrolling for recommendations so it fits mobile nicely -->
+                <div id="ai-recs-grid" class="d-flex gap-3 overflow-auto flex-nowrap pb-2 px-1" style="scrollbar-width: none;">
+                    <!-- AI recommendations will be injected here -->
+                </div>
+            </div>
+            
+            <div style="display:none;" id="s-o"></div>
+            <div style="display:none;" id="s-p"></div>
+            <div style="display:none;" id="s-s"></div>
+            <div style="display:none;" id="s-b"></div>
+            <table style="display:none;"><tbody id="ro"></tbody></table>
+        </div>
+
+        <!-- Browse Wholesale Products (Categories) -->
+        <div id="browse-section" class="sec">
+            <div class="px-3 pt-3 mb-2">
+                <h2 class="fw-bolder" style="font-size: 1.4rem;">تصفح الأقسام</h2>
+                <div class="search-input-wrapper mt-3">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="fn-mobile" placeholder="بتدور على إيه؟" oninput="fpMobile()">
+                </div>
+            </div>
+
+            <div class="browse-categories-list" id="cat-list-mobile">
+                <!-- Categories will be injected here -->
+                <a href="#" class="browse-cat-card" onclick="filterByCat(1, 'مواد غذائية')">
+                    <div class="cat-icon" style="background: #fff1f2;"><i class="fas fa-utensils" style="color: #ef4444;"></i></div>
+                    <div class="cat-info">
+                        <h4>مواد غذائية</h4>
+                        <p>بقوليات، معلبات، صلصة، سكر...</p>
+                    </div>
+                </a>
+                <a href="#" class="browse-cat-card" onclick="filterByCat(2, 'مشروبات')">
+                    <div class="cat-icon" style="background: #ecfeff;"><i class="fas fa-glass-whiskey" style="color: #06b6d4;"></i></div>
+                    <div class="cat-info">
+                        <h4>مشروبات</h4>
+                        <p>مياه، عصائر، مياه غازية...</p>
+                    </div>
+                </a>
+                <!-- etc -->
+            </div>
+
+            <!-- Supplier/Product search results (Hidden by default, shown when filtering) -->
+            <div id="search-results-mobile" style="display: none;">
+                <div class="d-flex align-items-center px-3 mb-3">
+                    <button class="btn btn-sm btn-light border-radius-md me-2" onclick="closeCatSearch()"><i class="fas fa-arrow-right"></i></button>
+                    <h5 class="m-0 fw-bold" id="cat-title-mobile">المنتجات</h5>
+                </div>
+                <div id="spg-mobile" class="row g-3 px-3"></div>
             </div>
         </div>
 
-        <!-- Browse Wholesale Products -->
-        <div id="browse-section" class="sec">
-            <div class="page-header">
-                <h2>تصفح منتجات تجار الجملة</h2>
+        <!-- Supplier Details View -->
+        <div id="supplier-detail-section" class="sec">
+            <div class="px-3 pt-3 mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-light border-radius-md" onclick="sw('browse')"><i class="fas fa-arrow-right"></i></button>
+                    <h2 class="fw-bolder m-0" id="sd-title" style="font-size: 1.2rem;">اسم المورد</h2>
+                </div>
+                <div class="mt-2 text-muted small"><i class="fas fa-map-marker-alt me-1"></i> <span id="sd-loc">الموقع</span></div>
+                
+                <!-- Supplier Info Badges -->
+                <div class="d-flex gap-2 mt-3 overflow-auto pb-1" style="scrollbar-width: none;">
+                    <div class="badge bg-light text-dark border p-2 px-3" style="border-radius: 10px; font-weight: 600;">⭐ 4.8 تقييم</div>
+                    <div class="badge bg-light text-dark border p-2 px-3" style="border-radius: 10px; font-weight: 600;">⏱ 24 ساعة توصيل</div>
+                    <div class="badge bg-light text-dark border p-2 px-3" style="border-radius: 10px; font-weight: 600;">💳 دفع عند الاستلام</div>
+                </div>
             </div>
-            <div class="sf">
-                <input type="text" id="fn" placeholder="🔍 بحث بالاسم..." oninput="fp()">
-                <select id="fc" onchange="fp()">
-                    <option value="">كل الفئات</option>
-                </select>
-                <input type="text" id="fl2" placeholder="📍 بحث بالموقع..." oninput="fp()">
-            </div>
-            <div id="spg" class="row g-4 mt-2"></div>
 
-            <div class="sc mt-5" id="ai-recommendations">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="m-0"><i class="fas fa-magic me-2 text-purple"></i>ترشيحات ذكية لك</h4>
-                    <small class="text-muted">بناءً على نشاطك الأخير</small>
+            <div class="px-3 mb-3">
+                <div style="background: var(--accent-yellow-light); border: 1px dashed var(--accent-yellow); padding: 12px; border-radius: 12px;">
+                    <div style="color: var(--accent-yellow); font-size: 0.75rem; font-weight: 700;">حد أدنى للطلب: 500 ج.م</div>
                 </div>
-                <div id="ai-recs-grid" class="row g-3">
-                    <!-- AI Recommended products will appear here -->
-                </div>
+            </div>
+
+            <div id="sd-products-grid" class="row g-3 px-3">
+                <!-- Products will be injected here -->
             </div>
         </div>
 
@@ -1413,8 +547,100 @@
                     </form>
                 </div>
             </div>
+            <!-- Account & Settings -->
+        <div id="account-section" class="sec">
+            <div class="account-header-dark">
+                <div class="top-controls">
+                    <span class="fw-bold">حسابي</span>
+                    <button class="btn btn-sm text-white" onclick="sw('settings')"><i class="fas fa-cog"></i></button>
+                </div>
+                <div class="profile-card-floating">
+                    <div class="profile-avatar" id="acc-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h3 id="acc-name">جاري التحميل...</h3>
+                        <p id="acc-store">اسم المحل</p>
+                        <p style="font-size: 0.7rem;"><i class="fas fa-map-marker-alt me-1"></i> <span id="acc-loc">الموقع</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="account-menu-group mt-5">
+                <div class="menu-group-title">إدارة حسابك</div>
+                <a href="#" class="menu-item" onclick="sw('orders')">
+                    <i class="fas fa-box text-primary"></i>
+                    <span class="menu-text">طلباتي</span>
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                <a href="#" class="menu-item" onclick="sw('payments')">
+                    <i class="fas fa-wallet text-success"></i>
+                    <span class="menu-text">المحفظة والمدفوعات</span>
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                <a href="#" class="menu-item" onclick="sw('bank-settings')">
+                    <i class="fas fa-credit-card text-info"></i>
+                    <span class="menu-text">طرق الدفع المفضلة</span>
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </div>
+
+            <div class="account-menu-group">
+                <div class="menu-group-title">الإعدادات العامة</div>
+                <a href="#" class="menu-item" onclick="sw('subs')">
+                    <i class="fas fa-crown text-warning"></i>
+                    <span class="menu-text">اشتراك بريميوم</span>
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-headset text-secondary"></i>
+                    <span class="menu-text">تواصل معنا والدعم التقني</span>
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-info-circle text-muted"></i>
+                    <span class="menu-text">عن TradeLink</span>
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </div>
+
+            <div class="logout-btn-container mb-4">
+                <a href="/auth.html" class="btn-logout-alt" onclick="localStorage.clear()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </a>
+            </div>
         </div>
+        </div>
+    </div> <!-- end main-content -->
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item nav-link active" onclick="sw('dashboard', this)">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="#" class="nav-item nav-link" onclick="sw('browse', this)">
+            <i class="fas fa-th-large"></i>
+            <span>الأقسام</span>
+        </a>
+        <a href="#" class="nav-item nav-link" onclick="toggleCart()">
+            <div style="position:relative">
+                <i class="fas fa-shopping-cart" style="font-size:1.8rem; transform: translateY(-3px); color: var(--accent-red);"></i>
+                <span class="badge-count" id="cart-count">0</span>
+            </div>
+            <span style="color:var(--accent-red)">السلة</span>
+        </a>
+        <a href="#" class="nav-item nav-link" onclick="sw('orders', this)">
+            <i class="fas fa-receipt"></i>
+            <span>الطلبات</span>
+        </a>
+        <a href="#" class="nav-item nav-link" onclick="sw('account', this)">
+            <i class="fas fa-user"></i>
+            <span>حسابي</span>
+        </a>
     </div>
+</div> <!-- end app-container -->
 
     <!-- Deposit Confirm Modal -->
     <div class="modal fade modal-dark" id="depConfM" tabindex="-1">
@@ -1645,6 +871,17 @@
                     if (!latestUser.is_phone_verified) {
                         document.getElementById('verification-banner').style.display = 'block';
                     }
+                    
+                    // Populate Account UI
+                    document.getElementById('acc-name').textContent = latestUser.name || 'مستخدم';
+                    document.getElementById('acc-store').textContent = latestUser.company_name || 'بدون محل';
+                    document.getElementById('acc-loc').textContent = latestUser.location || 'غير محدد';
+                    if (latestUser.name) {
+                        const initial = latestUser.name.charAt(0).toUpperCase();
+                        document.getElementById('acc-avatar').innerHTML = `<span>${initial}</span>`;
+                        document.getElementById('acc-avatar').style.background = 'var(--primary-blue-light)';
+                        document.getElementById('acc-avatar').style.color = 'var(--primary-blue)';
+                    }
                 }
 
                 const r = await fwa(`/api/subscription/${RID}`);
@@ -1811,8 +1048,50 @@
                 const j = await r.json();
                 AP = j.data || j;
                 rp(AP);
-                lcf();
             } catch (e) { console.error(e) }
+        }
+
+        // --- Mobile Browse Functions ---
+        function filterByCat(cid, cname) {
+            document.getElementById('cat-list-mobile').style.display = 'none';
+            document.getElementById('search-results-mobile').style.display = 'block';
+            document.getElementById('cat-title-mobile').textContent = cname;
+            const f = AP.filter(p => String(p.category_id) === String(cid));
+            renderMobileResults(f);
+        }
+
+        function closeCatSearch() {
+            document.getElementById('cat-list-mobile').style.display = 'block';
+            document.getElementById('search-results-mobile').style.display = 'none';
+        }
+
+        function fpMobile() {
+            const q = document.getElementById('fn-mobile').value.toLowerCase();
+            if(!q) { closeCatSearch(); return; }
+            document.getElementById('cat-list-mobile').style.display = 'none';
+            document.getElementById('search-results-mobile').style.display = 'block';
+            document.getElementById('cat-title-mobile').textContent = 'نتائج البحث';
+            const f = AP.filter(p => p.name.toLowerCase().includes(q) || (p.supplier?.company_name || '').toLowerCase().includes(q));
+            renderMobileResults(f);
+        }
+
+        function renderMobileResults(p) {
+            const h = document.getElementById('spg-mobile');
+            if (!h) return;
+            h.innerHTML = p.length ? p.map(x => `
+                <div class="col-6">
+                    <div class="category-card h-100 p-2 border" onclick="opm(${x.id})">
+                        <img src="${x.image || 'assets/placeholder.png'}" style="width:100%; height:90px; object-fit:cover; border-radius:10px; margin-bottom:10px">
+                        <div class="fw-bold mb-1" style="font-size:0.75rem; height:32px; overflow:hidden">${x.name}</div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                             <span style="font-size:0.75rem; font-weight:700; color:var(--accent-green)">${parseFloat(x.price).toFixed(2)} ج.م</span>
+                             <button class="btn btn-sm btn-primary p-1 px-2" style="font-size:0.6rem; border-radius:6px" onclick="event.stopPropagation(); addToCartSync(${x.id}, '${x.name.replace(/'/g, "\\'")}', ${x.price}, ${x.supplier_id})">
+                                <i class="fas fa-plus"></i>
+                             </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') : '<div class="col-12 text-center py-5 text-muted">لا توجد نتائج</div>';
         }
 
         function rp(p) {
@@ -1861,24 +1140,62 @@
             try {
                 const r = await fwa('/api/categories');
                 const j = await r.json();
-                const c = j.data || j;
+                const cats = j.data || j;
                 const catMap = {
-                    'Food & Grains': 'مواد غذائية وحبوب',
-                    'Oils & Fats': 'زيوت ودهون',
-                    'Beverages': 'مشروبات',
-                    'Personal Care': 'عناية شخصية',
-                    'Cleaning Supplies': 'منظفات',
-                    'Electronics': 'إلكترونيات',
-                    'Clothing & Fashion': 'ملابس وأزياء',
-                    'Construction Materials': 'بناء وإنشاءات',
-                    'Home & Furniture': 'أثاث وأدوات منزلية',
-                    'Auto Parts': 'قطع غيار سيارات',
-                    'Medical Supplies': 'مستلزمات طبية',
-                    'Industrial Equipment': 'معدات صناعية',
-                    'Plastics & Packaging': 'بلاستيك وتغليف'
+                    'Food & Grains': { name: 'مواد غذائية', icon: 'fas fa-utensils', bg: '#fff1f2', color: '#ef4444', desc: 'بقوليات، معلبات، صلصة، سكر...' },
+                    'Oils & Fats': { name: 'زيوت ودهون', icon: 'fas fa-oil-can', bg: '#fffbeb', color: '#f59e0b', desc: 'زيوت، سمن، زبدة...' },
+                    'Beverages': { name: 'مشروبات', icon: 'fas fa-glass-whiskey', bg: '#ecfeff', color: '#06b6d4', desc: 'مياه، عصائر، مياه غازية...' },
+                    'Personal Care': { name: 'عناية شخصية', icon: 'fas fa-pump-soap', bg: '#f5f3ff', color: '#8b5cf6', desc: 'شامبو، معجون، شاور جل...' },
+                    'Cleaning Supplies': { name: 'منظفات', icon: 'fas fa-broom', bg: '#f0fdf4', color: '#22c55e', desc: 'مسلتزمات تنظيف المنزل...' },
+                    'General': { name: 'أصناف متنوعة', icon: 'fas fa-box', bg: '#f8fafc', color: '#64748b', desc: 'باقي الأصناف والتصنيفات...' }
                 };
-                document.getElementById('fc').innerHTML = '<option value="">كل الفئات</option>' + c.map(x => `<option value="${x.id}">${catMap[x.name] || x.name}</option>`).join('');
+
+                const fc = document.getElementById('fc');
+                if (fc) fc.innerHTML = '<option value="">كل الفئات</option>' + cats.map(x => `<option value="${x.id}">${catMap[x.name]?.name || x.name}</option>`).join('');
+                
+                const mList = document.getElementById('cat-list-mobile');
+                if (mList) {
+                    mList.innerHTML = cats.map(x => {
+                        const m = catMap[x.name] || catMap['General'];
+                        return `
+                            <a href="#" class="browse-cat-card" onclick="filterByCat(${x.id}, '${m.name}')">
+                                <div class="cat-icon" style="background: ${m.bg};"><i class="${m.icon}" style="color: ${m.color};"></i></div>
+                                <div class="cat-info">
+                                    <h4>${m.name}</h4>
+                                    <p>${m.desc}</p>
+                                </div>
+                            </a>
+                        `;
+                    }).join('');
+                }
             } catch (e) { }
+        }
+
+        async function showSupplier(sid) {
+            sw('supplier-detail');
+            const p = AP.filter(x => String(x.supplier_id) === String(sid));
+            const s = p[0]?.supplier || { company_name: 'تاجر جملة' };
+            
+            document.getElementById('sd-title').textContent = s.company_name;
+            document.getElementById('sd-loc').textContent = s.location || 'في الموقع الخاص بك';
+            
+            const grid = document.getElementById('sd-products-grid');
+            if (grid) {
+                grid.innerHTML = p.map(x => `
+                    <div class="col-6">
+                        <div class="category-card h-100 p-2 border" onclick="opm(${x.id})">
+                            <img src="${x.image || 'assets/placeholder.png'}" style="width:100%; height:90px; object-fit:cover; border-radius:10px; margin-bottom:10px">
+                            <div class="fw-bold mb-1" style="font-size:0.75rem; height:32px; overflow:hidden">${x.name}</div>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span style="font-size:0.75rem; font-weight:700; color:var(--accent-green)">${parseFloat(x.price).toFixed(2)} ج.م</span>
+                                <button class="btn btn-sm btn-primary p-1 px-2" style="font-size:0.6rem; border-radius:6px" onclick="event.stopPropagation(); addToCartSync(${x.id}, '${x.name.replace(/'/g, "\\'")}', ${x.price}, ${x.supplier_id})">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
         }
 
         function fp() {
@@ -2381,10 +1698,73 @@
             }
         }
 
-        loadSubscription().then(() => { ld(); loadCart(); loadRecs(); });
+        async function checkPhoneVerification() {
+            try {
+                const r = await fwa(`/api/users/${RID}`);
+                const j = await r.json();
+                if (j.success && j.data) {
+                    const banner = document.getElementById('verification-banner');
+                    if (banner) {
+                        if (j.data.is_phone_verified) banner.style.display = 'none';
+                        else banner.style.display = 'block';
+                    }
+                }
+            } catch (e) { console.error('Error checking verification:', e); }
+        }
+
+        async function startPhoneVerification() {
+            OTPHandler.show(RID, 'يرجى تأكيد رقم هاتفك لتتمكن من إجراء العمليات المالية بأمان.', () => {
+                toast('تم تأكيد رقم الهاتف بنجاح! ✅', 'success');
+                checkPhoneVerification();
+            });
+        }
+
+        loadSubscription().then(() => { ld(); loadCart(); loadRecs(); checkPhoneVerification(); });
     </script>
+    <script src="js/otp-handler.js"></script>
     <script src="js/theme.js"></script>
     <script src="js/i18n.js"></script>
+    
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const swiper = new Swiper('.mySwiper', {
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                autoplay: {
+                    delay: 3500,
+                    disableOnInteraction: false,
+                },
+                loop: true,
+                spaceBetween: 10,
+                slidesPerView: 1
+            });
+        });
+
+        // Specific to the new Mobile Layout tabs
+        function updateBottomNav(sectionId) {
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
+            if (sectionId === 'dashboard') {
+                document.querySelector('.bottom-nav .nav-item:nth-child(1)').classList.add('active');
+            } else if (sectionId === 'browse') {
+                document.querySelector('.bottom-nav .nav-item:nth-child(2)').classList.add('active');
+            } else if (sectionId === 'orders') {
+                document.querySelector('.bottom-nav .nav-item:nth-child(4)').classList.add('active');
+            } else if (sectionId === 'account' || sectionId === 'payments' || sectionId === 'bank-settings' || sectionId === 'deposit') {
+                document.querySelector('.bottom-nav .nav-item:nth-child(5)').classList.add('active');
+            }
+        }
+        
+        // Override the existing sw function to also update bottom nav
+        const originalSw = window.sw;
+        window.sw = function(id, el) {
+            if (originalSw) originalSw(id, el);
+            updateBottomNav(id);
+        };
+    </script>
 </body>
 
 </html>

@@ -30,14 +30,14 @@
 
         body {
             font-family: 'Cairo', 'Segoe UI', sans-serif;
-            background: #0b0f19;
-            color: #e2e8f0;
+            background: var(--bg-color);
+            color: var(--text-main);
             min-height: 100vh
         }
 
         .sidebar {
-            background: linear-gradient(180deg, #111827, #0b0f19);
-            border-left: 1px solid rgba(239, 68, 68, .15);
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border-color);
             height: 100vh;
             position: fixed;
             right: 0;
@@ -50,7 +50,7 @@
 
         .sidebar-brand {
             padding: 25px 20px;
-            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            border-bottom: 1px solid var(--border-color);
             text-align: center
         }
 
@@ -64,12 +64,12 @@
         }
 
         .sidebar-brand small {
-            color: #64748b;
+            color: var(--text-muted);
             font-size: .75rem
         }
 
         .nav-link {
-            color: #94a3b8 !important;
+            color: var(--text-muted) !important;
             padding: 13px 20px;
             border-radius: 10px;
             margin: 3px 12px;
@@ -79,8 +79,8 @@
 
         .nav-link:hover,
         .nav-link.active {
-            background: rgba(239, 68, 68, .1);
-            color: #fca5a5 !important
+            background: var(--nav-hover-bg);
+            color: var(--nav-hover-color) !important
         }
 
         .nav-link i {
@@ -90,11 +90,12 @@
         }
 
         .nav-section {
-            color: #475569;
+            color: var(--text-muted);
             font-size: .7rem;
             text-transform: uppercase;
             padding: 10px 20px 5px;
-            letter-spacing: 1px
+            letter-spacing: 1px;
+            opacity: 0.6;
         }
 
         .main-content {
@@ -152,8 +153,8 @@
             left: 0;
             right: 0;
             height: 60px;
-            background: #111827;
-            border-bottom: 1px solid rgba(239, 68, 68, .15);
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border-color);
             display: none;
             align-items: center;
             justify-content: space-between;
@@ -183,14 +184,14 @@
 
         .page-header h2 {
             font-weight: 700;
-            color: #f1f5f9;
+            color: var(--text-main);
             flex-shrink: 0;
             white-space: nowrap;
         }
 
         .sc {
-            background: linear-gradient(135deg, rgba(17, 24, 39, .9), rgba(11, 15, 25, .95));
-            border: 1px solid rgba(239, 68, 68, .12);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 22px;
             transition: all .3s
@@ -240,26 +241,26 @@
         .sc h3 {
             font-size: 1.7rem;
             font-weight: 700;
-            color: #f1f5f9;
+            color: var(--text-main);
             margin-bottom: 2px
         }
 
         .sc p {
-            color: #64748b;
+            color: var(--text-muted);
             font-size: .8rem;
             margin: 0
         }
 
         .cd {
-            background: rgba(17, 24, 39, .7);
-            border: 1px solid rgba(239, 68, 68, .1);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             overflow: hidden
         }
 
         .cd .ch {
-            background: rgba(239, 68, 68, .05);
-            border-bottom: 1px solid rgba(239, 68, 68, .1);
+            background: var(--table-header-bg);
+            border-bottom: 1px solid var(--border-color);
             padding: 16px 24px;
             display: flex;
             justify-content: space-between;
@@ -267,7 +268,7 @@
         }
 
         .cd .ch h5 {
-            color: #e2e8f0;
+            color: var(--text-main);
             margin: 0;
             font-weight: 600;
             font-size: 1rem
@@ -278,28 +279,28 @@
         }
 
         .tbl {
-            color: #e2e8f0;
+            color: var(--text-main);
             width: 100%
         }
 
         .tbl thead th {
-            background: rgba(239, 68, 68, .06);
-            color: #94a3b8;
-            border-bottom: 1px solid rgba(239, 68, 68, .12);
+            background: var(--table-header-bg);
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
             font-size: .75rem;
             text-transform: uppercase;
             padding: 12px 14px
         }
 
         .tbl tbody td {
-            border-bottom: 1px solid rgba(239, 68, 68, .06);
+            border-bottom: 1px solid var(--border-color);
             padding: 12px 14px;
             vertical-align: middle;
             font-size: .9rem
         }
 
         .tbl tbody tr:hover {
-            background: rgba(239, 68, 68, .03)
+            background: var(--table-hover-bg)
         }
 
         .bs {
@@ -348,22 +349,22 @@
         }
 
         .fcd {
-            background: rgba(17, 24, 39, .9);
-            border: 1px solid rgba(239, 68, 68, .15);
-            color: #e2e8f0;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
             border-radius: 10px;
             padding: 10px 16px
         }
 
         .fcd:focus {
-            background: rgba(17, 24, 39, 1);
+            background: var(--input-bg);
             border-color: #ef4444;
-            color: #f1f5f9;
+            color: var(--text-main);
             box-shadow: 0 0 0 3px rgba(239, 68, 68, .1)
         }
 
         .fl {
-            color: #94a3b8;
+            color: var(--text-muted);
             font-size: .85rem;
             font-weight: 600
         }
@@ -2103,8 +2104,34 @@
                 await submitDep();
             }
 
-            loadSubscription().then(() => ld());
+            async function checkPhoneVerification() {
+                try {
+                    const r = await fwa(`/api/users/${SID}`);
+                    const j = await r.json();
+                    if (j.success && j.data) {
+                        const banner = document.getElementById('verification-banner');
+                        if (j.data.is_phone_verified) {
+                            if (banner) banner.style.display = 'none';
+                        } else {
+                            if (banner) banner.style.display = 'block';
+                        }
+                    }
+                } catch (e) { console.error('Error checking verification:', e); }
+            }
+
+            async function startPhoneVerification() {
+                OTPHandler.show(SID, 'يرجى تأكيد رقم هاتفك لتتمكن من إجراء العمليات المالية بأمان.', () => {
+                    toast('تم تأكيد رقم الهاتف بنجاح! ✅', 'success');
+                    checkPhoneVerification();
+                });
+            }
+
+            Promise.all([
+                loadSubscription(),
+                checkPhoneVerification()
+            ]).then(() => ld());
         </script>
+    <script src="js/otp-handler.js"></script>
     <script src="js/theme.js"></script>
     <script src="js/i18n.js"></script>
 </body>
